@@ -11,7 +11,7 @@ export class Guard implements CanActivate {
 
     const page = route.queryParams['page'];
     const pass = false;
-    console.log(page);
+    console.log('Request for page: ' + page);
     
     if (!page || page === 'popup') {
       if (pass) {

@@ -8,12 +8,17 @@ import { BackgroundComponent } from './components/background/background.componen
 import { ManagerComponent } from './components/manager/manager.component';
 import { ExplorerComponent } from './components/explorer/explorer.component';
 import { Guard } from './services/guard.service';
+import { StorageService } from './services/storage.service';
 import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
 
 /** config angular i18n **/
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 registerLocaleData(en);
+
+
 
 @NgModule({
   declarations: [
@@ -26,10 +31,13 @@ registerLocaleData(en);
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgZorroAntdModule
+    NgZorroAntdModule,
+    BrowserAnimationsModule,
+    HttpClientModule
   ],
   providers: [
     Guard,
+    StorageService,
     /** config ng-zorro-antd i18n (language && date) **/
     { provide: NZ_I18N, useValue: en_US }
   ],
