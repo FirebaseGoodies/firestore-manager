@@ -44,9 +44,9 @@
       </div>
     </ng-template>
     <ng-template #itemTpl let-database let-index="index">
-      <nz-list-item [nzActions]="[selectAction, moreAction]">
-        <ng-template #selectAction><span (click)="onSelectAction(database)" nz-tooltip nzTooltipTitle="Select" nzTooltipPlacement="bottom"><i nz-icon nzType="select" nzTheme="outline"></i></span></ng-template>
-        <ng-template #moreAction><span nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"><i nz-icon nzType="more" nzTheme="outline"></i></span></ng-template>
+      <nz-list-item [nzActions]="[consoleAction, moreAction]">
+        <ng-template #consoleAction><a [href]="database.config.databaseURL" target="_blank" nz-tooltip nzTooltipTitle="Firebase Console" nzTooltipPlacement="bottom"><i nz-icon nzType="fire" nzTheme="outline"></i></a></ng-template>
+        <ng-template #moreAction><a nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"><i nz-icon nzType="more" nzTheme="outline"></i></a></ng-template>
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item (click)="onEditAction(database, index)">Edit</li>
@@ -56,7 +56,7 @@
         </nz-dropdown-menu>
         <nz-list-item-meta [nzTitle]="nzTitle">
           <ng-template #nzTitle>
-            <a [href]="database.databaseURL" target="_blank">{{ database.projectId }}</a>
+            <a [href]="explorerUrl" target="_blank" (click)="onSelectAction(database)">{{ database.config.projectId }}</a>
           </ng-template>
         </nz-list-item-meta>
       </nz-list-item>

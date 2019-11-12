@@ -48,6 +48,10 @@ p {
   flex-direction: column;
   align-items: center;
 }
+nz-list ::ng-deep div.ant-list-items {
+  max-height: 200px;
+  overflow-y: scroll;
+}
 svg.material-icons {
   height: 24px;
   width: auto;

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'fm-explorer',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ExplorerComponent implements OnInit {
 
-  constructor() { }
+  data: any;
+
+  constructor(private db: AngularFirestore) { }
 
   ngOnInit() {
+    this.data = this.db.collection('test').valueChanges();
+    this.data.subscribe((data) => {
+      console.log(data);
+    });
   }
 
 }

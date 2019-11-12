@@ -2,7 +2,25 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class StorageService {
+    private static instance = null;
+    private static tmpStorage = [];
+
     constructor() {}
+
+    static getInstance() {
+        if (StorageService.instance == null) {
+            StorageService.instance = new StorageService();
+        }
+        return StorageService.instance;
+    }
+
+    static getTmp(key: string) {
+        return StorageService.tmpStorage[key];
+    }
+
+    static setTmp(key: string, value: any) {
+        StorageService.tmpStorage[key] = value;
+    }
 
     get(key: string): Promise<any> {
         return new Promise((resolve, reject) => {

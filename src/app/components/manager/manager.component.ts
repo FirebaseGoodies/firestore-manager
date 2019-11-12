@@ -29,6 +29,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   databaseConfig: string = '';
   private selectedDatabaseIndex: number = -1;
   private subscriptions: Subscription[] = [];
+  explorerUrl: string = '';
 
   constructor(private storage: StorageService, private message: NzMessageService, private modalService: NzModalService) { }
 
@@ -38,6 +39,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
         this.databases = databases;
       }
     });
+    this.explorerUrl = this.getExplorerUrl();
     this.subscriptions.push(this.databaseConfigKeyUp.pipe(
         map((event: any) => event.target.value),
         debounceTime(300),
@@ -69,11 +71,11 @@ export class ManagerComponent implements OnInit, OnDestroy {
           if (config.apiKey && config.authDomain && config.databaseURL && config.projectId && config.storageBucket && config.messagingSenderId && config.appId) {
             // Add
             if (this.databaseModalOkButtonText === 'Add') {
-              this.databases = this.databases.concat(config);
+              this.databases.unshift({config: config});
             }
             // Edit
             else {
-              this.databases[this.selectedDatabaseIndex] = config;
+              this.databases[this.selectedDatabaseIndex].config = config;
             }
             this.saveDatabases();
             this.isDatabaseModalVisible = false;
@@ -96,12 +98,12 @@ export class ManagerComponent implements OnInit, OnDestroy {
   }
 
   onSelectAction(database) {
-
+    this.storage.save('firebase_config', database.config);
   }
 
   onEditAction(database, index) {
     this.databaseModalOkButtonText = 'Save';
-    this.databaseConfig = this.stringify(database);
+    this.databaseConfig = this.stringify(database.config);
     this.selectedDatabaseIndex = index;
     this.isDatabaseModalVisible = true;
   }
@@ -110,7 +112,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
     //this.selectedDatabaseIndex = index;
     this.modalService.confirm({
       nzTitle: 'Delete',
-      nzContent: 'Are you sure delete ' + database.projectId + ' ?',
+      nzContent: 'Are you sure delete ' + database.config.projectId + ' ?',
       nzOkText: 'Delete',
       nzOkType: 'danger',
       nzOnOk: () => this.onDeleteActionConfirm(index),
@@ -121,6 +123,18 @@ export class ManagerComponent implements OnInit, OnDestroy {
   onDeleteActionConfirm(index) {
     this.databases.splice(index, 1);
     this.saveDatabases();
+  }
+
+  private getExplorerUrl() {
+    let url;
+    try {
+      url = browser.runtime.getURL('index.html');
+    }
+    catch (error) {
+      console.log(error.message);
+      url = '/';
+    }
+    return url;
   }
 
   private saveDatabases() {
