@@ -56,7 +56,7 @@
         </nz-dropdown-menu>
         <nz-list-item-meta [nzTitle]="nzTitle">
           <ng-template #nzTitle>
-            <a [href]="explorerUrl" target="_blank" (click)="onSelectAction(database)">{{ database.config.projectId }}</a>
+            <a [href]="explorerUrl" target="_blank" (click)="onSelectAction($event, database)">{{ database.config.projectId }}</a>
           </ng-template>
         </nz-list-item-meta>
       </nz-list-item>
