@@ -1,3 +1,100 @@
-<p>explorer works!</p>
-
-<p>{{ data | async }}</p>
+<nz-layout class="left-layout">
+  <nz-header>
+      <img
+        width="40"
+        alt="Firestore Manager Logo"
+        src="assets/images/firestore_logo.png"
+      />
+      <span>Firestore Manager</span>
+  </nz-header>
+  <nz-layout>
+    <nz-sider nzTheme="light" nzWidth="300px">
+      <div nz-row nzGutter="16" [ngStyle]="{ 'margin-bottom': '10px' }">
+        <div nz-col nzSpan="20">
+            <nz-select
+              nzShowSearch
+              nzServerSearch
+              nzPlaceHolder="Collection"
+              [nzSuffixIcon]="searchIcon"
+              nzNotFoundContent="No collection found"
+              [(ngModel)]="selectedCollection"
+              (nzOnSearch)="searchCollection($event)"
+              [ngStyle]="{ width: '100%' }"
+            >
+              <nz-option *ngFor="let c of collectionList" [nzLabel]="c" [nzValue]="c"> </nz-option>
+              <nz-option *ngIf="displayTips" nzDisabled nzCustomContent>
+                Type at least 2 letters to Search
+              </nz-option>
+            </nz-select>
+            <ng-template #searchIcon>
+              <i nz-icon nzType="search"></i>
+            </ng-template>
+        </div>
+        <div nz-col nzSpan="4">
+          <button nz-button nzType="dashed" nzShape="circle" (click)="isDrawerVisible = true" nz-tooltip nzTooltipTitle="Add Collection" nzTooltipPlacement="right"><i nz-icon nzType="plus" nzTheme="outline"></i></button>
+        </div>
+      </div>
+      <nz-tree
+        [nzData]="collectionNodes"
+        nzAsyncData
+        (nzClick)="onCollectionNodeClick($event)"
+        (nzExpandChange)="onCollectionNodeExpand($event)"
+      >
+      </nz-tree>
+    </nz-sider>
+    <nz-layout class="right-layout">
+      <nz-content>
+        <div class="inner-content">
+          <nz-tabset>
+            <nz-tab [nzTitle]="treeTitleTemplate">
+              <ng-template #treeTitleTemplate><i nz-icon nzType="share-alt"></i>Tree</ng-template>
+              WIP...
+            </nz-tab>
+            <nz-tab [nzTitle]="rawTitleTemplate">
+              <ng-template #rawTitleTemplate><i nz-icon nzType="bars"></i>Raw</ng-template>
+              WIP...
+            </nz-tab>
+          </nz-tabset>
+        </div>
+      </nz-content>
+    </nz-layout>
+  </nz-layout>
+</nz-layout>
+<nz-drawer
+  [nzClosable]="false"
+  [nzOffsetX]="0"
+  [nzWidth]="320"
+  [nzVisible]="isDrawerVisible"
+  nzTitle="New Collection"
+  (nzOnClose)="isDrawerVisible = false"
+>
+  <form nz-form [formGroup]="addCollectionForm" (ngSubmit)="submitCollectionForm()">
+    <div nz-row>
+      <div nz-col nzSpan="24">
+        <nz-form-item>
+          <nz-form-label nzRequired>Name</nz-form-label>
+          <nz-form-control nzErrorTip="{{ addCollectionForm.controls.name.errors && addCollectionForm.controls.name.errors.notUnique ? 'A collection with the same name already exists!' : 'please enter collection name' }}">
+            <input nz-input formControlName="name" placeholder="my collection" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div nz-row>
+      <div nz-col nzSpan="24">
+        <nz-form-item>
+          <nz-form-label nzRequired>Content (json)</nz-form-label>
+          <button nz-button nzType="default" nzShape="circle" nzSize="small" (click)="onGenerateContentClick($event)" nz-tooltip nzTooltipTitle="Generate" nzTooltipPlacement="left" [ngStyle]="{ float: 'right', bottom: '-5px' }">
+            <i nz-icon nzType="sync" nzTheme="outline"></i>
+          </button>
+          <nz-form-control nzErrorTip="please enter a valid json content">
+            <textarea nz-input formControlName="content" spellcheck="false" [placeholder]="collectionContentExample" [nzAutosize]="{ minRows: 12, maxRows: 24 }"></textarea>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <button nz-button nzType="default" (click)="isDrawerVisible = false" [ngStyle]="{ 'margin-right': '8px' }"><span>Cancel</span></button>
+      <button nz-button nzType="primary" [nzLoading]="isAddCollectionButtonLoading" (click)="onAddCollection()"><span>Add</span></button>
+    </div>
+  </form>
+</nz-drawer>

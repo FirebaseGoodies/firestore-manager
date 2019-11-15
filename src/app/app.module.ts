@@ -19,6 +19,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { AngularFireModule, FirebaseOptionsToken } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FirestoreService } from './services/firestore.service';
 
 export function initializeApp() {
   const config = StorageService.getTmp('firebase_config');
@@ -40,12 +42,15 @@ export function initializeApp() {
     NgZorroAntdModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
     AngularFireModule,
     AngularFirestoreModule
   ],
   providers: [
     Guard,
     StorageService,
+    FirestoreService,
     /** config ng-zorro-antd i18n (language && date) **/
     { provide: NZ_I18N, useValue: en_US },
     { provide: FirebaseOptionsToken, useFactory: initializeApp }

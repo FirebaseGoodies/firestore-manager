@@ -97,8 +97,9 @@ export class ManagerComponent implements OnInit, OnDestroy {
     this.isDatabaseModalVisible = false;
   }
 
-  onSelectAction(event, database) {
+  onSelectAction(event, database, index) {
     this.storage.save('firebase_config', database.config);
+    this.storage.save('database_index', index);
     try {
       browser.tabs.create({'url': this.explorerUrl});
       event.preventDefault();

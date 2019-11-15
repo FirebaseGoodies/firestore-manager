@@ -60,4 +60,12 @@ export class StorageService {
             localStorage.setItem(key, finalValue);
         }
     }
+
+    getMany(...keys: string[]): Promise<any> {
+        let promises: Promise<any>[] = [];
+        keys.forEach((key: string) => {
+            promises.push(this.get(key));
+        });
+        return Promise.all(promises);
+    }
 }

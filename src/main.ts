@@ -9,9 +9,10 @@ if (environment.production) {
   enableProdMode();
 }
 
-StorageService.getInstance().get('firebase_config').then((config) => {
+StorageService.getInstance().getMany('firebase_config', 'database_index').then(([config, index]) => {
   console.log('firebase_config in storage:');
   console.log(config);
   StorageService.setTmp('firebase_config', config);
+  StorageService.setTmp('database_index', index);
   platformBrowserDynamic().bootstrapModule(AppModule).catch(err => console.error(err));
 });
