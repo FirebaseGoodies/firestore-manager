@@ -20,8 +20,12 @@ const Chars = {
 export class ExplorerComponent implements OnInit {
 
   private databaseIndex: number;
+  databaseUrl: string;
   collectionNodes: any[] = [];
   collectionNodesSelectedKeys: any[] = [];
+  collectionNodesCheckedKeys: any[] = [];
+  collectionNodesExpandedKeys: any[] = [];
+  collectionTreeIsCheckable: boolean = false;
   addCollectionForm: FormGroup;
   isAddCollectionButtonLoading: boolean = false;
   isDrawerVisible: boolean = false;
@@ -39,14 +43,8 @@ export class ExplorerComponent implements OnInit {
   ngOnInit() {
     // Get data from storage
     this.databaseIndex = StorageService.getTmp('database_index');
-    this.storage.get('databases').then((databases) => {
-      if (databases && databases[this.databaseIndex].collections) {
-        databases[this.databaseIndex].collections.forEach((collectionName: string) => {
-          this.collectionNodes.push({ title: collectionName, key: collectionName });
-        });
-        this.collectionNodes = [...this.collectionNodes]; // refresh
-      }
-    });
+    this.databaseUrl = StorageService.getTmp('firebase_config').databaseURL;
+    this.initCollectionNodes();
     // Init add collection form
     this.addCollectionForm = this.fb.group({
       name: [null, [Validators.required]],
@@ -55,6 +53,17 @@ export class ExplorerComponent implements OnInit {
     // Init editor options
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.modes = ['tree', 'form', 'code'];
+  }
+
+  private async initCollectionNodes(collections: string[] = null) {
+    if (collections === null) {
+      const databases = await this.storage.get('databases');
+      collections = databases && databases[this.databaseIndex].collections ? databases[this.databaseIndex].collections : [];
+    }
+    collections.forEach((collectionName: string) => {
+      this.collectionNodes.push({ title: collectionName, key: collectionName });
+    });
+    this.collectionNodes = [...this.collectionNodes]; // refresh
   }
 
   searchCollection(value: string): void {
@@ -84,6 +93,8 @@ export class ExplorerComponent implements OnInit {
         const node: any = { title: name, key: name };
         this.addNode(node).then(() => {
           node.level = 0;
+          //node.selected = true;
+          this.collectionNodesSelectedKeys = [node.key];
           this.selectNode(node);
         });
       }
@@ -97,12 +108,10 @@ export class ExplorerComponent implements OnInit {
         if (keys.length) {
           node.children = [];
           Object.keys(documents).forEach((documentId: string) => {
-            node.children.push({ title: documentId, key: documentId, isLeaf: true });
+            node.children.push({ title: documentId, key: documentId, disableCheckbox: true, isLeaf: true });
           });
           node.expanded = true;
         }
-        this.collectionNodesSelectedKeys = [node.key];
-        node.selected = true;
         this.collectionNodes.push(node);
         this.collectionNodes = [...this.collectionNodes]; // refresh
         resolve();
@@ -139,6 +148,36 @@ export class ExplorerComponent implements OnInit {
         this.isAddCollectionButtonLoading = false;
       });
     }
+  }
+
+  onDeleteCollectionClick() {
+    this.collectionNodesCheckedKeys = [];
+    this.collectionNodesSelectedKeys = [];
+    this.collectionNodesExpandedKeys = [];
+    this.collectionNodes.forEach(node => {
+      this.collectionNodesCheckedKeys.push(node.key);
+    });
+    this.collectionTreeIsCheckable = true;
+  }
+
+  onCollectionDeleteConfirm() {
+    this.collectionList = []; // free search list
+    this.collectionNodes.forEach(node => {
+      if (! node.checked) {
+        this.collectionList.push(node.key);
+      }
+    });
+    this.collectionNodes = []; // free nodes
+    // Save to storage
+    this.storage.get('databases').then((databases) => {
+      if (databases) {
+        databases[this.databaseIndex].collections = this.collectionList;
+        this.storage.save('databases', databases);
+        // Re-init nodes
+        this.initCollectionNodes(this.collectionList);
+        this.collectionTreeIsCheckable = false;
+      }
+    });
   }
 
   onRandomContentClick(event) {
@@ -213,7 +252,7 @@ export class ExplorerComponent implements OnInit {
         // Add node childrens
         this.firestore.getCollection(node.key).then((documents) => {
           Object.keys(documents).forEach((documentId: string) => {
-            node.addChildren([{ title: documentId, key: documentId, isLeaf: true }]);
+            node.addChildren([{ title: documentId, key: documentId, disableCheckbox: true, isLeaf: true }]);
           });
           node.isLoading = false;
           resolve();
