@@ -17,7 +17,6 @@
               nzPlaceHolder="Collection"
               [nzSuffixIcon]="searchIcon"
               nzNotFoundContent="No collection found"
-              [(ngModel)]="selectedCollection"
               (nzOnSearch)="searchCollection($event)"
               [ngStyle]="{ width: '100%' }"
             >
@@ -37,24 +36,21 @@
       <nz-tree
         [nzData]="collectionNodes"
         nzAsyncData
+        nzShowLine
+        [nzExpandedIcon]="expandedIconTpl"
         (nzClick)="onCollectionNodeClick($event)"
         (nzExpandChange)="onCollectionNodeExpand($event)"
       >
+        <ng-template #expandedIconTpl let-node>
+          <i *ngIf="!node.origin.isLeaf" nz-icon [nzType]="node.isLoading ? 'loading' : node.isExpanded ? 'folder-open' : 'folder'" class="ant-tree-switcher-line-icon"></i>
+          <i *ngIf="node.origin.isLeaf" nz-icon nzType="file" class="ant-tree-switcher-line-icon"></i>
+        </ng-template>
       </nz-tree>
     </nz-sider>
     <nz-layout class="right-layout">
       <nz-content>
         <div class="inner-content">
-          <nz-tabset>
-            <nz-tab [nzTitle]="treeTitleTemplate">
-              <ng-template #treeTitleTemplate><i nz-icon nzType="share-alt"></i>Tree</ng-template>
-              WIP...
-            </nz-tab>
-            <nz-tab [nzTitle]="rawTitleTemplate">
-              <ng-template #rawTitleTemplate><i nz-icon nzType="bars"></i>Raw</ng-template>
-              WIP...
-            </nz-tab>
-          </nz-tabset>
+          <json-editor [options]="editorOptions" (change)="onEditorDataChange($event)"></json-editor>
         </div>
       </nz-content>
     </nz-layout>
@@ -82,19 +78,19 @@
     <div nz-row>
       <div nz-col nzSpan="24">
         <nz-form-item>
-          <nz-form-label nzRequired>Content (json)</nz-form-label>
-          <button nz-button nzType="default" nzShape="circle" nzSize="small" (click)="onGenerateContentClick($event)" nz-tooltip nzTooltipTitle="Generate" nzTooltipPlacement="left" [ngStyle]="{ float: 'right', bottom: '-5px' }">
+          <nz-form-label nzRequired><span>Content <i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="Content of the first document in json" nzType="question-circle" nzTheme="outline"></i></span></nz-form-label>
+          <button nz-button nzType="default" nzShape="circle" nzSize="small" (click)="onRandomContentClick($event)" nz-tooltip nzTooltipTitle="Random" nzTooltipPlacement="left" [ngStyle]="{ float: 'right', bottom: '-5px' }">
             <i nz-icon nzType="sync" nzTheme="outline"></i>
           </button>
           <nz-form-control nzErrorTip="please enter a valid json content">
-            <textarea nz-input formControlName="content" spellcheck="false" [placeholder]="collectionContentExample" [nzAutosize]="{ minRows: 12, maxRows: 24 }"></textarea>
+            <textarea nz-input class="tab-size" formControlName="content" spellcheck="false" [placeholder]="collectionContentExample" [nzAutosize]="{ minRows: 14, maxRows: 24 }"></textarea>
           </nz-form-control>
         </nz-form-item>
       </div>
     </div>
     <div class="drawer-footer">
       <button nz-button nzType="default" (click)="isDrawerVisible = false" [ngStyle]="{ 'margin-right': '8px' }"><span>Cancel</span></button>
-      <button nz-button nzType="primary" [nzLoading]="isAddCollectionButtonLoading" (click)="onAddCollection()"><span>Add</span></button>
+      <button nz-button nzType="primary" [nzLoading]="isAddCollectionButtonLoading" (click)="onAddCollectionClick()"><span>Add</span></button>
     </div>
   </form>
 </nz-drawer>

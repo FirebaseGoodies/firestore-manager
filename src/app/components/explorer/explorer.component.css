@@ -21,7 +21,7 @@ nz-sider {
   left: 0;
   padding: 20px;
   background: #fff;
-  border-right: 1px solid #d9d9d9;
+  border-right: 1px solid #d3d3d3;
 }
 .right-layout {
   margin-left: 300px;
@@ -31,7 +31,8 @@ nz-sider {
   overflow: initial;
 }
 .inner-content {
-  padding: 6px 24px
+  padding: 20px;
+  height: 100%;
 }
 .drawer-footer {
   position: absolute;
@@ -42,4 +43,34 @@ nz-sider {
   text-align: right;
   left: 0px;
   background: #fff;
+}
+textarea.tab-size {
+  tab-size: 4;
+  -moz-tab-size: 4;
+  -o-tab-size:  4;
+  -webkit-tab-size: 4;
+}
+:host ::ng-deep json-editor,
+:host ::ng-deep json-editor .jsoneditor,
+:host ::ng-deep json-editor > div,
+:host ::ng-deep json-editor jsoneditor-outer {
+  height: 100%;
+  background: #fff;
+  border-color: #d3d3d3;
+}
+:host ::ng-deep json-editor .jsoneditor-menu,
+:host ::ng-deep json-editor .jsoneditor-menu > .jsoneditor-modes > button:disabled,
+:host ::ng-deep json-editor .jsoneditor-menu > button:disabled {
+  background-color: #ebebeb;
+  border-color: #d3d3d3;
+}
+:host ::ng-deep json-editor .jsoneditor-menu > .jsoneditor-modes > button,
+:host ::ng-deep json-editor .jsoneditor-menu > button {
+  background-color: #3883fa;
+}
+:host ::ng-deep json-editor .jsoneditor-results {
+  color: #000;
+}
+:host ::ng-deep json-editor .jsoneditor-menu a {
+  color: #999;
 }
