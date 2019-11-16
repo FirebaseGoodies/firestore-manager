@@ -9,7 +9,7 @@
   </nz-header>
   <nz-layout>
     <nz-sider nzTheme="light" nzWidth="300px">
-      <div *ngIf="!collectionTreeIsCheckable" nz-row nzGutter="8" [ngStyle]="{ 'margin-bottom': '10px' }">
+      <div *ngIf="!enableCollectionDeleteMode" nz-row nzGutter="8" [ngStyle]="{ 'margin-bottom': '10px' }">
         <div nz-col nzSpan="21">
             <nz-select
               nzShowSearch
@@ -44,7 +44,7 @@
           </nz-dropdown-menu>
         </div>
       </div>
-      <div *ngIf="collectionTreeIsCheckable" [ngStyle]="{ 'margin-bottom': '10px' }">
+      <div *ngIf="enableCollectionDeleteMode" [ngStyle]="{ 'margin-bottom': '10px' }">
         <div nz-row nzGutter="8" [ngStyle]="{ 'margin-bottom': '10px' }">
           <div nz-col nzSpan="4">
             <button
@@ -58,7 +58,7 @@
               (click)="onSelectAllClick()"><i nz-icon nzType="check-square" nzTheme="outline"></i></button>
           </div>
           <div nz-col nzSpan="10">
-            <button nz-button nzType="default" nzBlock (click)="collectionTreeIsCheckable = false">Cancel</button>
+            <button nz-button nzType="default" nzBlock (click)="enableCollectionDeleteMode = false">Cancel</button>
           </div>
           <div nz-col nzSpan="10">
             <button nz-button
@@ -88,7 +88,7 @@
         nzAsyncData
         nzShowLine
         [nzSearchValue]="searchValue"
-        [nzCheckable]="collectionTreeIsCheckable"
+        [nzCheckable]="enableCollectionDeleteMode"
         [nzCheckedKeys]="collectionNodesCheckedKeys"
         [nzSelectedKeys]="collectionNodesSelectedKeys"
         [nzExpandedKeys]="collectionNodesExpandedKeys"

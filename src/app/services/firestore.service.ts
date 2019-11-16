@@ -84,6 +84,14 @@ export class FirestoreService {
       });
     }
 
+    deleteCollection(collectionName: string): boolean {
+      if (this.cache[collectionName]) {
+        delete this.cache[collectionName];
+        return true;
+      }
+      return false;
+    }
+
     addCollection(name: string, content: any): Promise<any> {
       return this.db.collection(name).add(content);
     }

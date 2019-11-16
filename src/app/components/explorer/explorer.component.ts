@@ -25,7 +25,7 @@ export class ExplorerComponent implements OnInit {
   collectionNodesSelectedKeys: any[] = [];
   collectionNodesCheckedKeys: any[] = [];
   collectionNodesExpandedKeys: any[] = [];
-  collectionTreeIsCheckable: boolean = false;
+  enableCollectionDeleteMode: boolean = false;
   permanentlyDeleteDocuments: boolean = false;
   addCollectionForm: FormGroup;
   isAddCollectionButtonLoading: boolean = false;
@@ -47,7 +47,7 @@ export class ExplorerComponent implements OnInit {
     this.databaseUrl = StorageService.getTmp('firebase_config').databaseURL;
     this.storage.get('databases').then((databases) => {
       if (databases && databases[this.databaseIndex].collections) {
-        this.initCollectionNodes(databases[this.databaseIndex].collections);
+        this.setCollectionNodes(databases[this.databaseIndex].collections);
       }
     });
     // Init add collection form
@@ -60,7 +60,7 @@ export class ExplorerComponent implements OnInit {
     this.editorOptions.modes = ['tree', 'form', 'code'];
   }
 
-  private initCollectionNodes(collections: string[]): void {
+  private setCollectionNodes(collections: string[]): void {
     collections.forEach((collectionName: string) => {
       this.collectionNodes.push({ title: collectionName, key: collectionName });
     });
@@ -155,15 +155,15 @@ export class ExplorerComponent implements OnInit {
     this.collectionNodesSelectedKeys = [];
     this.collectionNodesExpandedKeys = [];
     this.permanentlyDeleteDocuments = false;
-    this.collectionTreeIsCheckable = true;
+    this.enableCollectionDeleteMode = true;
   }
 
   onCollectionDeleteConfirm() {
-    this.collectionList = []; // free search list
+    let collectionsToKeep = [];
     this.collectionNodes.forEach(node => {
-      // Delete collections (by saving unchecked nodes only)
+      // Save unchecked nodes
       if (! node.checked) {
-        this.collectionList.push(node.key);
+        collectionsToKeep.push(node.key);
       }
       // Delete documents
       if (node.children) {
@@ -176,15 +176,22 @@ export class ExplorerComponent implements OnInit {
         });
       }
     });
+    // Delete collections
+    this.collectionNodesCheckedKeys.forEach(collection => {
+      if (this.firestore.deleteCollection(collection)) {
+        console.log(collection + ' deleted!');
+      }
+    });
+    this.collectionList = collectionsToKeep; // update search list
     this.collectionNodes = []; // free nodes
     // Save to storage
     this.storage.get('databases').then((databases) => {
       if (databases) {
-        databases[this.databaseIndex].collections = this.collectionList;
+        databases[this.databaseIndex].collections = collectionsToKeep;
         this.storage.save('databases', databases);
-        // Re-init nodes
-        this.initCollectionNodes(this.collectionList);
-        this.collectionTreeIsCheckable = false;
+        // Set nodes
+        this.setCollectionNodes(collectionsToKeep);
+        this.enableCollectionDeleteMode = false;
       }
     });
   }
