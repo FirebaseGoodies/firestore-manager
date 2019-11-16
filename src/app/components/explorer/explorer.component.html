@@ -9,40 +9,51 @@
   </nz-header>
   <nz-layout>
     <nz-sider nzTheme="light" nzWidth="300px">
-      <div *ngIf="!enableCollectionDeleteMode" nz-row nzGutter="8" [ngStyle]="{ 'margin-bottom': '10px' }">
-        <div nz-col nzSpan="21">
-            <nz-select
-              nzShowSearch
-              nzServerSearch
-              nzAllowClear
-              nzPlaceHolder="Collection"
-              [nzSuffixIcon]="searchIcon"
-              nzNotFoundContent="No collection found"
-              [(ngModel)]="searchValue"
-              (nzOnSearch)="searchCollection($event)"
-              [ngStyle]="{ width: '100%' }"
-            >
-              <nz-option *ngFor="let c of collectionList" [nzLabel]="c" [nzValue]="c"> </nz-option>
-              <nz-option *ngIf="displayTips" nzDisabled nzCustomContent>
-                Type at least 2 letters to Search
-              </nz-option>
-            </nz-select>
-            <ng-template #searchIcon>
-              <i nz-icon nzType="search"></i>
-            </ng-template>
+      <div *ngIf="!enableCollectionDeleteMode" [ngStyle]="{ 'margin-bottom': '10px' }">
+        <div nz-row nzGutter="8">
+          <div nz-col nzSpan="21">
+              <nz-select
+                nzShowSearch
+                nzServerSearch
+                nzAllowClear
+                nzPlaceHolder="Collection"
+                [nzSuffixIcon]="searchIcon"
+                nzNotFoundContent="No collection found"
+                [(ngModel)]="searchValue"
+                (nzOnSearch)="searchCollection($event)"
+                [ngStyle]="{ width: '100%' }"
+              >
+                <nz-option *ngFor="let c of collectionList" [nzLabel]="c" [nzValue]="c"> </nz-option>
+                <nz-option *ngIf="displayTips" nzDisabled nzCustomContent>
+                  Type at least 2 letters to Search
+                </nz-option>
+              </nz-select>
+              <ng-template #searchIcon>
+                <i nz-icon nzType="search"></i>
+              </ng-template>
+          </div>
+          <div nz-col nzSpan="3">
+            <button nz-button nzType="default" [ngStyle]="{ padding: '4px' }" nz-dropdown nzTrigger="click" [nzDropdownMenu]="collectionMenu">
+              <i nz-icon nzType="more" nzTheme="outline"></i>
+            </button>
+            <nz-dropdown-menu #collectionMenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="isDrawerVisible = true">Add Collection</li>
+                <!-- <li nz-menu-divider></li> -->
+                <li nz-menu-item (click)="onDeleteCollectionClick()">Delete</li>
+              </ul>
+            </nz-dropdown-menu>
+          </div>
         </div>
-        <div nz-col nzSpan="3">
-          <button nz-button nzType="default" [ngStyle]="{ padding: '4px' }" nz-dropdown nzTrigger="click" [nzDropdownMenu]="collectionMenu">
-            <i nz-icon nzType="more" nzTheme="outline"></i>
-          </button>
-          <nz-dropdown-menu #collectionMenu="nzDropdownMenu">
-            <ul nz-menu>
-              <li nz-menu-item (click)="isDrawerVisible = true">Add Collection</li>
-              <!-- <li nz-menu-divider></li> -->
-              <li nz-menu-item (click)="onDeleteCollectionClick()">Delete</li>
-            </ul>
-          </nz-dropdown-menu>
-        </div>
+        <nz-alert
+          *ngIf="!collectionNodes.length"
+          nzBanner
+          nzType="info"
+          nzMessage="Welcome!"
+          nzDescription="Start by typing a collection name in the search box above."
+          [ngStyle]="{ 'margin-top': '10px' }"
+          nzCloseable
+        ></nz-alert>
       </div>
       <div *ngIf="enableCollectionDeleteMode" [ngStyle]="{ 'margin-bottom': '10px' }">
         <div nz-row nzGutter="8" [ngStyle]="{ 'margin-bottom': '10px' }">
