@@ -24,6 +24,7 @@ export class ExplorerComponent implements OnInit {
   addCollectionForm: FormGroup;
   isAddCollectionButtonLoading: boolean = false;
   isDrawerVisible: boolean = false;
+  searchValue: string = null;
   collectionList: string[] = [];
   displayTips: boolean = true;
   collectionContentExample: string = `{\n\t"field": "value",\n\t...\n}`;
@@ -79,8 +80,11 @@ export class ExplorerComponent implements OnInit {
         databases[this.databaseIndex].collections.push(name);
         this.storage.save('databases', databases);
         // Add to nodes
-        const node = { title: name, key: name };
-        this.addNode(node).then(() => this.selectNode(node));
+        const node: any = { title: name, key: name };
+        this.addNode(node).then(() => {
+          node.level = 0;
+          this.selectNode(node);
+        });
       }
     });
   }
@@ -96,12 +100,27 @@ export class ExplorerComponent implements OnInit {
           });
           node.expanded = true;
         }
-        node.level = 0;
+        this.unselectAllNodes();
         node.selected = true;
         this.collectionNodes.push(node);
         this.collectionNodes = [...this.collectionNodes]; // refresh
         resolve();
       });
+    });
+  }
+
+  private unselectAllNodes() {
+    this.collectionNodes.forEach(collection => {
+      if (collection.selected) {
+        collection.selected = false;
+      }
+      if (collection.children) {
+        collection.children.forEach(document => {
+          if (document.selected) {
+            document.selected = false;
+          }
+        });
+      }
     });
   }
 

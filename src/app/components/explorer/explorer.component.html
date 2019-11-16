@@ -9,14 +9,16 @@
   </nz-header>
   <nz-layout>
     <nz-sider nzTheme="light" nzWidth="300px">
-      <div nz-row nzGutter="16" [ngStyle]="{ 'margin-bottom': '10px' }">
-        <div nz-col nzSpan="20">
+      <div nz-row nzGutter="8" [ngStyle]="{ 'margin-bottom': '10px' }">
+        <div nz-col nzSpan="21">
             <nz-select
               nzShowSearch
               nzServerSearch
+              nzAllowClear
               nzPlaceHolder="Collection"
               [nzSuffixIcon]="searchIcon"
               nzNotFoundContent="No collection found"
+              [(ngModel)]="searchValue"
               (nzOnSearch)="searchCollection($event)"
               [ngStyle]="{ width: '100%' }"
             >
@@ -29,14 +31,24 @@
               <i nz-icon nzType="search"></i>
             </ng-template>
         </div>
-        <div nz-col nzSpan="4">
-          <button nz-button nzType="dashed" nzShape="circle" (click)="isDrawerVisible = true" nz-tooltip nzTooltipTitle="Add Collection" nzTooltipPlacement="right"><i nz-icon nzType="plus" nzTheme="outline"></i></button>
+        <div nz-col nzSpan="3">
+          <button nz-button nzType="default" [ngStyle]="{ padding: '4px' }" nz-dropdown nzTrigger="click" [nzDropdownMenu]="collectionMenu">
+            <i nz-icon nzType="more" nzTheme="outline"></i>
+          </button>
+          <nz-dropdown-menu #collectionMenu="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item (click)="isDrawerVisible = true">Add Collection</li>
+              <!-- <li nz-menu-divider></li> -->
+              <li nz-menu-item (click)="onDeleteCollectionClick()">Delete</li>
+            </ul>
+          </nz-dropdown-menu>
         </div>
       </div>
       <nz-tree
         [nzData]="collectionNodes"
         nzAsyncData
         nzShowLine
+        [nzSearchValue]="searchValue"
         [nzExpandedIcon]="expandedIconTpl"
         (nzClick)="onCollectionNodeClick($event)"
         (nzExpandChange)="onCollectionNodeExpand($event)"

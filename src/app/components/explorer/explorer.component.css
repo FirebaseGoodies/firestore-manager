@@ -17,14 +17,11 @@
 nz-sider {
   overflow: auto;
   height: 100%;
-  position: fixed;
+  position: relative;
   left: 0;
   padding: 20px;
   background: #fff;
   border-right: 1px solid #d3d3d3;
-}
-.right-layout {
-  margin-left: 300px;
 }
 .right-layout nz-content {
   /* margin: 24px 16px 0; */
