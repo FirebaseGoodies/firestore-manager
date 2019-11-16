@@ -26,6 +26,7 @@ export class ExplorerComponent implements OnInit {
   collectionNodesCheckedKeys: any[] = [];
   collectionNodesExpandedKeys: any[] = [];
   collectionTreeIsCheckable: boolean = false;
+  permanentlyDeleteDocuments: boolean = false;
   addCollectionForm: FormGroup;
   isAddCollectionButtonLoading: boolean = false;
   isDrawerVisible: boolean = false;
@@ -93,7 +94,6 @@ export class ExplorerComponent implements OnInit {
         const node: any = { title: name, key: name };
         this.addNode(node).then(() => {
           node.level = 0;
-          //node.selected = true;
           this.collectionNodesSelectedKeys = [node.key];
           this.selectNode(node);
         });
@@ -108,7 +108,7 @@ export class ExplorerComponent implements OnInit {
         if (keys.length) {
           node.children = [];
           Object.keys(documents).forEach((documentId: string) => {
-            node.children.push({ title: documentId, key: documentId, disableCheckbox: true, isLeaf: true });
+            node.children.push({ title: documentId, key: documentId, isLeaf: true });
           });
           node.expanded = true;
         }
@@ -154,17 +154,26 @@ export class ExplorerComponent implements OnInit {
     this.collectionNodesCheckedKeys = [];
     this.collectionNodesSelectedKeys = [];
     this.collectionNodesExpandedKeys = [];
-    this.collectionNodes.forEach(node => {
-      this.collectionNodesCheckedKeys.push(node.key);
-    });
+    this.permanentlyDeleteDocuments = false;
     this.collectionTreeIsCheckable = true;
   }
 
   onCollectionDeleteConfirm() {
     this.collectionList = []; // free search list
     this.collectionNodes.forEach(node => {
+      // Delete collections (by saving unchecked nodes only)
       if (! node.checked) {
         this.collectionList.push(node.key);
+      }
+      // Delete documents
+      if (node.children) {
+        node.children.forEach(child => {
+          if (child.checked) {
+            this.firestore.deleteDocument(node.key, child.key, this.permanentlyDeleteDocuments).then(() => {
+              console.log(node.key + ' > ' + child.key + (this.permanentlyDeleteDocuments ? ' permanently ' : '') + ' deleted!');
+            });
+          }
+        });
       }
     });
     this.collectionNodes = []; // free nodes
@@ -252,7 +261,7 @@ export class ExplorerComponent implements OnInit {
         // Add node childrens
         this.firestore.getCollection(node.key).then((documents) => {
           Object.keys(documents).forEach((documentId: string) => {
-            node.addChildren([{ title: documentId, key: documentId, disableCheckbox: true, isLeaf: true }]);
+            node.addChildren([{ title: documentId, key: documentId, isLeaf: true }]);
           });
           node.isLoading = false;
           resolve();
@@ -261,6 +270,22 @@ export class ExplorerComponent implements OnInit {
         resolve();
       }
     });
+  }
+
+  onCollectionNodeCheck(event: Required<NzFormatEmitEvent>) {
+    // console.log(event);
+    this.collectionNodesCheckedKeys = event.keys;
+  }
+
+  onSelectAllClick() {
+    if (this.collectionNodesCheckedKeys.length) {
+      this.collectionNodesCheckedKeys = [];
+    } else {
+      this.collectionNodesCheckedKeys = [];
+      this.collectionNodes.forEach(node => {
+        this.collectionNodesCheckedKeys.push(node.key);
+      });
+    }
   }
 
   onEditorDataChange(event) {

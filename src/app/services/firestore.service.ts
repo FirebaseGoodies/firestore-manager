@@ -69,6 +69,21 @@ export class FirestoreService {
       });
     }
 
+    deleteDocument(collectionName: string, documentName: string, permanently: boolean = true): Promise<void> {
+      return new Promise((resolve, reject) => {
+        if (this.cache[collectionName][documentName]) {
+          delete this.cache[collectionName][documentName];
+        }
+        if (permanently) {
+          this.db.collection(collectionName).doc(documentName).delete().then(() => {
+            resolve();
+          });
+        } else {
+          resolve();
+        }
+      });
+    }
+
     addCollection(name: string, content: any): Promise<any> {
       return this.db.collection(name).add(content);
     }

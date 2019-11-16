@@ -46,23 +46,40 @@
       </div>
       <div *ngIf="collectionTreeIsCheckable" [ngStyle]="{ 'margin-bottom': '10px' }">
         <div nz-row nzGutter="8" [ngStyle]="{ 'margin-bottom': '10px' }">
-          <div nz-col nzSpan="12">
+          <div nz-col nzSpan="4">
+            <button
+              nz-button
+              nzType="dashed"
+              nzBlock
+              nz-tooltip
+              nzTooltipTitle="Select All"
+              nzTooltipPlacement="bottom"
+              [disabled]="!collectionNodes.length"
+              (click)="onSelectAllClick()"><i nz-icon nzType="check-square" nzTheme="outline"></i></button>
+          </div>
+          <div nz-col nzSpan="10">
             <button nz-button nzType="default" nzBlock (click)="collectionTreeIsCheckable = false">Cancel</button>
           </div>
-          <div nz-col nzSpan="12">
+          <div nz-col nzSpan="10">
             <button nz-button
               nzType="danger"
               nzBlock
               nz-popconfirm
-              nzPopconfirmTitle="Confirm delete?"
+              [nzPopconfirmTitle]="confirmDeleteTpl"
               nzPopconfirmPlacement="bottom"
               [disabled]="!collectionNodesCheckedKeys.length"
               (nzOnConfirm)="onCollectionDeleteConfirm()">Delete</button>
+            <ng-template #confirmDeleteTpl>
+              <span><i nz-icon nzType="exclamation-circle" nzTheme="fill" style="color: #faad14; margin-right: 5px;"></i><strong>Confirm delete?</strong></span>
+              <div [ngStyle]="{ 'margin-top': '10px' }">
+                <label nz-checkbox [(ngModel)]="permanentlyDeleteDocuments">Permanently delete documents?</label>
+              </div>
+            </ng-template>
           </div>
         </div>
         <nz-alert nzBanner [nzMessage]="deleteWarningTpl" nzCloseable>
           <ng-template #deleteWarningTpl>
-            <span>Changes will be applied only to the browser cache! If you want to permanently delete a collection please use the <a [href]="databaseUrl" target="_blank">Firebase Console</a>.</span>
+            <span>Only documents can be permanently deleted, collections will be removed only from the browser cache! If you want to permanently delete a collection please use the <a [href]="databaseUrl" target="_blank">Firebase Console</a>.</span>
           </ng-template>
         </nz-alert>
       </div>
@@ -77,6 +94,7 @@
         [nzExpandedKeys]="collectionNodesExpandedKeys"
         [nzExpandedIcon]="expandedIconTpl"
         (nzClick)="onCollectionNodeClick($event)"
+        (nzCheckBoxChange)="onCollectionNodeCheck($event)"
         (nzExpandChange)="onCollectionNodeExpand($event)"
       >
         <ng-template #expandedIconTpl let-node>
