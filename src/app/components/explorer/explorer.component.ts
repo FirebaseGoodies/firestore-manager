@@ -21,6 +21,7 @@ export class ExplorerComponent implements OnInit {
 
   private databaseIndex: number;
   collectionNodes: any[] = [];
+  collectionNodesSelectedKeys: any[] = [];
   addCollectionForm: FormGroup;
   isAddCollectionButtonLoading: boolean = false;
   isDrawerVisible: boolean = false;
@@ -100,27 +101,12 @@ export class ExplorerComponent implements OnInit {
           });
           node.expanded = true;
         }
-        this.unselectAllNodes();
+        this.collectionNodesSelectedKeys = [node.key];
         node.selected = true;
         this.collectionNodes.push(node);
         this.collectionNodes = [...this.collectionNodes]; // refresh
         resolve();
       });
-    });
-  }
-
-  private unselectAllNodes() {
-    this.collectionNodes.forEach(collection => {
-      if (collection.selected) {
-        collection.selected = false;
-      }
-      if (collection.children) {
-        collection.children.forEach(document => {
-          if (document.selected) {
-            document.selected = false;
-          }
-        });
-      }
     });
   }
 
