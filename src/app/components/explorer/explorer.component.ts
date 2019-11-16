@@ -44,7 +44,11 @@ export class ExplorerComponent implements OnInit {
     // Get data from storage
     this.databaseIndex = StorageService.getTmp('database_index');
     this.databaseUrl = StorageService.getTmp('firebase_config').databaseURL;
-    this.initCollectionNodes();
+    this.storage.get('databases').then((databases) => {
+      if (databases && databases[this.databaseIndex].collections) {
+        this.initCollectionNodes(databases[this.databaseIndex].collections);
+      }
+    });
     // Init add collection form
     this.addCollectionForm = this.fb.group({
       name: [null, [Validators.required]],
@@ -55,11 +59,7 @@ export class ExplorerComponent implements OnInit {
     this.editorOptions.modes = ['tree', 'form', 'code'];
   }
 
-  private async initCollectionNodes(collections: string[] = null) {
-    if (collections === null) {
-      const databases = await this.storage.get('databases');
-      collections = databases && databases[this.databaseIndex].collections ? databases[this.databaseIndex].collections : [];
-    }
+  private initCollectionNodes(collections: string[]): void {
     collections.forEach((collectionName: string) => {
       this.collectionNodes.push({ title: collectionName, key: collectionName });
     });
