@@ -5,13 +5,14 @@ import { BackgroundComponent } from './components/background/background.componen
 import { ManagerComponent } from './components/manager/manager.component';
 import { ExplorerComponent } from './components/explorer/explorer.component';
 import { Guard } from './services/guard.service';
+import { CanDeactivateGuard } from './services/can-deactivate-guard.service';
 
 
 const routes: Routes = [
   { path: 'manager', component: ManagerComponent },
   { path: 'options', component: OptionsComponent },
   { path: 'background', component: BackgroundComponent },
-  { path: '**', component: ExplorerComponent, canActivate: [Guard] }
+  { path: '**', component: ExplorerComponent, canActivate: [Guard], canDeactivate: [CanDeactivateGuard] }
 ];
 
 @NgModule({

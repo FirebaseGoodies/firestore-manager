@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, HostListener } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { jsonValidator } from 'src/app/validators/json.validator';
 import { FirestoreService } from 'src/app/services/firestore.service';
@@ -10,6 +10,8 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { CacheDiffComponent } from '../partials/cache-diff/cache-diff.component';
 import { Router } from '@angular/router';
 import { NotificationService } from 'src/app/services/notification.service';
+import { ComponentCanDeactivate } from 'src/app/services/can-deactivate-guard.service';
+import { Observable } from 'rxjs';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -22,7 +24,7 @@ const Chars = {
   templateUrl: './explorer.component.html',
   styleUrls: ['./explorer.component.css']
 })
-export class ExplorerComponent implements OnInit {
+export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
 
   private databaseIndex: number;
   databaseUrl: string;
@@ -59,6 +61,12 @@ export class ExplorerComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router
   ) { }
+
+  // @HostListener allows us to also guard against browser refresh, close, etc.
+  @HostListener('window:beforeunload')
+  canDeactivate(): Observable<boolean> | boolean {
+    return !this.unsavedChanges;
+  }
 
   ngOnInit() {
     // Get data from storage

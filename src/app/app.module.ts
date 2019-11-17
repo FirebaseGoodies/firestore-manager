@@ -25,6 +25,7 @@ import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { NgxTextDiffModule } from 'ngx-text-diff';
 import { CacheDiffComponent } from './components/partials/cache-diff/cache-diff.component';
 import { NotificationService } from './services/notification.service';
+import { CanDeactivateGuard } from './services/can-deactivate-guard.service';
 
 export function initializeApp() {
   const config = StorageService.getTmp('firebase_config');
@@ -56,6 +57,7 @@ export function initializeApp() {
   ],
   providers: [
     Guard,
+    CanDeactivateGuard,
     StorageService,
     FirestoreService,
     NotificationService,
