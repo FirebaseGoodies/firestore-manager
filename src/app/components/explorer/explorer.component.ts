@@ -9,6 +9,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { CacheDiffComponent } from '../partials/cache-diff/cache-diff.component';
 import { Router } from '@angular/router';
+import { NotificationService } from 'src/app/services/notification.service';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -52,6 +53,7 @@ export class ExplorerComponent implements OnInit {
     private fb: FormBuilder,
     private firestore: FirestoreService,
     private storage: StorageService,
+    private notification: NotificationService,
     private message: NzMessageService,
     private modal: NzModalService,
     private cdr: ChangeDetectorRef,
@@ -364,6 +366,7 @@ export class ExplorerComponent implements OnInit {
       this.unsavedChanges = false;
       // Display success message
       this.message.create('success', 'Changes successfully saved!');
+      this.notification.create('Saving changes completed!');
     });
   }
 

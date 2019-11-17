@@ -24,6 +24,7 @@ import { FirestoreService } from './services/firestore.service';
 import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { NgxTextDiffModule } from 'ngx-text-diff';
 import { CacheDiffComponent } from './components/partials/cache-diff/cache-diff.component';
+import { NotificationService } from './services/notification.service';
 
 export function initializeApp() {
   const config = StorageService.getTmp('firebase_config');
@@ -57,6 +58,7 @@ export function initializeApp() {
     Guard,
     StorageService,
     FirestoreService,
+    NotificationService,
     /** config ng-zorro-antd i18n (language && date) **/
     { provide: NZ_I18N, useValue: en_US },
     { provide: FirebaseOptionsToken, useFactory: initializeApp }
