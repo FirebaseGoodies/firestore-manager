@@ -6,6 +6,27 @@
         src="assets/images/firestore_logo.png"
       />
       <span>Firestore Manager</span>
+      <div class="spacer"></div>
+      <a
+        class="toolbar-icon"
+        nz-tooltip
+        nzTooltipTitle="Report a bug"
+        nzTooltipPlacement="left"
+        href="https://github.com/AXeL-dev/firestore-manager/issues"
+        target="_blank"
+      >
+        <i nz-icon nzType="bug" nzTheme="outline"></i>
+      </a>
+      <span
+        *ngIf="!browser"
+        class="toolbar-icon"
+        nz-tooltip
+        nzTooltipTitle="Go back to main page"
+        nzTooltipPlacement="left"
+        (click)="onGoBackToManagerClick()"
+      >
+        <i nz-icon nzType="logout" nzTheme="outline"></i>
+      </span>
   </nz-header>
   <nz-layout>
     <nz-sider nzTheme="light" nzWidth="300px">

@@ -6,7 +6,9 @@ import { StorageService } from 'src/app/services/storage.service';
 import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/core';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { CacheDiffComponent } from '../partials/cache-diff/cache-diff.component';
+import { Router } from '@angular/router';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -51,7 +53,9 @@ export class ExplorerComponent implements OnInit {
     private firestore: FirestoreService,
     private storage: StorageService,
     private message: NzMessageService,
-    private cdr: ChangeDetectorRef
+    private modal: NzModalService,
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -360,6 +364,14 @@ export class ExplorerComponent implements OnInit {
       this.unsavedChanges = false;
       // Display success message
       this.message.create('success', 'Changes successfully saved!');
+    });
+  }
+
+  onGoBackToManagerClick() {
+    this.modal.confirm({
+      nzTitle: 'Confirm go back to the main page?',
+      nzContent: 'Any unsaved changes will be lost.',
+      nzOnOk: () => this.router.navigate(['/manager'])
     });
   }
 
