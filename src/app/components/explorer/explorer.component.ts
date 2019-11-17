@@ -334,10 +334,33 @@ export class ExplorerComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  saveChanges() {
+  onSaveChangesClick() {
     this.isSaveButtonLoading = true;
-    console.log(this.cacheDiff.collectionNodes);
-    this.isSaveButtonLoading = false;
+    let promises: Promise<any>[] = [];
+    // Save changed documents
+    this.cacheDiff.collectionNodes.forEach(node => {
+      if (node.children) {
+        node.children.forEach(child => {
+          promises.push(this.firestore.saveDocument(node.key, child.key));
+        });
+      }
+    });
+    Promise.all(promises).then(() => {
+      // Clear cache
+      this.firestore.clearCache();
+      this.updateEditor({});
+      this.collectionNodesExpandedKeys = [];
+      this.collectionNodesSelectedKeys = [];
+      this.collectionNodes.forEach(node => {
+        node.children = []; // Remove child nodes (to refetch them)
+      });
+      this.collectionNodes = [...this.collectionNodes]; // refresh
+      this.isSaveButtonLoading = false;
+      this.isSaveModalVisible = false;
+      this.unsavedChanges = false;
+      // Display success message
+      this.message.create('success', 'Changes successfully saved!');
+    });
   }
 
 }

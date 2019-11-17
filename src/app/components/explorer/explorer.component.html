@@ -185,12 +185,13 @@
   nzOkText="Save"
   nzWidth="60%"
   (nzOnCancel)="isSaveModalVisible = false"
-  (nzOnOk)="saveChanges()"
+  (nzOnOk)="onSaveChangesClick()"
   [nzOkLoading]="isSaveButtonLoading"
   [nzOkDisabled]="isSaveButtonDisabled"
 >
   <fm-cache-diff [disableSaveButton]="isSaveButtonDisabled" (disableSaveButtonChange)="onDisableSaveButtonChange($event)"></fm-cache-diff>
   <nz-alert
+    *ngIf="!isSaveButtonDisabled"
     nzBanner
     nzMessage="Once saved, the above changes will override your existing firestore data. This operation is not reversible!"
     nzCloseable

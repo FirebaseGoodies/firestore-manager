@@ -1,18 +1,25 @@
 <div nz-row nzGutter="16">
-  <div nz-col nzSpan="6">
+  <div nz-col nzSpan="6" [ngStyle]="{ 'max-height': '300px', overflow: 'auto' }">
     <nz-tree
       [nzData]="collectionNodes"
       nzShowLine
       [nzExpandedIcon]="expandedIconTpl"
+      [nzTreeTemplate]="treeTpl"
       (nzClick)="onCollectionNodeClick($event)"
     >
       <ng-template #expandedIconTpl let-node>
         <i *ngIf="!node.origin.isLeaf" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="ant-tree-switcher-line-icon"></i>
         <i *ngIf="node.origin.isLeaf" nz-icon nzType="file" class="ant-tree-switcher-line-icon"></i>
       </ng-template>
+      <ng-template #treeTpl let-node>
+        <span class="custom-node" [class.active]="node.isSelected">
+          <span *ngIf="!node.isLeaf">{{ node.title }}</span>
+          <span *ngIf="node.isLeaf" [ngClass]="{ 'new-node': isNewNode(node), 'removed-node': isRemovedNode(node) }">{{ node.title }}</span>
+        </span>
+      </ng-template>
     </nz-tree>
   </div>
-  <div nz-col nzSpan="18">
+  <div nz-col nzSpan="18" [ngStyle]="{ 'max-height': '300px', overflow: 'auto' }">
     <td-ngx-text-diff
       *ngIf="diff"
       [left]="diff.leftContent"
@@ -23,3 +30,7 @@
     ></td-ngx-text-diff>
   </div>
 </div>
+<nz-empty
+  *ngIf="!diff"
+  nzNotFoundContent="No unsaved changes"
+></nz-empty>

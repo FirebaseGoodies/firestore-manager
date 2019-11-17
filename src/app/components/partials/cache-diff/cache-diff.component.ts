@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FirestoreService } from 'src/app/services/firestore.service';
-import { NzFormatEmitEvent } from 'ng-zorro-antd/core';
+import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/core';
 import { Observable, Subject } from 'rxjs';
 
 export interface DiffContent {
@@ -21,6 +21,8 @@ export class CacheDiffComponent implements OnInit {
   diff: DiffContent;
   contentObservable: Subject<DiffContent> = new Subject<DiffContent>();
   contentObservable$: Observable<DiffContent> = this.contentObservable.asObservable();
+  newNodes: string[] = [];
+  removedNodes: string[] = []; // Not used
 
   constructor(private firestore: FirestoreService) { }
 
@@ -32,13 +34,19 @@ export class CacheDiffComponent implements OnInit {
       const newCache = JSON.stringify(cache[collectionName], null, 4);
       const oldCache = JSON.stringify(unchangedCache[collectionName], null, 4);
       if (newCache !== oldCache) {
-        const node: any = { title: collectionName, key: collectionName, children: [], leftDiff: oldCache, rightDiff: newCache };
+        const node: any = { title: collectionName, key: collectionName, expanded: true, children: [], leftDiff: oldCache, rightDiff: newCache };
         // Check documents diff
         Object.keys(cache[collectionName]).forEach((documentName: string) => {
           const newCache = JSON.stringify(cache[collectionName][documentName], null, 4);
           const oldCache = JSON.stringify(unchangedCache[collectionName][documentName], null, 4);
           if (newCache !== oldCache) {
-            node.children.push({ title: documentName, key: documentName, leftDiff: oldCache, rightDiff: newCache, isLeaf: true });
+            let leftDiff = oldCache;
+            let rightDiff = newCache;
+            if (!oldCache) {
+              this.newNodes.push(collectionName + '.' + documentName); // add collection name to avoid conflict with documents from other collections
+              leftDiff = rightDiff;
+            }
+            node.children.push({ title: documentName, key: documentName, leftDiff: leftDiff, rightDiff: rightDiff, isLeaf: true });
           }
         });
         // Add node
@@ -62,12 +70,21 @@ export class CacheDiffComponent implements OnInit {
   onCollectionNodeClick(event: Required<NzFormatEmitEvent>) {
     // console.log(event);
     const node: any = event.node;
+    node.isSelected = true;
+    node.isExpanded = !node.isExpanded;
     this.diff = {
       leftContent: node.origin.leftDiff,
       rightContent: node.origin.rightDiff
     };
     this.contentObservable.next(this.diff);
-    node.isExpanded = node.isSelected; //!node.isExpanded;
+  }
+
+  isNewNode(node: NzTreeNode): boolean {
+    return this.newNodes.includes(node.parentNode.key + '.' + node.key);
+  }
+
+  isRemovedNode(node: NzTreeNode): boolean {
+    return this.removedNodes.includes(node.parentNode.key + '.' + node.key);
   }
 
 }

@@ -17,7 +17,7 @@ export class FirestoreService {
       return this.unchangedCache;
     }
 
-    resetCache() {
+    clearCache() {
       this.cache = [];
       this.unchangedCache = [];
     }
@@ -65,6 +65,21 @@ export class FirestoreService {
       });
     }
 
+    addCollection(name: string, content: any): Promise<any> {
+      return this.db.collection(name).add(content);
+    }
+
+    deleteCollection(collectionName: string): boolean {
+      if (this.cache[collectionName]) {
+        delete this.cache[collectionName];
+        if (this.unchangedCache[collectionName]) {
+          delete this.unchangedCache[collectionName];
+        }
+        return true;
+      }
+      return false;
+    }
+
     getDocument(collectionName: string, documentName: string): Promise<any> {
       return new Promise((resolve, reject) => {
         if (this.cache[collectionName] && this.cache[collectionName][documentName]) {
@@ -100,18 +115,7 @@ export class FirestoreService {
       });
     }
 
-    deleteCollection(collectionName: string): boolean {
-      if (this.cache[collectionName]) {
-        delete this.cache[collectionName];
-        if (this.unchangedCache[collectionName]) {
-          delete this.unchangedCache[collectionName];
-        }
-        return true;
-      }
-      return false;
-    }
-
-    addCollection(name: string, content: any): Promise<any> {
-      return this.db.collection(name).add(content);
+    saveDocument(collectionName: string, documentName: string): Promise<any> {
+      return this.db.collection(collectionName).doc(documentName).set(this.cache[collectionName][documentName]);
     }
 }
