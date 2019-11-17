@@ -7,16 +7,25 @@ export class FirestoreService {
 
     db: AngularFirestore;
     cache: any[] = [];
+    private unchangedCache: any[] = [];
 
     constructor(afs: AngularFirestore) {
       this.db = afs;
     }
 
+    getUnchangedCache() {
+      return this.unchangedCache;
+    }
+
+    resetCache() {
+      this.cache = [];
+      this.unchangedCache = [];
+    }
+
     isCollection(name: string): Promise<boolean> {
       return new Promise((resolve, reject) => {
         const subscription = this.db.collection(name).get().subscribe((query) => {
-          // console.log(name);
-          // console.log(query.size);
+          // console.log(name, query.size);
           subscription.unsubscribe();
           resolve(!!query.size);
         }, (error) => {
@@ -49,6 +58,7 @@ export class FirestoreService {
             });
             // console.log(docs);
             this.cache[name] = docs;
+            this.unchangedCache[name] = {...docs}; // assign a copy
             resolve(docs);
           });
         }
@@ -57,7 +67,7 @@ export class FirestoreService {
 
     getDocument(collectionName: string, documentName: string): Promise<any> {
       return new Promise((resolve, reject) => {
-        if (this.cache[collectionName]) {
+        if (this.cache[collectionName] && this.cache[collectionName][documentName]) {
           // console.log(collectionName + ' > ' + documentName + ' found in cache');
           resolve(this.cache[collectionName][documentName]);
         } else {
@@ -65,6 +75,7 @@ export class FirestoreService {
             // console.log(doc);
             subscription.unsubscribe();
             this.cache[collectionName][documentName] = doc;
+            this.unchangedCache[collectionName][documentName] = {...doc}; // assign a copy
             resolve(doc);
           });
         }
@@ -75,6 +86,9 @@ export class FirestoreService {
       return new Promise((resolve, reject) => {
         if (this.cache[collectionName][documentName]) {
           delete this.cache[collectionName][documentName];
+          if (this.unchangedCache[collectionName][documentName]) {
+            delete this.unchangedCache[collectionName][documentName];
+          }
         }
         if (permanently) {
           this.db.collection(collectionName).doc(documentName).delete().then(() => {
@@ -89,6 +103,9 @@ export class FirestoreService {
     deleteCollection(collectionName: string): boolean {
       if (this.cache[collectionName]) {
         delete this.cache[collectionName];
+        if (this.unchangedCache[collectionName]) {
+          delete this.unchangedCache[collectionName];
+        }
         return true;
       }
       return false;

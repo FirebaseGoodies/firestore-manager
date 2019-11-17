@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { jsonValidator } from 'src/app/validators/json.validator';
 import { FirestoreService } from 'src/app/services/firestore.service';
@@ -6,6 +6,7 @@ import { StorageService } from 'src/app/services/storage.service';
 import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/core';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { CacheDiffComponent } from '../partials/cache-diff/cache-diff.component';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -28,6 +29,10 @@ export class ExplorerComponent implements OnInit {
   collectionNodesExpandedKeys: any[] = [];
   enableCollectionDeleteMode: boolean = false;
   permanentlyDeleteDocuments: boolean = false;
+  unsavedChanges: boolean = false;
+  isSaveModalVisible: boolean = false;
+  isSaveButtonLoading: boolean = false;
+  isSaveButtonDisabled: boolean = false;
   addCollectionForm: FormGroup;
   isAddCollectionButtonLoading: boolean = false;
   isDrawerVisible: boolean = false;
@@ -37,10 +42,17 @@ export class ExplorerComponent implements OnInit {
   collectionContentExample: string = `{\n\t"field": "value",\n\t...\n}`;
   editorOptions: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: true }) editor: JsonEditorComponent;
+  @ViewChild(CacheDiffComponent, { static: false }) cacheDiff: CacheDiffComponent;
   private selectedCollection: string = null;
   private selectedDocument: string = null;
 
-  constructor(private fb: FormBuilder, private firestore: FirestoreService, private storage: StorageService, private message: NzMessageService) { }
+  constructor(
+    private fb: FormBuilder,
+    private firestore: FirestoreService,
+    private storage: StorageService,
+    private message: NzMessageService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
     // Get data from storage
@@ -309,10 +321,23 @@ export class ExplorerComponent implements OnInit {
       // Save to cache
       if (this.selectedDocument === null) {
         this.firestore.cache[this.selectedCollection] = event;
+        this.unsavedChanges = true;
       } else {
         this.firestore.cache[this.selectedCollection][this.selectedDocument] = event;
+        this.unsavedChanges = true;
       }
     }
+  }
+
+  onDisableSaveButtonChange(value: boolean) {
+    this.isSaveButtonDisabled = value;
+    this.cdr.detectChanges();
+  }
+
+  saveChanges() {
+    this.isSaveButtonLoading = true;
+    console.log(this.cacheDiff.collectionNodes);
+    this.isSaveButtonLoading = false;
   }
 
 }

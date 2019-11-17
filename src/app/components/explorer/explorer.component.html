@@ -10,6 +10,23 @@
   <nz-layout>
     <nz-sider nzTheme="light" nzWidth="300px">
       <div *ngIf="!enableCollectionDeleteMode" [ngStyle]="{ 'margin-bottom': '10px' }">
+        <nz-alert
+          *ngIf="unsavedChanges"
+          nzBanner
+          [nzMessage]="unsavedChangesTpl"
+          [ngStyle]="{ 'margin': '-20px -20px 10px' }"
+        >
+          <ng-template #unsavedChangesTpl>
+            <div nz-row nzGutter="8">
+              <div nz-col nzSpan="16">
+                <span>You have some unsaved changes! <i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="Click on 'Check' to see all the modifications." nzType="question-circle" nzTheme="outline"></i></span>
+              </div>
+              <div nz-col nzSpan="8">
+                <button nz-button nzType="primary" (click)="isSaveModalVisible = true">Check</button>
+              </div>
+            </div>
+          </ng-template>
+        </nz-alert>
         <div nz-row nzGutter="8">
           <div nz-col nzSpan="21">
               <nz-select
@@ -90,7 +107,7 @@
         </div>
         <nz-alert nzBanner [nzMessage]="deleteWarningTpl" nzCloseable>
           <ng-template #deleteWarningTpl>
-            <span>Only documents can be permanently deleted, collections will be removed only from the browser cache! If you want to permanently delete a collection please use the <a [href]="databaseUrl" target="_blank">Firebase Console</a>.</span>
+            Only documents can be permanently deleted, collections will be removed only from the browser cache! If you want to permanently delete a collection please use the <a [href]="databaseUrl" target="_blank">Firebase Console</a>.
           </ng-template>
         </nz-alert>
       </div>
@@ -161,3 +178,22 @@
     </div>
   </form>
 </nz-drawer>
+<nz-modal
+  *ngIf="isSaveModalVisible"
+  [(nzVisible)]="isSaveModalVisible"
+  nzTitle="Unsaved Changes"
+  nzOkText="Save"
+  nzWidth="60%"
+  (nzOnCancel)="isSaveModalVisible = false"
+  (nzOnOk)="saveChanges()"
+  [nzOkLoading]="isSaveButtonLoading"
+  [nzOkDisabled]="isSaveButtonDisabled"
+>
+  <fm-cache-diff [disableSaveButton]="isSaveButtonDisabled" (disableSaveButtonChange)="onDisableSaveButtonChange($event)"></fm-cache-diff>
+  <nz-alert
+    nzBanner
+    nzMessage="Once saved, the above changes will override your existing firestore data. This operation is not reversible!"
+    nzCloseable
+    [ngStyle]="{ 'margin-top': '20px' }"
+  ></nz-alert>
+</nz-modal>

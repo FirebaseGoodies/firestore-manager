@@ -25,6 +25,7 @@
     "firebase": "^7.3.0",
     "jsoneditor": "^7.2.1",
     "ng-zorro-antd": "^8.5.0",
+    "ngx-text-diff": "^0.5.4",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"

@@ -21,7 +21,9 @@ import { AngularFireModule, FirebaseOptionsToken } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FirestoreService } from './services/firestore.service';
-import { NgJsonEditorModule } from 'ang-jsoneditor'
+import { NgJsonEditorModule } from 'ang-jsoneditor';
+import { NgxTextDiffModule } from 'ngx-text-diff';
+import { CacheDiffComponent } from './components/partials/cache-diff/cache-diff.component';
 
 export function initializeApp() {
   const config = StorageService.getTmp('firebase_config');
@@ -35,7 +37,8 @@ export function initializeApp() {
     OptionsComponent,
     BackgroundComponent,
     ManagerComponent,
-    ExplorerComponent
+    ExplorerComponent,
+    CacheDiffComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +50,8 @@ export function initializeApp() {
     ReactiveFormsModule,
     AngularFireModule,
     AngularFirestoreModule,
-    NgJsonEditorModule
+    NgJsonEditorModule,
+    NgxTextDiffModule
   ],
   providers: [
     Guard,
