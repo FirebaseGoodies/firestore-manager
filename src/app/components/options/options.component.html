@@ -1,1 +1,8 @@
-<p>options works!</p>
+<div [ngStyle]="{ padding: '10px' }">
+  <label [ngStyle]="{ 'margin-right': '10px' }">Default editor mode: </label>
+  <nz-radio-group nzButtonStyle="solid" [(ngModel)]="editorMode" (ngModelChange)="onEditorModeChange()">
+    <label nz-radio-button nzValue="tree"><span>Tree</span></label>
+    <label nz-radio-button nzValue="form"><span>Form</span></label>
+    <label nz-radio-button nzValue="code"><span>Code</span></label>
+  </nz-radio-group>
+</div>

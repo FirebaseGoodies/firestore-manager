@@ -64,9 +64,12 @@ export class ExplorerComponent implements OnInit {
     // Get data from storage
     this.databaseIndex = StorageService.getTmp('database_index');
     this.databaseUrl = StorageService.getTmp('firebase_config').databaseURL;
-    this.storage.get('databases').then((databases) => {
+    this.storage.getMany('databases', 'options').then(([databases, options]) => {
       if (databases && databases[this.databaseIndex].collections) {
         this.setCollectionNodes(databases[this.databaseIndex].collections);
+      }
+      if (options && options.editorMode) {
+        this.editor.setMode(options.editorMode);
       }
     });
     // Init add collection form
