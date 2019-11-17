@@ -19,6 +19,8 @@ export class FirestoreService {
           // console.log(query.size);
           subscription.unsubscribe();
           resolve(!!query.size);
+        }, (error) => {
+          reject(error);
         });
       });
     }

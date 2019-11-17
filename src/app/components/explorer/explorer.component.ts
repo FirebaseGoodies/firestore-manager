@@ -5,6 +5,7 @@ import { FirestoreService } from 'src/app/services/firestore.service';
 import { StorageService } from 'src/app/services/storage.service';
 import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/core';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -39,7 +40,7 @@ export class ExplorerComponent implements OnInit {
   private selectedCollection: string = null;
   private selectedDocument: string = null;
 
-  constructor(private fb: FormBuilder, private firestore: FirestoreService, private storage: StorageService) { }
+  constructor(private fb: FormBuilder, private firestore: FirestoreService, private storage: StorageService, private message: NzMessageService) { }
 
   ngOnInit() {
     // Get data from storage
@@ -74,6 +75,9 @@ export class ExplorerComponent implements OnInit {
         if (isCollection && this.collectionList.indexOf(value) === -1) {
           this.saveCollection(value);
         }
+      }).catch((error) => {
+        console.log(error.message);
+        this.message.create('error', error.message);
       });
       this.displayTips = false;
     } else {
@@ -145,6 +149,10 @@ export class ExplorerComponent implements OnInit {
           });
           this.isDrawerVisible = false;
         }
+      }).catch((error) => {
+        console.log(error.message);
+        this.message.create('error', error.message);
+      }).finally(() => {
         this.isAddCollectionButtonLoading = false;
       });
     }
