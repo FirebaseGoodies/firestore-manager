@@ -30,127 +30,130 @@
   </nz-header>
   <nz-layout>
     <nz-sider nzTheme="light" nzWidth="300px">
-      <div *ngIf="!enableCollectionDeleteMode" [ngStyle]="{ 'margin-bottom': '10px' }">
-        <nz-alert
-          *ngIf="unsavedChanges"
-          nzBanner
-          [nzMessage]="unsavedChangesTpl"
-          [ngStyle]="{ 'margin': '-20px -20px 10px' }"
-        >
-          <ng-template #unsavedChangesTpl>
-            <div nz-row nzGutter="8">
-              <div nz-col nzSpan="16">
-                <span>You have some unsaved changes! <i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="Click on 'Check' to see all the modifications." nzType="question-circle" nzTheme="outline"></i></span>
-              </div>
-              <div nz-col nzSpan="8">
-                <button nz-button nzType="primary" (click)="isSaveModalVisible = true">Check</button>
-              </div>
-            </div>
-          </ng-template>
-        </nz-alert>
-        <div nz-row nzGutter="8">
-          <div nz-col nzSpan="21">
-              <nz-select
-                nzShowSearch
-                nzServerSearch
-                nzAllowClear
-                nzPlaceHolder="Collection"
-                [nzSuffixIcon]="searchIcon"
-                nzNotFoundContent="No collection found"
-                [(ngModel)]="searchValue"
-                (nzOnSearch)="searchCollection($event)"
-                [ngStyle]="{ width: '100%' }"
-              >
-                <nz-option *ngFor="let c of collectionList" [nzLabel]="c" [nzValue]="c"> </nz-option>
-                <nz-option *ngIf="displayTips" nzDisabled nzCustomContent>
-                  Type at least 2 letters to Search
-                </nz-option>
-              </nz-select>
-              <ng-template #searchIcon>
-                <i nz-icon nzType="search"></i>
-              </ng-template>
-          </div>
-          <div nz-col nzSpan="3">
-            <button nz-button nzType="default" [ngStyle]="{ padding: '4px' }" nz-dropdown nzTrigger="click" [nzDropdownMenu]="collectionMenu">
-              <i nz-icon nzType="more" nzTheme="outline"></i>
-            </button>
-            <nz-dropdown-menu #collectionMenu="nzDropdownMenu">
-              <ul nz-menu>
-                <li nz-menu-item (click)="isDrawerVisible = true">Add Collection</li>
-                <!-- <li nz-menu-divider></li> -->
-                <li nz-menu-item (click)="onDeleteCollectionClick()">Delete</li>
-              </ul>
-            </nz-dropdown-menu>
-          </div>
-        </div>
-        <nz-alert
-          *ngIf="!collectionNodes.length"
-          nzBanner
-          nzType="info"
-          nzMessage="Welcome!"
-          nzDescription="Start by typing a collection name in the search box above."
-          [ngStyle]="{ 'margin-top': '10px' }"
-          nzCloseable
-        ></nz-alert>
-      </div>
-      <div *ngIf="enableCollectionDeleteMode" [ngStyle]="{ 'margin-bottom': '10px' }">
-        <div nz-row nzGutter="8" [ngStyle]="{ 'margin-bottom': '10px' }">
-          <div nz-col nzSpan="4">
-            <button
-              nz-button
-              nzType="dashed"
-              nzBlock
-              nz-tooltip
-              nzTooltipTitle="Select All"
-              nzTooltipPlacement="bottom"
-              [disabled]="!collectionNodes.length"
-              (click)="onSelectAllClick()"><i nz-icon nzType="check-square" nzTheme="outline"></i></button>
-          </div>
-          <div nz-col nzSpan="10">
-            <button nz-button nzType="default" nzBlock (click)="enableCollectionDeleteMode = false">Cancel</button>
-          </div>
-          <div nz-col nzSpan="10">
-            <button nz-button
-              nzType="danger"
-              nzBlock
-              nz-popconfirm
-              [nzPopconfirmTitle]="confirmDeleteTpl"
-              nzPopconfirmPlacement="bottom"
-              [disabled]="!collectionNodesCheckedKeys.length"
-              (nzOnConfirm)="onCollectionDeleteConfirm()">Delete</button>
-            <ng-template #confirmDeleteTpl>
-              <span><i nz-icon nzType="exclamation-circle" nzTheme="fill" style="color: #faad14; margin-right: 5px;"></i><strong>Confirm delete?</strong></span>
-              <div [ngStyle]="{ 'margin-top': '10px' }">
-                <label nz-checkbox [(ngModel)]="permanentlyDeleteDocuments">Permanently delete documents?</label>
+      <nz-spin nzTip="Reloading..." [nzSpinning]="isReloadingCollections">
+        <div *ngIf="!enableCollectionDeleteMode" [ngStyle]="{ 'margin-bottom': '10px' }">
+          <nz-alert
+            *ngIf="unsavedChanges"
+            nzBanner
+            [nzMessage]="unsavedChangesTpl"
+            [ngStyle]="{ 'margin': '-20px -20px 10px' }"
+          >
+            <ng-template #unsavedChangesTpl>
+              <div nz-row nzGutter="8">
+                <div nz-col nzSpan="16">
+                  <span>You have some unsaved changes! <i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="Click on 'Check' to see all the modifications." nzType="question-circle" nzTheme="outline"></i></span>
+                </div>
+                <div nz-col nzSpan="8">
+                  <button nz-button nzType="primary" (click)="isSaveModalVisible = true">Check</button>
+                </div>
               </div>
             </ng-template>
+          </nz-alert>
+          <div nz-row nzGutter="8">
+            <div nz-col nzSpan="21">
+                <nz-select
+                  nzShowSearch
+                  nzServerSearch
+                  nzAllowClear
+                  nzPlaceHolder="Collection"
+                  [nzSuffixIcon]="searchIcon"
+                  nzNotFoundContent="No collection found"
+                  [(ngModel)]="searchValue"
+                  (nzOnSearch)="searchCollection($event)"
+                  [ngStyle]="{ width: '100%' }"
+                >
+                  <nz-option *ngFor="let c of collectionList" [nzLabel]="c" [nzValue]="c"> </nz-option>
+                  <nz-option *ngIf="displayTips" nzDisabled nzCustomContent>
+                    Type at least 2 letters to Search
+                  </nz-option>
+                </nz-select>
+                <ng-template #searchIcon>
+                  <i nz-icon nzType="search"></i>
+                </ng-template>
+            </div>
+            <div nz-col nzSpan="3">
+              <button nz-button nzType="default" [ngStyle]="{ padding: '4px' }" nz-dropdown nzTrigger="click" [nzDropdownMenu]="collectionMenu">
+                <i nz-icon nzType="more" nzTheme="outline"></i>
+              </button>
+              <nz-dropdown-menu #collectionMenu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item (click)="isDrawerVisible = true">Add Collection</li>
+                  <li nz-menu-item (click)="onDeleteCollectionClick()">Delete</li>
+                  <li nz-menu-divider></li>
+                  <li nz-menu-item (click)="onReloadCollectionClick()">Reload</li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
           </div>
+          <nz-alert
+            *ngIf="!collectionNodes.length"
+            nzBanner
+            nzType="info"
+            nzMessage="Welcome!"
+            nzDescription="Start by typing a collection name in the search box above."
+            [ngStyle]="{ 'margin-top': '10px' }"
+            nzCloseable
+          ></nz-alert>
         </div>
-        <nz-alert nzBanner [nzMessage]="deleteWarningTpl" nzCloseable>
-          <ng-template #deleteWarningTpl>
-            Only documents can be permanently deleted, collections will be removed only from the browser cache! If you want to permanently delete a collection please use the <a [href]="databaseUrl" target="_blank">Firebase Console</a>.
+        <div *ngIf="enableCollectionDeleteMode" [ngStyle]="{ 'margin-bottom': '10px' }">
+          <div nz-row nzGutter="8" [ngStyle]="{ 'margin-bottom': '10px' }">
+            <div nz-col nzSpan="4">
+              <button
+                nz-button
+                nzType="dashed"
+                nzBlock
+                nz-tooltip
+                nzTooltipTitle="Select All"
+                nzTooltipPlacement="bottom"
+                [disabled]="!collectionNodes.length"
+                (click)="onSelectAllClick()"><i nz-icon nzType="check-square" nzTheme="outline"></i></button>
+            </div>
+            <div nz-col nzSpan="10">
+              <button nz-button nzType="default" nzBlock (click)="enableCollectionDeleteMode = false">Cancel</button>
+            </div>
+            <div nz-col nzSpan="10">
+              <button nz-button
+                nzType="danger"
+                nzBlock
+                nz-popconfirm
+                [nzPopconfirmTitle]="confirmDeleteTpl"
+                nzPopconfirmPlacement="bottom"
+                [disabled]="!collectionNodesCheckedKeys.length"
+                (nzOnConfirm)="onCollectionDeleteConfirm()">Delete</button>
+              <ng-template #confirmDeleteTpl>
+                <span><i nz-icon nzType="exclamation-circle" nzTheme="fill" style="color: #faad14; margin-right: 5px;"></i><strong>Confirm delete?</strong></span>
+                <div [ngStyle]="{ 'margin-top': '10px' }">
+                  <label nz-checkbox [(ngModel)]="permanentlyDeleteDocuments">Permanently delete documents?</label>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+          <nz-alert nzBanner [nzMessage]="deleteWarningTpl" nzCloseable>
+            <ng-template #deleteWarningTpl>
+              Only documents can be permanently deleted, collections will be removed only from the browser cache! If you want to permanently delete a collection please use the <a [href]="databaseUrl" target="_blank">Firebase Console</a>.
+            </ng-template>
+          </nz-alert>
+        </div>
+        <nz-tree
+          [nzData]="collectionNodes"
+          nzAsyncData
+          nzShowLine
+          [nzSearchValue]="searchValue"
+          [nzCheckable]="enableCollectionDeleteMode"
+          [nzCheckedKeys]="collectionNodesCheckedKeys"
+          [nzSelectedKeys]="collectionNodesSelectedKeys"
+          [nzExpandedKeys]="collectionNodesExpandedKeys"
+          [nzExpandedIcon]="expandedIconTpl"
+          (nzClick)="onCollectionNodeClick($event)"
+          (nzCheckBoxChange)="onCollectionNodeCheck($event)"
+          (nzExpandChange)="onCollectionNodeExpand($event)"
+        >
+          <ng-template #expandedIconTpl let-node>
+            <i *ngIf="!node.origin.isLeaf" nz-icon [nzType]="node.isLoading ? 'loading' : node.isExpanded ? 'folder-open' : 'folder'" class="ant-tree-switcher-line-icon"></i>
+            <i *ngIf="node.origin.isLeaf" nz-icon nzType="file" class="ant-tree-switcher-line-icon"></i>
           </ng-template>
-        </nz-alert>
-      </div>
-      <nz-tree
-        [nzData]="collectionNodes"
-        nzAsyncData
-        nzShowLine
-        [nzSearchValue]="searchValue"
-        [nzCheckable]="enableCollectionDeleteMode"
-        [nzCheckedKeys]="collectionNodesCheckedKeys"
-        [nzSelectedKeys]="collectionNodesSelectedKeys"
-        [nzExpandedKeys]="collectionNodesExpandedKeys"
-        [nzExpandedIcon]="expandedIconTpl"
-        (nzClick)="onCollectionNodeClick($event)"
-        (nzCheckBoxChange)="onCollectionNodeCheck($event)"
-        (nzExpandChange)="onCollectionNodeExpand($event)"
-      >
-        <ng-template #expandedIconTpl let-node>
-          <i *ngIf="!node.origin.isLeaf" nz-icon [nzType]="node.isLoading ? 'loading' : node.isExpanded ? 'folder-open' : 'folder'" class="ant-tree-switcher-line-icon"></i>
-          <i *ngIf="node.origin.isLeaf" nz-icon nzType="file" class="ant-tree-switcher-line-icon"></i>
-        </ng-template>
-      </nz-tree>
+        </nz-tree>
+      </nz-spin>
     </nz-sider>
     <nz-layout class="right-layout">
       <nz-content>

@@ -6,8 +6,8 @@ import { map } from 'rxjs/operators';
 export class FirestoreService {
 
     db: AngularFirestore;
-    cache: any[] = [];
-    private unchangedCache: any[] = [];
+    cache: any = {};
+    private unchangedCache: any = {};
 
     constructor(afs: AngularFirestore) {
       this.db = afs;
@@ -18,8 +18,8 @@ export class FirestoreService {
     }
 
     clearCache() {
-      this.cache = [];
-      this.unchangedCache = [];
+      this.cache = {};
+      this.unchangedCache = {};
     }
 
     isCollection(name: string): Promise<boolean> {

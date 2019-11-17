@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { NotificationService } from 'src/app/services/notification.service';
 import { ComponentCanDeactivate } from 'src/app/services/can-deactivate-guard.service';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -38,6 +39,7 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
   isSaveModalVisible: boolean = false;
   isSaveButtonLoading: boolean = false;
   isSaveButtonDisabled: boolean = false;
+  isReloadingCollections: boolean = false;
   addCollectionForm: FormGroup;
   isAddCollectionButtonLoading: boolean = false;
   isDrawerVisible: boolean = false;
@@ -65,7 +67,7 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
   // @HostListener allows us to also guard against browser refresh, close, etc.
   @HostListener('window:beforeunload')
   canDeactivate(): Observable<boolean> | boolean {
-    return !this.unsavedChanges;
+    return !environment.production || !this.unsavedChanges;
   }
 
   ngOnInit() {
@@ -300,7 +302,7 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
     return new Promise((resolve, reject) => {
       node.isExpanded = true;
       // Check if node doesn't have childrens
-      if (node.getChildren().length === 0) {
+      if (!node.isLeaf && node.getChildren().length === 0) {
         node.isLoading = true;
         // Add node childrens
         this.firestore.getCollection(node.key).then((documents) => {
@@ -365,6 +367,7 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
     Promise.all(promises).then(() => {
       // Clear cache
       this.firestore.clearCache();
+      this.selectedCollection = null;
       this.updateEditor({});
       this.collectionNodesExpandedKeys = [];
       this.collectionNodesSelectedKeys = [];
@@ -386,6 +389,42 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
       nzTitle: 'Confirm go back to the main page?',
       nzContent: 'Any unsaved changes will be lost.',
       nzOnOk: () => this.router.navigate(['/manager'])
+    });
+  }
+
+  onReloadCollectionClick() {
+    // console.log(this.firestore.cache);
+    const cacheBackup = {...this.firestore.cache}; // get/assign a copy
+    let promises: Promise<any>[] = [];
+    this.isReloadingCollections = true;
+    // Clear cache
+    this.firestore.clearCache();
+    this.selectedCollection = null;
+    this.updateEditor({});
+    this.collectionNodesSelectedKeys = [];
+    // Reload collections
+    this.collectionNodes.forEach(node => {
+      promises.push(this.reloadCollection(node));
+    });
+    Promise.all(promises).then(() => {
+      // console.log('All collections reloaded');
+      this.collectionNodes = [...this.collectionNodes]; // refresh
+      // Restore cache
+      this.firestore.cache = cacheBackup;
+      this.isReloadingCollections = false;
+    });
+  }
+
+  private reloadCollection(node: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.firestore.getCollection(node.key).then((documents) => {
+        // console.log('Reload collection: ' + node.key);
+        node.children = [];
+        Object.keys(documents).forEach((documentId: string) => {
+          node.children.push({ title: documentId, key: documentId, isLeaf: true });
+        });
+        resolve();
+      });
     });
   }
 
