@@ -52,18 +52,20 @@
           <div nz-row nzGutter="8">
             <div nz-col nzSpan="21">
                 <nz-select
+                  #collectionSearch
                   nzShowSearch
-                  nzServerSearch
                   nzAllowClear
+                  [nzLoading]="isSearchCollectionLoading"
                   nzPlaceHolder="Collection"
                   [nzSuffixIcon]="searchIcon"
+                  [nzFilterOption]="searchCollectionFilter"
                   nzNotFoundContent="No collection found"
                   [(ngModel)]="searchValue"
                   (nzOnSearch)="searchCollection($event)"
                   [ngStyle]="{ width: '100%' }"
                 >
                   <nz-option *ngFor="let c of collectionList" [nzLabel]="c" [nzValue]="c"> </nz-option>
-                  <nz-option *ngIf="displayTips" nzDisabled nzCustomContent>
+                  <nz-option [nzHide]="!displayTips" nzDisabled nzCustomContent>
                     Type at least 2 letters to Search
                   </nz-option>
                 </nz-select>

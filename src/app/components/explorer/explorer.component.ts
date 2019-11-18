@@ -13,6 +13,7 @@ import { NotificationService } from 'src/app/services/notification.service';
 import { ComponentCanDeactivate } from 'src/app/services/can-deactivate-guard.service';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { NzSelectComponent } from 'ng-zorro-antd/select';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -40,6 +41,8 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
   isSaveButtonLoading: boolean = false;
   isSaveButtonDisabled: boolean = false;
   isReloadingCollections: boolean = false;
+  isSearchCollectionLoading: boolean = false;
+  searchCollectionFilter: Function = () => true;
   addCollectionForm: FormGroup;
   isAddCollectionButtonLoading: boolean = false;
   isDrawerVisible: boolean = false;
@@ -48,7 +51,8 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
   displayTips: boolean = true;
   collectionContentExample: string = `{\n\t"field": "value",\n\t...\n}`;
   editorOptions: JsonEditorOptions;
-  @ViewChild(JsonEditorComponent, { static: true }) editor: JsonEditorComponent;
+  @ViewChild('collectionSearch', { static: false }) collectionSearch: NzSelectComponent;
+  @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
   @ViewChild(CacheDiffComponent, { static: false }) cacheDiff: CacheDiffComponent;
   private selectedCollection: string = null;
   private selectedDocument: string = null;
@@ -101,13 +105,21 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
   searchCollection(value: string): void {
     if (value && value.length > 1) {
       // Check if collection exists
+      this.isSearchCollectionLoading = true;
       this.firestore.isCollection(value).then((isCollection: boolean) => {
         if (isCollection && this.collectionList.indexOf(value) === -1) {
-          this.saveCollection(value);
+          this.saveCollection(value).then((saved: boolean) => {
+            if (saved) {
+              this.collectionSearch.nzOpen = false;
+              this.collectionSearch.blur();
+            }
+          });
         }
       }).catch((error) => {
         console.log(error.message);
         this.message.create('error', error.message);
+      }).finally(() => {
+        this.isSearchCollectionLoading = false;
       });
       this.displayTips = false;
     } else {
@@ -115,23 +127,27 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
     }
   }
 
-  private saveCollection(name: string) {
-    // Add to list
-    this.collectionList.push(name);
-    // Save to storage
-    this.storage.get('databases').then((databases) => {
-      if (databases && (!databases[this.databaseIndex].collections || databases[this.databaseIndex].collections.indexOf(name) === -1)) {
-        databases[this.databaseIndex].collections = databases[this.databaseIndex].collections || [];
-        databases[this.databaseIndex].collections.push(name);
-        this.storage.save('databases', databases);
-        // Add to nodes
-        const node: any = { title: name, key: name };
-        this.addNode(node).then(() => {
-          node.level = 0;
-          this.collectionNodesSelectedKeys = [node.key];
-          this.selectNode(node);
-        });
-      }
+  private saveCollection(name: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      // Add to list
+      this.collectionList.push(name);
+      // Save to storage
+      this.storage.get('databases').then((databases) => {
+        if (databases && (!databases[this.databaseIndex].collections || databases[this.databaseIndex].collections.indexOf(name) === -1)) {
+          databases[this.databaseIndex].collections = databases[this.databaseIndex].collections || [];
+          databases[this.databaseIndex].collections.push(name);
+          this.storage.save('databases', databases);
+          // Add to nodes
+          const node: any = { title: name, key: name };
+          this.addNode(node).then(() => {
+            node.level = 0;
+            this.collectionNodesSelectedKeys = [node.key];
+            this.selectNode(node);
+          });
+          resolve(true);
+        }
+        resolve(false);
+      });
     });
   }
 
