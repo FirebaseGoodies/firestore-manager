@@ -20,15 +20,26 @@
         </ng-template>
       </nz-tree>
     </div>
-    <div nz-col nzSpan="18" [ngStyle]="{ 'max-height': '300px', overflow: 'auto' }">
-      <td-ngx-text-diff
-        *ngIf="diff"
-        [left]="diff.leftContent"
-        [right]="diff.rightContent"
-        [diffContent]="contentObservable$"
-        synchronizeScrolling="true"
-        format="LineByLine"
-      ></td-ngx-text-diff>
+    <div
+      *ngIf="diff"
+      nz-col nzSpan="18"
+      [ngStyle]="{ 'max-height': '300px', overflow: 'auto' }"
+    >
+      <div nz-row [ngStyle]="{ 'margin-bottom': '15px' }">
+        <div nz-col nzSpan="8">
+          <nz-radio-group [(ngModel)]="diffStyle" nzSize="small" (ngModelChange)="reloadDiff()">
+              <label nz-radio-button nzValue="word">Words diff</label>
+            <label nz-radio-button nzValue="char">Chars diff</label>
+          </nz-radio-group>
+        </div>
+        <div nz-col nzSpan="8" nzOffset="8">
+          <nz-radio-group [(ngModel)]="outputFormat" nzSize="small" (ngModelChange)="reloadDiff()" [ngStyle]="{ 'float': 'right' }">
+            <label nz-radio-button nzValue="side-by-side">Side by Side</label>
+            <label nz-radio-button nzValue="line-by-line">Line by Line</label>
+          </nz-radio-group>
+        </div> 
+      </div>
+      <div [innerHtml]="diff"></div>
     </div>
   </div>
   <nz-empty

@@ -213,7 +213,7 @@
   [nzOkLoading]="isSaveButtonLoading"
   [nzOkDisabled]="isSaveButtonDisabled"
 >
-  <fm-cache-diff [disableSaveButton]="isSaveButtonDisabled" (disableSaveButtonChange)="onDisableSaveButtonChange($event)"></fm-cache-diff>
+  <fm-cache-diff [enableSaveButton]="isSaveButtonDisabled" (enableSaveButtonChange)="onSaveButtonStatusChange($event)"></fm-cache-diff>
   <nz-alert
     *ngIf="!isSaveButtonDisabled"
     nzBanner

@@ -1,12 +1,8 @@
 import { Component, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/core';
-import { Observable, Subject } from 'rxjs';
-
-export interface DiffContent {
-  leftContent: string;
-  rightContent: string;
-}
+import { diff_match_patch } from 'diff-match-patch';
+import { Diff2Html } from 'diff2html';
 
 @Component({
   selector: 'fm-cache-diff',
@@ -15,15 +11,16 @@ export interface DiffContent {
 })
 export class CacheDiffComponent implements AfterViewInit {
 
-  @Input() disableSaveButton: boolean = false;
-  @Output() disableSaveButtonChange:EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Input() enableSaveButton: boolean = false;
+  @Output() enableSaveButtonChange:EventEmitter<boolean> = new EventEmitter<boolean>();
   collectionNodes: any[] = [];
-  diff: DiffContent;
-  contentObservable: Subject<DiffContent> = new Subject<DiffContent>();
-  contentObservable$: Observable<DiffContent> = this.contentObservable.asObservable();
+  diff: string = null;
+  diffStyle: 'word' | 'char' = 'word';
+  outputFormat: 'side-by-side' | 'line-by-line' = 'line-by-line';
   newNodes: string[] = [];
   removedNodes: string[] = []; // Not used
   isLoading: boolean = true;
+  private activeNode: NzTreeNode | any = null;
 
   constructor(private firestore: FirestoreService) { }
 
@@ -31,17 +28,15 @@ export class CacheDiffComponent implements AfterViewInit {
     this.getCacheDiff().then(() => {
       // Select first node
       if (this.collectionNodes.length) {
-        this.diff = {
-          leftContent: this.collectionNodes[0].leftDiff,
-          rightContent: this.collectionNodes[0].rightDiff
-        };
-        this.collectionNodes[0].selected = true;
+        this.activeNode = this.collectionNodes[0];
+        this.activeNode.selected = true;
+        this.diff = this.getTextDiff(this.activeNode.oldContent, this.activeNode.newContent, this.activeNode.title);
         this.collectionNodes = [...this.collectionNodes]; // refresh
-        this.disableSaveButton = false;
+        this.enableSaveButton = false;
       } else {
-        this.disableSaveButton = true;
+        this.enableSaveButton = true;
       }
-      this.disableSaveButtonChange.emit(this.disableSaveButton);
+      this.enableSaveButtonChange.emit(this.enableSaveButton);
       this.isLoading = false;
     });
   }
@@ -56,19 +51,19 @@ export class CacheDiffComponent implements AfterViewInit {
           const newCache = JSON.stringify(cache[collectionName], null, 4);
           const oldCache = JSON.stringify(unchangedCache[collectionName], null, 4);
           if (newCache !== oldCache) {
-            const node: any = { title: collectionName, key: collectionName, expanded: true, children: [], leftDiff: oldCache, rightDiff: newCache };
+            const node: any = { title: collectionName, key: collectionName, expanded: true, children: [], oldContent: oldCache, newContent: newCache };
             // Check documents diff
             Object.keys(cache[collectionName]).forEach((documentName: string) => {
               const newCache = JSON.stringify(cache[collectionName][documentName], null, 4);
               const oldCache = JSON.stringify(unchangedCache[collectionName][documentName], null, 4);
               if (newCache !== oldCache) {
-                let leftDiff = oldCache;
-                let rightDiff = newCache;
+                let oldContent = oldCache;
+                let newContent = newCache;
                 if (!oldCache) {
                   this.newNodes.push(collectionName + '.' + documentName); // add collection name to avoid conflict with documents from other collections
-                  leftDiff = rightDiff;
+                  oldContent = '';//newContent;
                 }
-                node.children.push({ title: documentName, key: documentName, leftDiff: leftDiff, rightDiff: rightDiff, isLeaf: true });
+                node.children.push({ title: documentName, key: documentName, oldContent: oldContent, newContent: newContent, isLeaf: true });
               }
             });
             // Add node
@@ -80,16 +75,37 @@ export class CacheDiffComponent implements AfterViewInit {
     });
   }
 
+  private getTextDiff(text1: string, text2: string, filename: string = 'compare') {
+    const dmp = new diff_match_patch();
+    const chars = dmp.diff_linesToChars_(text1, text2);
+    const lineText1 = chars.chars1;
+    const lineText2 = chars.chars2;
+    const lineArray = chars.lineArray;
+    const diffs = dmp.diff_main(lineText1, lineText2, false);
+    dmp.diff_charsToLines_(diffs, lineArray);
+    // console.info(diffs);
+    let patchMake = dmp.patch_make(text1, diffs);
+    // console.info(patchMake)
+    let patchToText = dmp.patch_toText(patchMake);
+
+    let strInput = "--- " + filename + "\n+++ " + filename + "\n" + patchToText;
+    strInput = decodeURIComponent(strInput);
+
+    const htmlDiff = Diff2Html.getPrettyHtml(strInput, {inputFormat: 'diff', matching: 'lines', outputFormat: this.outputFormat, diffStyle: this.diffStyle});
+    return htmlDiff;
+  }
+
+  reloadDiff() {
+    this.diff = this.getTextDiff(this.activeNode.oldContent, this.activeNode.newContent, this.activeNode.title);
+  }
+
   onCollectionNodeClick(event: Required<NzFormatEmitEvent>) {
     // console.log(event);
     const node: any = event.node;
     node.isSelected = true;
     node.isExpanded = true; //!node.isExpanded;
-    this.diff = {
-      leftContent: node.origin.leftDiff,
-      rightContent: node.origin.rightDiff
-    };
-    this.contentObservable.next(this.diff);
+    this.activeNode = node.origin;
+    this.diff = this.getTextDiff(node.origin.oldContent, node.origin.newContent, node.title);
   }
 
   isNewNode(node: NzTreeNode): boolean {

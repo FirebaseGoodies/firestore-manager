@@ -352,7 +352,7 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
     this.isSaveModalVisible = true
   }
 
-  onDisableSaveButtonChange(value: boolean) {
+  onSaveButtonStatusChange(value: boolean) {
     this.isSaveButtonDisabled = value;
     this.cdr.detectChanges();
   }
