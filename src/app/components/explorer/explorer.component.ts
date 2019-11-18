@@ -141,6 +141,7 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
           const node: any = { title: name, key: name };
           this.addNode(node).then(() => {
             node.level = 0;
+            this.collectionNodesExpandedKeys = [node.key];
             this.collectionNodesSelectedKeys = [node.key];
             this.selectNode(node);
           });
