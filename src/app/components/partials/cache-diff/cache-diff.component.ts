@@ -15,12 +15,12 @@ export class CacheDiffComponent implements AfterViewInit {
   @Output() enableSaveButtonChange:EventEmitter<boolean> = new EventEmitter<boolean>();
   collectionNodes: any[] = [];
   diff: string = null;
+  diffOutput: string = null;
   diffStyle: 'word' | 'char' = 'word';
   outputFormat: 'side-by-side' | 'line-by-line' = 'line-by-line';
   newNodes: string[] = [];
   removedNodes: string[] = []; // Not used
   isLoading: boolean = true;
-  private activeNode: NzTreeNode | any = null;
 
   constructor(private firestore: FirestoreService) { }
 
@@ -28,9 +28,9 @@ export class CacheDiffComponent implements AfterViewInit {
     this.getCacheDiff().then(() => {
       // Select first node
       if (this.collectionNodes.length) {
-        this.activeNode = this.collectionNodes[0];
-        this.activeNode.selected = true;
-        this.diff = this.getTextDiff(this.activeNode.oldContent, this.activeNode.newContent, this.activeNode.title);
+        const node = this.collectionNodes[0];
+        node.selected = true;
+        this.diffOutput = this.getDiffOutput(node.oldContent, node.newContent, node.title);
         this.collectionNodes = [...this.collectionNodes]; // refresh
         this.enableSaveButton = false;
       } else {
@@ -75,7 +75,7 @@ export class CacheDiffComponent implements AfterViewInit {
     });
   }
 
-  private getTextDiff(text1: string, text2: string, filename: string = 'compare') {
+  private getDiffOutput(text1: string, text2: string, filename: string = 'compare') {
     // Get diff
     const dmp = new diff_match_patch();
     const chars = dmp.diff_linesToChars_(text1, text2);
@@ -101,17 +101,20 @@ export class CacheDiffComponent implements AfterViewInit {
     const diff = lines.join("\n");
     // console.info(diff);
 
-    let strInput = "--- " + filename + "\n+++ " + filename + "\n" + diff;
-    strInput = decodeURIComponent(strInput);
-    // console.info(strInput);
+    const strInput = "--- " + filename + "\n+++ " + filename + "\n" + diff;
+    this.diff = decodeURIComponent(strInput); // save diff to use it on reload
+    // console.info(this.diff);
 
     // Return diff in HTML format
-    const htmlDiff = Diff2Html.getPrettyHtml(strInput, {inputFormat: 'diff', matching: 'lines', outputFormat: this.outputFormat, diffStyle: this.diffStyle});
-    return htmlDiff;
+    return this.diffToHTML(this.diff);
+  }
+
+  private diffToHTML(diff: string) {
+    return Diff2Html.getPrettyHtml(diff, {inputFormat: 'diff', matching: 'lines', outputFormat: this.outputFormat, diffStyle: this.diffStyle});
   }
 
   reloadDiff() {
-    this.diff = this.getTextDiff(this.activeNode.oldContent, this.activeNode.newContent, this.activeNode.title);
+    this.diffOutput = this.diffToHTML(this.diff);
   }
 
   onCollectionNodeClick(event: Required<NzFormatEmitEvent>) {
@@ -119,8 +122,7 @@ export class CacheDiffComponent implements AfterViewInit {
     const node: any = event.node;
     node.isSelected = true;
     node.isExpanded = true; //!node.isExpanded;
-    this.activeNode = node.origin;
-    this.diff = this.getTextDiff(node.origin.oldContent, node.origin.newContent, node.title);
+    this.diffOutput = this.getDiffOutput(node.origin.oldContent, node.origin.newContent, node.title);
   }
 
   isNewNode(node: NzTreeNode): boolean {
