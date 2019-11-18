@@ -58,16 +58,12 @@
                   [nzLoading]="isSearchCollectionLoading"
                   nzPlaceHolder="Collection"
                   [nzSuffixIcon]="searchIcon"
-                  [nzFilterOption]="searchCollectionFilter"
                   nzNotFoundContent="No collection found"
                   [(ngModel)]="searchValue"
                   (nzOnSearch)="searchCollection($event)"
                   [ngStyle]="{ width: '100%' }"
                 >
                   <nz-option *ngFor="let c of collectionList" [nzLabel]="c" [nzValue]="c"> </nz-option>
-                  <nz-option [nzHide]="!displayTips" nzDisabled nzCustomContent>
-                    Type at least 2 letters to Search
-                  </nz-option>
                 </nz-select>
                 <ng-template #searchIcon>
                   <i nz-icon nzType="search"></i>

@@ -42,13 +42,11 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
   isSaveButtonDisabled: boolean = false;
   isReloadingCollections: boolean = false;
   isSearchCollectionLoading: boolean = false;
-  searchCollectionFilter: Function = () => true;
   addCollectionForm: FormGroup;
   isAddCollectionButtonLoading: boolean = false;
   isDrawerVisible: boolean = false;
   searchValue: string = null;
   collectionList: string[] = [];
-  displayTips: boolean = true;
   collectionContentExample: string = `{\n\t"field": "value",\n\t...\n}`;
   editorOptions: JsonEditorOptions;
   @ViewChild('collectionSearch', { static: false }) collectionSearch: NzSelectComponent;
@@ -80,7 +78,9 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
     this.databaseUrl = StorageService.getTmp('firebase_config').databaseURL;
     this.storage.getMany('databases', 'options').then(([databases, options]) => {
       if (databases && databases[this.databaseIndex].collections) {
-        this.setCollectionNodes(databases[this.databaseIndex].collections);
+        const collections = databases[this.databaseIndex].collections;
+        this.collectionList = collections;
+        this.setCollectionNodes(collections);
       }
       const mode = options && options.editorMode ? options.editorMode : 'code';
       this.editor.setMode(mode);
@@ -103,7 +103,7 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
   }
 
   searchCollection(value: string): void {
-    if (value && value.length > 1) {
+    if (value && value.length) {
       // Check if collection exists
       this.isSearchCollectionLoading = true;
       this.firestore.isCollection(value).then((isCollection: boolean) => {
@@ -121,9 +121,6 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
       }).finally(() => {
         this.isSearchCollectionLoading = false;
       });
-      this.displayTips = false;
-    } else {
-      this.displayTips = true;
     }
   }
 
