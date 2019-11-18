@@ -41,10 +41,10 @@
             <ng-template #unsavedChangesTpl>
               <div nz-row nzGutter="8">
                 <div nz-col nzSpan="16">
-                  <span>You have some unsaved changes! <i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="Click on 'Check' to see all the modifications." nzType="question-circle" nzTheme="outline"></i></span>
+                  <span>You have some unsaved changes! <i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="Click on 'View' to see all the modifications." nzType="question-circle" nzTheme="outline"></i></span>
                 </div>
                 <div nz-col nzSpan="8">
-                  <button nz-button nzType="primary" (click)="onCheckChangesClick()">Check</button>
+                  <button nz-button nzType="primary" (click)="onViewUnsavedChangesClick()" [ngStyle]="{ float: 'right' }">View</button>
                 </div>
               </div>
             </ng-template>
