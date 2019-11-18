@@ -76,6 +76,7 @@ export class CacheDiffComponent implements AfterViewInit {
   }
 
   private getTextDiff(text1: string, text2: string, filename: string = 'compare') {
+    // Get diff
     const dmp = new diff_match_patch();
     const chars = dmp.diff_linesToChars_(text1, text2);
     const lineText1 = chars.chars1;
@@ -83,14 +84,28 @@ export class CacheDiffComponent implements AfterViewInit {
     const lineArray = chars.lineArray;
     const diffs = dmp.diff_main(lineText1, lineText2, false);
     dmp.diff_charsToLines_(diffs, lineArray);
-    // console.info(diffs);
-    let patchMake = dmp.patch_make(text1, diffs);
-    // console.info(patchMake)
-    let patchToText = dmp.patch_toText(patchMake);
+    const patchMake = dmp.patch_make(text1, diffs);
+    const patchToText = dmp.patch_toText(patchMake);
+    // console.info(patchToText);
 
-    let strInput = "--- " + filename + "\n+++ " + filename + "\n" + patchToText;
+    // Make it look more like a unified diff style
+    // ToDo: find a non tricky way to do that
+    let lines = patchToText.split("\n");
+    lines.forEach((line: string, index: number) => {
+      if (line.startsWith('-')) {
+        lines[index] = line.replace(/%0A(.)/g, "%0A-$1");
+      } else if (line.startsWith('+')) {
+        lines[index] = line.replace(/%0A(.)/g, "%0A+$1");
+      }
+    });
+    const diff = lines.join("\n");
+    // console.info(diff);
+
+    let strInput = "--- " + filename + "\n+++ " + filename + "\n" + diff;
     strInput = decodeURIComponent(strInput);
+    // console.info(strInput);
 
+    // Return diff in HTML format
     const htmlDiff = Diff2Html.getPrettyHtml(strInput, {inputFormat: 'diff', matching: 'lines', outputFormat: this.outputFormat, diffStyle: this.diffStyle});
     return htmlDiff;
   }
