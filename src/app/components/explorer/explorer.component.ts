@@ -78,9 +78,8 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
       if (databases && databases[this.databaseIndex].collections) {
         this.setCollectionNodes(databases[this.databaseIndex].collections);
       }
-      if (options && options.editorMode) {
-        this.editor.setMode(options.editorMode);
-      }
+      const mode = options && options.editorMode ? options.editorMode : 'code';
+      this.editor.setMode(mode);
     });
     // Init add collection form
     this.addCollectionForm = this.fb.group({
