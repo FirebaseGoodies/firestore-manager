@@ -7,14 +7,14 @@
   </nz-radio-group>
 </div>
 <div [ngStyle]="{ padding: '10px' }">
-  <label [ngStyle]="{ 'margin-right': '10px' }">Default Diff style: </label>
+  <label [ngStyle]="{ 'margin-right': '10px' }">Default diff style: </label>
   <nz-radio-group nzButtonStyle="solid" [(ngModel)]="options.diffStyle" (ngModelChange)="saveOptions()">
     <label nz-radio-button nzValue="word"><span>Word diff</span></label>
     <label nz-radio-button nzValue="char"><span>Char diff</span></label>
   </nz-radio-group>
 </div>
 <div [ngStyle]="{ padding: '10px' }">
-  <label [ngStyle]="{ 'margin-right': '10px' }">Default Diff output format: </label>
+  <label [ngStyle]="{ 'margin-right': '10px' }">Default diff output format: </label>
   <nz-radio-group nzButtonStyle="solid" [(ngModel)]="options.diffOutputFormat" (ngModelChange)="saveOptions()">
     <label nz-radio-button nzValue="side-by-side"><span>Side by Side</span></label>
     <label nz-radio-button nzValue="line-by-line"><span>Line by Line</span></label>

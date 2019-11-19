@@ -21,9 +21,19 @@
         *ngIf="!browser"
         class="toolbar-icon"
         nz-tooltip
+        nzTooltipTitle="Settings"
+        nzTooltipPlacement="left"
+        (click)="isSettingsDrawerVisible = true"
+      >
+        <i nz-icon nzType="setting" nzTheme="outline"></i>
+      </span>
+      <span
+        *ngIf="!browser"
+        class="toolbar-icon"
+        nz-tooltip
         nzTooltipTitle="Go back to main page"
         nzTooltipPlacement="left"
-        (click)="onGoBackToManagerClick()"
+        (click)="onGoBackIconClick()"
       >
         <i nz-icon nzType="logout" nzTheme="outline"></i>
       </span>
@@ -165,7 +175,7 @@
 <nz-drawer
   [nzClosable]="false"
   [nzOffsetX]="0"
-  [nzWidth]="320"
+  [nzWidth]="480"
   [nzVisible]="isDrawerVisible"
   nzTitle="New Collection"
   (nzOnClose)="isDrawerVisible = false"
@@ -225,3 +235,14 @@
     [ngStyle]="{ 'margin-top': '20px' }"
   ></nz-alert>
 </nz-modal>
+<nz-drawer
+  *ngIf="!browser"
+  [nzClosable]="false"
+  [nzOffsetX]="0"
+  [nzWidth]="480"
+  [nzVisible]="isSettingsDrawerVisible"
+  nzTitle="Settings"
+  (nzOnClose)="onSettingsDrawerClose()"
+>
+  <iframe src="/options" width="100%" frameBorder="0" [ngStyle]="{ 'min-height': '200px' }"></iframe>
+</nz-drawer>

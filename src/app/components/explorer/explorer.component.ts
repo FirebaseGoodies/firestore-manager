@@ -43,6 +43,7 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
   isSaveButtonDisabled: boolean = false;
   isReloadingCollections: boolean = false;
   isSearchCollectionLoading: boolean = false;
+  isSettingsDrawerVisible: boolean = false;
   addCollectionForm: FormGroup;
   isAddCollectionButtonLoading: boolean = false;
   isDrawerVisible: boolean = false;
@@ -410,7 +411,19 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
     });
   }
 
-  onGoBackToManagerClick() {
+  onSettingsDrawerClose() {
+    // Reload options from storage
+    this.storage.get('options').then((options) => {
+      if (options) {
+        this.options = options;
+        this.editor.setMode(this.options.editorMode);
+      }
+    }).finally(() => {
+      this.isSettingsDrawerVisible = false;
+    });
+  }
+
+  onGoBackIconClick() {
     this.modal.confirm({
       nzTitle: 'Confirm go back to the main page?',
       nzContent: 'Any unsaved changes will be lost.',
