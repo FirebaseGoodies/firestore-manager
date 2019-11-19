@@ -18,7 +18,7 @@
         <i nz-icon nzType="bug" nzTheme="outline"></i>
       </a>
       <span
-        *ngIf="!browser"
+        *ngIf="!isWebExtension"
         class="toolbar-icon"
         nz-tooltip
         nzTooltipTitle="Settings"
@@ -28,7 +28,7 @@
         <i nz-icon nzType="setting" nzTheme="outline"></i>
       </span>
       <span
-        *ngIf="!browser"
+        *ngIf="!isWebExtension"
         class="toolbar-icon"
         nz-tooltip
         nzTooltipTitle="Go back to main page"
@@ -236,7 +236,7 @@
   ></nz-alert>
 </nz-modal>
 <nz-drawer
-  *ngIf="!browser"
+  *ngIf="!isWebExtension"
   [nzClosable]="false"
   [nzOffsetX]="0"
   [nzWidth]="480"

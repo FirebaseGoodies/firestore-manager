@@ -15,6 +15,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NzSelectComponent } from 'ng-zorro-antd/select';
 import { Options } from 'src/app/models/options.model';
+import { DummyService } from 'src/app/services/dummy.service';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -56,7 +57,8 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
   @ViewChild(CacheDiffComponent, { static: false }) cacheDiff: CacheDiffComponent;
   private selectedCollection: string = null;
   private selectedDocument: string = null;
-  private options: Options = {
+  isWebExtension: boolean = false;
+  options: Options = {
     editorMode: 'code',
     diffStyle: 'word',
     diffOutputFormat: 'line-by-line'
@@ -67,11 +69,14 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
     private firestore: FirestoreService,
     private storage: StorageService,
     private notification: NotificationService,
+    private dummy: DummyService,
     private message: NzMessageService,
     private modal: NzModalService,
     private cdr: ChangeDetectorRef,
     private router: Router
-  ) { }
+  ) {
+    this.isWebExtension = this.dummy.isWebExtension;
+  }
 
   // @HostListener allows us to also guard against browser refresh, close, etc.
   @HostListener('window:beforeunload')
