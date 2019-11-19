@@ -1,71 +1,71 @@
 import { Injectable } from '@angular/core';
+import { DummyService } from './dummy.service';
 
 @Injectable()
 export class StorageService {
-    private static instance = null;
-    private static tmpStorage = [];
+  private static instance = null;
+  private static tmpStorage = [];
 
-    constructor() {}
+  constructor(private dummy: DummyService) {}
 
-    static getInstance() {
-        if (StorageService.instance == null) {
-            StorageService.instance = new StorageService();
-        }
-        return StorageService.instance;
+  static getInstance() {
+    if (StorageService.instance == null) {
+      const dummy = new DummyService();
+      StorageService.instance = new StorageService(dummy);
     }
+    return StorageService.instance;
+  }
 
-    static getTmp(key: string) {
-        return StorageService.tmpStorage[key];
-    }
+  static getTmp(key: string) {
+    return StorageService.tmpStorage[key];
+  }
 
-    static setTmp(key: string, value: any) {
-        StorageService.tmpStorage[key] = value;
-    }
+  static setTmp(key: string, value: any) {
+    StorageService.tmpStorage[key] = value;
+  }
 
-    get(key: string): Promise<any> {
-        return new Promise((resolve, reject) => {
-            try {
-                browser.storage.local.get(key).then((storage) => {
-                    resolve(storage[key]);
-                });
-            }
-            catch(error) {
-                console.log(error.message);
-                const value = localStorage.getItem(key);
-                let finalValue;
-                try {
-                    finalValue = JSON.parse(value);
-                }
-                catch(error) {
-                    finalValue = value;
-                }
-                resolve(finalValue);
-            }
+  get(key: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (this.dummy.isWebExtension) {
+        browser.storage.local.get(key).then((storage) => {
+          resolve(storage[key]);
         });
-    }
-
-    save(key: string, value: any): void {
+      }
+      else {
+        const value = localStorage.getItem(key);
+        let finalValue;
         try {
-            browser.storage.local.set({[key]: value});
+          finalValue = JSON.parse(value);
         }
         catch(error) {
-            console.log(error.message);
-            let finalValue;
-            try {
-                finalValue = JSON.stringify(value);
-            }
-            catch(error) {
-                finalValue = value;
-            }
-            localStorage.setItem(key, finalValue);
+          finalValue = value;
         }
-    }
+        resolve(finalValue);
+      }
+    });
+  }
 
-    getMany(...keys: string[]): Promise<any> {
-        let promises: Promise<any>[] = [];
-        keys.forEach((key: string) => {
-            promises.push(this.get(key));
-        });
-        return Promise.all(promises);
+  save(key: string, value: any): void {
+    if (this.dummy.isWebExtension) {
+      browser.storage.local.set({[key]: value});
     }
+    else {
+      let finalValue;
+      try {
+        finalValue = JSON.stringify(value);
+      }
+      catch(error) {
+        finalValue = value;
+      }
+      localStorage.setItem(key, finalValue);
+    }
+  }
+
+  getMany(...keys: string[]): Promise<any> {
+    let promises: Promise<any>[] = [];
+    keys.forEach((key: string) => {
+      promises.push(this.get(key));
+    });
+    return Promise.all(promises);
+  }
 }
