@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StorageService } from 'src/app/services/storage.service';
+import { Options } from 'src/app/models/options.model';
 
 @Component({
   selector: 'fm-options',
@@ -8,22 +9,25 @@ import { StorageService } from 'src/app/services/storage.service';
 })
 export class OptionsComponent implements OnInit {
 
-  editorMode: 'tree' | 'form' | 'code' = 'tree';
-  private options: any = {};
+  options: Options = {
+    editorMode: 'code',
+    diffStyle: 'word',
+    diffOutputFormat: 'line-by-line'
+  };
 
   constructor(private storage: StorageService) { }
 
   ngOnInit() {
     this.storage.get('options').then((options) => {
       if (options) {
-        this.options = options;
-        this.editorMode = options.editorMode ? options.editorMode : 'tree';
+        this.options.editorMode = options.editorMode ? options.editorMode : this.options.editorMode;
+        this.options.diffStyle = options.diffStyle ? options.diffStyle : this.options.diffStyle;
+        this.options.diffOutputFormat = options.diffOutputFormat ? options.diffOutputFormat : this.options.diffOutputFormat;
       }
     });
   }
 
-  onEditorModeChange() {
-    this.options.editorMode = this.editorMode;
+  saveOptions() {
     this.storage.save('options', this.options);
   }
 

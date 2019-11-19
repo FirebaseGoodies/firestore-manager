@@ -14,6 +14,7 @@ import { ComponentCanDeactivate } from 'src/app/services/can-deactivate-guard.se
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NzSelectComponent } from 'ng-zorro-antd/select';
+import { Options } from 'src/app/models/options.model';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -54,6 +55,11 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
   @ViewChild(CacheDiffComponent, { static: false }) cacheDiff: CacheDiffComponent;
   private selectedCollection: string = null;
   private selectedDocument: string = null;
+  private options: Options = {
+    editorMode: 'code',
+    diffStyle: 'word',
+    diffOutputFormat: 'line-by-line'
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -82,8 +88,10 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
         this.collectionList = collections;
         this.setCollectionNodes(collections);
       }
-      const mode = options && options.editorMode ? options.editorMode : 'code';
-      this.editor.setMode(mode);
+      if (options) {
+        this.options = options;
+      }
+      this.editor.setMode(this.options.editorMode);
     });
     // Init add collection form
     this.addCollectionForm = this.fb.group({

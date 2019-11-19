@@ -11,13 +11,13 @@ import { Diff2Html } from 'diff2html';
 })
 export class CacheDiffComponent implements AfterViewInit {
 
+  @Input() diffStyle: 'word' | 'char' = 'word';
+  @Input() outputFormat: 'side-by-side' | 'line-by-line' = 'line-by-line';
   @Input() enableSaveButton: boolean = false;
   @Output() enableSaveButtonChange:EventEmitter<boolean> = new EventEmitter<boolean>();
   collectionNodes: any[] = [];
   diff: string = null;
   diffOutput: string = null;
-  diffStyle: 'word' | 'char' = 'word';
-  outputFormat: 'side-by-side' | 'line-by-line' = 'line-by-line';
   newNodes: string[] = [];
   removedNodes: string[] = []; // Not used
   isLoading: boolean = true;
