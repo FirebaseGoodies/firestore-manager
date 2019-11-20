@@ -1,0 +1,9 @@
+{
+    "appName": {
+        "message": "Firestore Manager"
+    }
+    ,
+    "appDesc": {
+        "message": "Manage your firestore databases in ease"
+    }
+}
