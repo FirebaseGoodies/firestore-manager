@@ -4,8 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --aot --prod --sourcemap=false --output-hashing=none",
-    "package": "web-ext build --source-dir=dist --artifacts-dir=.",
+    "build": "ng build --aot --prod --sourceMap=false --outputHashing=none",
+    "package": "web-ext build --source-dir=dist/firestore-manager --artifacts-dir=.",
     "ghbuild": "ng build --prod --base-href \"/firestore-manager/\"",
     "ghdeploy": "ngh --dir=dist/firestore-manager",
     "test": "ng test",
