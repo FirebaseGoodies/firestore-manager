@@ -4,6 +4,7 @@ import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { StorageService } from 'src/app/services/storage.service';
+import { DummyService } from 'src/app/services/dummy.service';
 
 @Component({
   selector: 'fm-manager',
@@ -31,7 +32,12 @@ export class ManagerComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   explorerUrl: string = '';
 
-  constructor(private storage: StorageService, private message: NzMessageService, private modalService: NzModalService) { }
+  constructor(
+    private storage: StorageService,
+    private message: NzMessageService,
+    private modalService: NzModalService,
+    private dummy: DummyService
+  ) { }
 
   ngOnInit() {
     this.storage.get('databases').then((databases) => {
@@ -39,7 +45,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
         this.databases = databases;
       }
     });
-    this.explorerUrl = this.getExplorerUrl();
+    this.explorerUrl = this.dummy.isWebExtension ? browser.runtime.getURL('index.html') : './';
     this.subscriptions.push(this.databaseConfigKeyUp.pipe(
         map((event: any) => event.target.value),
         debounceTime(300),
@@ -100,13 +106,10 @@ export class ManagerComponent implements OnInit, OnDestroy {
   onSelectAction(event, database, index) {
     this.storage.save('firebase_config', database.config);
     this.storage.save('database_index', index);
-    try {
+    if (this.dummy.isWebExtension) {
       browser.tabs.create({'url': this.explorerUrl});
       event.preventDefault();
       window.close();
-    }
-    catch(error) {
-      console.log(error.message);
     }
   }
 
@@ -132,18 +135,6 @@ export class ManagerComponent implements OnInit, OnDestroy {
   onDeleteActionConfirm(index) {
     this.databases.splice(index, 1);
     this.saveDatabases();
-  }
-
-  private getExplorerUrl() {
-    let url;
-    try {
-      url = browser.runtime.getURL('index.html');
-    }
-    catch (error) {
-      console.log(error.message);
-      url = '/';
-    }
-    return url;
   }
 
   private saveDatabases() {
