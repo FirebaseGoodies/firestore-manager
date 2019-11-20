@@ -1,11 +1,13 @@
 {
   "name": "firestore-manager",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --aot --prod --sourcemap=false --output-hashing=none",
     "package": "web-ext build --source-dir=dist --artifacts-dir=.",
+    "ghbuild": "ng build --prod --base-href \"/firestore-manager/\"",
+    "ghdeploy": "ngh --dir=dist/firestore-manager",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
