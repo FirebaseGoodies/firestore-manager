@@ -13,8 +13,8 @@ A simple, fast and intuitive web-extension to manage firestore databases, made w
 
 ## Features
 
-- Clean UI interface [ng-zorro-antd](https://github.com/NG-ZORRO/ng-zorro-antd).
-- 3 editing modes: Tree, Form & Code (thanks to [jsoneditor](https://github.com/josdejong/jsoneditor) project).
+- Clean UI (based on [ng-zorro-antd](https://github.com/NG-ZORRO/ng-zorro-antd)).
+- 3 editing modes (thanks to [jsoneditor](https://github.com/josdejong/jsoneditor) project).
 - Powerful diff viewer (using [diff-match-patch](https://github.com/google/diff-match-patch) & [diff2html](https://github.com/rtfpessoa/diff2html)).
 
 ## Installation
@@ -22,7 +22,7 @@ A simple, fast and intuitive web-extension to manage firestore databases, made w
 [![Get it for Firefox!](https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_1.png)](https://addons.mozilla.org/firefox/addon/firestore-manager/?src=external-github-download)
 [![Get it for Chrome!](https://raw.githubusercontent.com/GoogleChrome/chrome-app-samples/master/tryitnowbutton_small.png)](screenshots/soon.gif)
 
-Or [try it as a web application](https://axel-dev.github.io/firestore-manager).
+Or [try it as a web application](https://axel-dev.github.io/firestore-manager/manager).
 
 ## Development server
 
