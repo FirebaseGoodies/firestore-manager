@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NzSelectComponent } from 'ng-zorro-antd/select';
 import { Options } from 'src/app/models/options.model';
-import { DummyService } from 'src/app/services/dummy.service';
+import { AppService } from 'src/app/services/app.service';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -69,13 +69,13 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
     private firestore: FirestoreService,
     private storage: StorageService,
     private notification: NotificationService,
-    private dummy: DummyService,
+    private app: AppService,
     private message: NzMessageService,
     private modal: NzModalService,
     private cdr: ChangeDetectorRef,
     private router: Router
   ) {
-    this.isWebExtension = this.dummy.isWebExtension;
+    this.isWebExtension = this.app.isWebExtension;
   }
 
   // @HostListener allows us to also guard against browser refresh, close, etc.

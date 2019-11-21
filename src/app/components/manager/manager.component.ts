@@ -4,7 +4,7 @@ import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { StorageService } from 'src/app/services/storage.service';
-import { DummyService } from 'src/app/services/dummy.service';
+import { AppService } from 'src/app/services/app.service';
 
 @Component({
   selector: 'fm-manager',
@@ -36,7 +36,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
     private storage: StorageService,
     private message: NzMessageService,
     private modalService: NzModalService,
-    private dummy: DummyService
+    private app: AppService
   ) { }
 
   ngOnInit() {
@@ -45,7 +45,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
         this.databases = databases;
       }
     });
-    this.explorerUrl = this.dummy.isWebExtension ? browser.runtime.getURL('index.html') : './';
+    this.explorerUrl = this.app.isWebExtension ? browser.runtime.getURL('index.html') : './';
     this.subscriptions.push(this.databaseConfigKeyUp.pipe(
         map((event: any) => event.target.value),
         debounceTime(300),
@@ -106,7 +106,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   onSelectAction(event, database, index) {
     this.storage.save('firebase_config', database.config);
     this.storage.save('database_index', index);
-    if (this.dummy.isWebExtension) {
+    if (this.app.isWebExtension) {
       browser.tabs.create({'url': this.explorerUrl});
       event.preventDefault();
       window.close();

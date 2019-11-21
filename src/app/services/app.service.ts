@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class DummyService {
+export class AppService {
 
   isWebExtension: boolean = false;
 

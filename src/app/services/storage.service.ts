@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { DummyService } from './dummy.service';
+import { AppService } from './app.service';
 
 @Injectable()
 export class StorageService {
   private static instance = null;
   private static tmpStorage = [];
 
-  constructor(private dummy: DummyService) {}
+  constructor(private app: AppService) {}
 
   static getInstance() {
     if (StorageService.instance == null) {
-      const dummy = new DummyService();
-      StorageService.instance = new StorageService(dummy);
+      const app = new AppService();
+      StorageService.instance = new StorageService(app);
     }
     return StorageService.instance;
   }
@@ -26,7 +26,7 @@ export class StorageService {
 
   get(key: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      if (this.dummy.isWebExtension) {
+      if (this.app.isWebExtension) {
         browser.storage.local.get(key).then((storage) => {
           resolve(storage[key]);
         });
@@ -46,7 +46,7 @@ export class StorageService {
   }
 
   save(key: string, value: any): void {
-    if (this.dummy.isWebExtension) {
+    if (this.app.isWebExtension) {
       browser.storage.local.set({[key]: value});
     }
     else {

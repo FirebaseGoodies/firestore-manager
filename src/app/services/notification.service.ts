@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { DummyService } from './dummy.service';
+import { AppService } from './app.service';
 
 @Injectable()
 export class NotificationService {
 
-  constructor(private dummy: DummyService) { }
+  constructor(private app: AppService) { }
 
   create(message: string, type: string | any = 'basic') {
-    if (this.dummy.isWebExtension) {
+    if (this.app.isWebExtension) {
       browser.notifications.create({
         type: type,
         title: 'Firestore Manager',
