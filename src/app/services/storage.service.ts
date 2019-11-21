@@ -10,7 +10,7 @@ export class StorageService {
 
   static getInstance() {
     if (StorageService.instance == null) {
-      const app = new AppService();
+      const app = AppService.getInstance();
       StorageService.instance = new StorageService(app);
     }
     return StorageService.instance;

@@ -57,10 +57,10 @@ export function initializeApp() {
   providers: [
     Guard,
     CanDeactivateGuard,
-    StorageService,
     FirestoreService,
     NotificationService,
-    AppService,
+    { provide: StorageService, useFactory: StorageService.getInstance },
+    { provide: AppService, useFactory: AppService.getInstance },
     /** config ng-zorro-antd i18n (language && date) **/
     { provide: NZ_I18N, useValue: en_US },
     { provide: FirebaseOptionsToken, useFactory: initializeApp }
