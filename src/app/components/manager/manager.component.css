@@ -42,7 +42,7 @@ p {
 }
 nz-list ::ng-deep div.ant-list-items {
   max-height: 200px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 svg.material-icons {
   height: 24px;
