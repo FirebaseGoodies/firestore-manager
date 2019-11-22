@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, HostListener, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { jsonValidator } from 'src/app/validators/json.validator';
 import { FirestoreService } from 'src/app/services/firestore.service';
@@ -28,7 +28,7 @@ const Chars = {
   templateUrl: './explorer.component.html',
   styleUrls: ['./explorer.component.css']
 })
-export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
+export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
 
   private databaseIndex: number;
   databaseUrl: string;
@@ -107,6 +107,10 @@ export class ExplorerComponent implements OnInit, ComponentCanDeactivate {
     // Init editor options
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.modes = ['tree', 'form', 'code'];
+  }
+
+  ngOnDestroy() {
+    this.firestore.unsubscribe();
   }
 
   private setCollectionNodes(collections: string[]): void {
