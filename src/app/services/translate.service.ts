@@ -27,12 +27,16 @@ export class TranslateService {
     });
   }
 
+  getLanguage() {
+    return this.app.isWebExtension ? browser.i18n.getUILanguage() : this.defaultLanguage;
+  }
+
   get(key: string, substitutions?: string | string[]): string {
     return this.app.isWebExtension ? browser.i18n.getMessage(key, substitutions) : this.translate(key, substitutions);
   }
 
   private translate(key: string, substitutions?: string | string[]): string {
-    console.log('key:', key);
+    // console.log('key:', key);
     return this.translations[key] ? this.replace(this.translations[key], substitutions) : key;
   }
 
@@ -41,7 +45,7 @@ export class TranslateService {
     if (substitutions) {
       Object.keys(translation['placeholders']).forEach((placeholder, index) => {
         const substitution = typeof substitutions === 'string' ? substitutions : (substitutions[index] ? substitutions[index] : null);
-        console.log(message, placeholder, index, substitution);
+        // console.log(message, placeholder, index, substitution);
         if (substitution === null) {
           return;
         }

@@ -110,6 +110,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     // Init editor options
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.modes = ['tree', 'form', 'code'];
+    if (this.translation.getLanguage() == 'fr') {
+      this.editorOptions.language = 'fr-FR';
+    }
   }
 
   ngOnDestroy() {
@@ -439,6 +442,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     this.modal.confirm({
       nzTitle: this.translation.get('Confirm go back to the main page?'),
       nzContent: this.translation.get('Any unsaved changes will be lost.'),
+      nzOkText: this.translation.get('Confirm'),
+      nzCancelText: this.translation.get('Cancel'),
       nzOnOk: () => this.router.navigate(['/manager'])
     });
   }

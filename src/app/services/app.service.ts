@@ -12,8 +12,8 @@ export class AppService {
       console.info('Extension id:', id);
       this.isWebExtension = true;
     } catch(error) {
-      console.log(error.message);
-      //this.isWebExtension = false;
+      // console.log(error.message);
+      // this.isWebExtension = false;
     }
   }
 

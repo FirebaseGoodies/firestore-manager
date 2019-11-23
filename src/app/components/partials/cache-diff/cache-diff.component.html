@@ -28,14 +28,14 @@
       <div nz-row [ngStyle]="{ 'margin-bottom': '15px' }">
         <div nz-col nzSpan="8">
           <nz-radio-group [(ngModel)]="diffStyle" nzSize="small" (ngModelChange)="reloadDiff()">
-            <label nz-radio-button nzValue="word" translate>Word diff</label>
-            <label nz-radio-button nzValue="char" translate>Char diff</label>
+            <label nz-radio-button nzValue="word"><span translate>Word diff</span></label>
+            <label nz-radio-button nzValue="char"><span translate>Char diff</span></label>
           </nz-radio-group>
         </div>
         <div nz-col nzSpan="8" nzOffset="8">
           <nz-radio-group [(ngModel)]="outputFormat" nzSize="small" (ngModelChange)="reloadDiff()" [ngStyle]="{ 'float': 'right' }">
-            <label nz-radio-button nzValue="side-by-side" translate>Side by Side</label>
-            <label nz-radio-button nzValue="line-by-line" translate>Line by Line</label>
+            <label nz-radio-button nzValue="side-by-side"><span translate>Side by Side</span></label>
+            <label nz-radio-button nzValue="line-by-line"><span translate>Line by Line</span></label>
           </nz-radio-group>
         </div> 
       </div>

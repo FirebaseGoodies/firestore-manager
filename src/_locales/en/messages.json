@@ -14,6 +14,9 @@
     "Form": {
         "message": "Form"
     },
+    "Code": {
+        "message": "Code"
+    },
     "Default diff style:": {
         "message": "Default diff style:"
     },
@@ -171,5 +174,20 @@
     },
     "Reloading": {
         "message": "Reloading"
+    },
+    "New Collection": {
+        "message": "New Collection"
+    },
+    "Random": {
+        "message": "Random"
+    },
+    "Report a bug": {
+        "message": "Report a bug"
+    },
+    "Go back to main page": {
+        "message": "Go back to main page"
+    },
+    "Confirm": {
+        "message": "Confirm"
     }
 }
