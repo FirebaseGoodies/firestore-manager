@@ -79,6 +79,8 @@ export class FirestoreService {
             this.unchangedCache[name] = {...docs}; // assign a copy
             resolve(docs);
           });
+        } else {
+          resolve(null);
         }
       });
     }
@@ -116,6 +118,8 @@ export class FirestoreService {
             this.unchangedCache[collectionName][documentName] = {...doc}; // assign a copy
             resolve(doc);
           });
+        } else {
+          resolve(null);
         }
       });
     }
