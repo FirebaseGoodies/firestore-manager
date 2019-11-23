@@ -1,0 +1,193 @@
+{
+    "extensionName": {
+        "message": "Firestore Manager"
+    },
+    "extensionDesc": {
+        "message": "Gérez vos bases de données firestore en toute simplicité"
+    },
+    "Default editor mode:": {
+        "message": "Mode éditeur par défaut:"
+    },
+    "Tree": {
+        "message": "Arbre"
+    },
+    "Form": {
+        "message": "Formulaire"
+    },
+    "Code": {
+        "message": "Code"
+    },
+    "Default diff style:": {
+        "message": "Style de diff par défaut:"
+    },
+    "Word diff": {
+        "message": "Diff. de mot"
+    },
+    "Char diff": {
+        "message": "Diff. de caractère"
+    },
+    "Default diff output format:": {
+        "message": "Format de sortie diff par défaut:"
+    },
+    "Side by Side": {
+        "message": "Cote à cote"
+    },
+    "Line by Line": {
+        "message": "Ligne par ligne"
+    },
+    "No unsaved changes": {
+        "message": "Aucune modification non sauvegardée"
+    },
+    "Databases": {
+        "message": "Bases de données"
+    },
+    "Add Database": {
+        "message": "Ajouter une base de données"
+    },
+    "Add": {
+        "message": "Ajouter"
+    },
+    "Edit": {
+        "message": "Modifier"
+    },
+    "Delete": {
+        "message": "Supprimer"
+    },
+    "Save": {
+        "message": "Enregistrer"
+    },
+    "Cancel": {
+        "message": "Annuler"
+    },
+    "Love Firestore Manager?": {
+        "message": "Vous aimez Firestore Manager?"
+    },
+    "Give our repo a star.": {
+        "message": "Donner une"
+    },
+    "Star": {
+        "message": "Étoile"
+    },
+    "Paste your database configuration below": {
+        "message": "Collez votre configuration de base de données ci-dessous"
+    },
+    "Please enter a valid configuration.": {
+        "message": "Veuillez entrer une configuration valide."
+    },
+    "Confirm delete?": {
+        "message": "Êtes-vous sûr de vouloir supprimer $name$ ?",
+        "placeholders": {
+            "name" : {
+                "content" : "$1"
+            }
+        }
+    },
+    "Firebase Console": {
+        "message": "Console Firebase"
+    },
+    "Select": {
+        "message": "Sélectionner"
+    },
+    "Changes successfully saved!": {
+        "message": "Modifications enregistrées avec succès!"
+    },
+    "Saving changes completed!": {
+        "message": "Enregistrement des modifications terminé!"
+    },
+    "Confirm go back to the main page?": {
+        "message": "Voulez-vous revenir à la page principale?"
+    },
+    "Any unsaved changes will be lost.": {
+        "message": "Toutes les modifications non sauvegardées seront perdues."
+    },
+    "You have some unsaved changes!": {
+        "message": "Vous avez des modifications non sauvegardées!"
+    },
+    "Click on 'View' to see all the modifications.": {
+        "message": "Cliquez sur 'Voir' pour voir toutes les modifications."
+    },
+    "View": {
+        "message": "Voir"
+    },
+    "Collection": {
+        "message": "Collection"
+    },
+    "No collection found": {
+        "message": "Aucune collection trouvée"
+    },
+    "Add Collection": {
+        "message": "Ajouter une collection"
+    },
+    "Reload": {
+        "message": "Recharger"
+    },
+    "Welcome!": {
+        "message": "Bienvenue!"
+    },
+    "Start by typing a collection name in the search box above.": {
+        "message": "Commencez par taper un nom de collection dans le champ de recherche ci-dessus."
+    },
+    "Select All": {
+        "message": "Tout sélectionner"
+    },
+    "Delete?": {
+        "message": "Supprimer?"
+    },
+    "Permanently delete documents?": {
+        "message": "Supprimer définitivement les documents?"
+    },
+    "Only documents can be permanently deleted, collections will be removed only from the browser cache! If you want to permanently delete a collection please use the": {
+        "message": "Seuls les documents peuvent être définitivement supprimés, les collections ne seront supprimées que du cache du navigateur! Si vous souhaitez supprimer définitivement une collection, veuillez utiliser la"
+    },
+    "Name": {
+        "message": "Nom"
+    },
+    "my collection": {
+        "message": "ma collection"
+    },
+    "A collection with the same name already exists!": {
+        "message": "Une collection du même nom existe déjà!"
+    },
+    "please enter collection name": {
+        "message": "Veuillez entrer le nom de la collection"
+    },
+    "Content": {
+        "message": "Contenu"
+    },
+    "Content of the first document in json": {
+        "message": "Contenu du premier document en json"
+    },
+    "please enter a valid json content": {
+        "message": "Veuillez entrer un contenu JSON valide"
+    },
+    "Unsaved Changes": {
+        "message": "Modifications non sauvegardées"
+    },
+    "Once saved, the above changes will override your existing firestore data. This operation is not reversible!": {
+        "message": "Une fois enregistrées, les modifications ci-dessus remplaceront vos données existantes sur firetore. Cette opération n'est pas réversible!"
+    },
+    "Settings": {
+        "message": "Paramètres"
+    },
+    "Loading": {
+        "message": "Chargement en cours"
+    },
+    "Reloading": {
+        "message": "Rechargement en cours"
+    },
+    "New Collection": {
+        "message": "Nouvelle collection"
+    },
+    "Random": {
+        "message": "Aléatoire"
+    },
+    "Report a bug": {
+        "message": "Signaler un bug"
+    },
+    "Go back to main page": {
+        "message": "Retourner à la page principale"
+    },
+    "Confirm": {
+        "message": "Confirmer"
+    }
+}
