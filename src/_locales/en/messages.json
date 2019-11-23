@@ -1,9 +1,175 @@
 {
-    "appName": {
+    "extensionName": {
         "message": "Firestore Manager"
-    }
-    ,
-    "appDesc": {
+    },
+    "extensionDesc": {
         "message": "Manage your firestore databases in ease"
+    },
+    "Default editor mode:": {
+        "message": "Default editor mode:"
+    },
+    "Tree": {
+        "message": "Tree"
+    },
+    "Form": {
+        "message": "Form"
+    },
+    "Default diff style:": {
+        "message": "Default diff style:"
+    },
+    "Word diff": {
+        "message": "Word diff"
+    },
+    "Char diff": {
+        "message": "Char diff"
+    },
+    "Default diff output format:": {
+        "message": "Default diff output format:"
+    },
+    "Side by Side": {
+        "message": "Side by Side"
+    },
+    "Line by Line": {
+        "message": "Line by Line"
+    },
+    "No unsaved changes": {
+        "message": "No unsaved changes"
+    },
+    "Databases": {
+        "message": "Databases"
+    },
+    "Add Database": {
+        "message": "Add Database"
+    },
+    "Add": {
+        "message": "Add"
+    },
+    "Edit": {
+        "message": "Edit"
+    },
+    "Delete": {
+        "message": "Delete"
+    },
+    "Save": {
+        "message": "Save"
+    },
+    "Cancel": {
+        "message": "Cancel"
+    },
+    "Love Firestore Manager?": {
+        "message": "Love Firestore Manager?"
+    },
+    "Give our repo a star.": {
+        "message": "Give our repo a star."
+    },
+    "Star": {
+        "message": "Star"
+    },
+    "Paste your database configuration below": {
+        "message": "Paste your database configuration below"
+    },
+    "Please enter a valid configuration.": {
+        "message": "Please enter a valid configuration."
+    },
+    "Confirm delete?": {
+        "message": "Are you sure delete $name$ ?",
+        "placeholders": {
+            "name" : {
+                "content" : "$1"
+            }
+        }
+    },
+    "Firebase Console": {
+        "message": "Firebase Console"
+    },
+    "Select": {
+        "message": "Select"
+    },
+    "Changes successfully saved!": {
+        "message": "Changes successfully saved!"
+    },
+    "Saving changes completed!": {
+        "message": "Saving changes completed!"
+    },
+    "Confirm go back to the main page?": {
+        "message": "Confirm go back to the main page?"
+    },
+    "Any unsaved changes will be lost.": {
+        "message": "Any unsaved changes will be lost."
+    },
+    "You have some unsaved changes!": {
+        "message": "You have some unsaved changes!"
+    },
+    "Click on 'View' to see all the modifications.": {
+        "message": "Click on 'View' to see all the modifications."
+    },
+    "View": {
+        "message": "View"
+    },
+    "Collection": {
+        "message": "Collection"
+    },
+    "No collection found": {
+        "message": "No collection found"
+    },
+    "Add Collection": {
+        "message": "Add Collection"
+    },
+    "Reload": {
+        "message": "Reload"
+    },
+    "Welcome!": {
+        "message": "Welcome!"
+    },
+    "Start by typing a collection name in the search box above.": {
+        "message": "Start by typing a collection name in the search box above."
+    },
+    "Select All": {
+        "message": "Select All"
+    },
+    "Delete?": {
+        "message": "Delete?"
+    },
+    "Permanently delete documents?": {
+        "message": "Permanently delete documents?"
+    },
+    "Only documents can be permanently deleted, collections will be removed only from the browser cache! If you want to permanently delete a collection please use the": {
+        "message": "Only documents can be permanently deleted, collections will be removed only from the browser cache! If you want to permanently delete a collection please use the"
+    },
+    "Name": {
+        "message": "Name"
+    },
+    "my collection": {
+        "message": "my collection"
+    },
+    "A collection with the same name already exists!": {
+        "message": "A collection with the same name already exists!"
+    },
+    "please enter collection name": {
+        "message": "please enter collection name"
+    },
+    "Content": {
+        "message": "Content"
+    },
+    "Content of the first document in json": {
+        "message": "Content of the first document in json"
+    },
+    "please enter a valid json content": {
+        "message": "please enter a valid json content"
+    },
+    "Unsaved Changes": {
+        "message": "Unsaved Changes"
+    },
+    "Once saved, the above changes will override your existing firestore data. This operation is not reversible!": {
+        "message": "Once saved, the above changes will override your existing firestore data. This operation is not reversible!"
+    },
+    "Settings": {
+        "message": "Settings"
+    },
+    "Loading": {
+        "message": "Loading"
+    },
+    "Reloading": {
+        "message": "Reloading"
     }
 }

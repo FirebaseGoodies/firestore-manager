@@ -5,6 +5,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { StorageService } from 'src/app/services/storage.service';
 import { AppService } from 'src/app/services/app.service';
+import { TranslateService } from 'src/app/services/translate.service';
 
 @Component({
   selector: 'fm-manager',
@@ -30,12 +31,15 @@ export class ManagerComponent implements OnInit, OnDestroy {
   databaseConfig: string = '';
   private selectedDatabaseIndex: number = -1;
   private subscriptions: Subscription[] = [];
+  private addButtonTranslation: string = 'Add';
+  private saveButtonTranslation: string = 'Save';
   explorerUrl: string = '';
 
   constructor(
     private storage: StorageService,
     private message: NzMessageService,
     private modalService: NzModalService,
+    private translation: TranslateService,
     private app: AppService
   ) { }
 
@@ -45,6 +49,8 @@ export class ManagerComponent implements OnInit, OnDestroy {
         this.databases = databases;
       }
     });
+    this.addButtonTranslation = this.translation.get('Add');
+    this.saveButtonTranslation = this.translation.get('Save');
     this.explorerUrl = this.app.isWebExtension ? browser.runtime.getURL('index.html') : './';
     this.subscriptions.push(this.databaseConfigKeyUp.pipe(
         map((event: any) => event.target.value),
@@ -62,7 +68,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   }
 
   onAddDatabaseButtonClick() {
-    this.databaseModalOkButtonText = 'Add';
+    this.databaseModalOkButtonText = this.addButtonTranslation;
     this.databaseConfig = '';
     this.isDatabaseModalVisible = true;
   }
@@ -76,7 +82,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
           //console.log(config);
           if (config.apiKey && config.authDomain && config.databaseURL && config.projectId && config.storageBucket && config.messagingSenderId && config.appId) {
             // Add
-            if (this.databaseModalOkButtonText === 'Add') {
+            if (this.databaseModalOkButtonText === this.addButtonTranslation) {
               this.databases.unshift({config: config});
             }
             // Edit
@@ -91,7 +97,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
         }
         catch(error) {
           console.log(error.message);
-          this.message.create('error', 'Please enter a valid configuration.');
+          this.message.create('error', this.translation.get('Please enter a valid configuration.'));
         }
         this.isDatabaseModalOkButtonLoading = false;
         resolve();
@@ -114,7 +120,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   }
 
   onEditAction(database, index) {
-    this.databaseModalOkButtonText = 'Save';
+    this.databaseModalOkButtonText = this.saveButtonTranslation;
     this.databaseConfig = this.stringify(database.config);
     this.selectedDatabaseIndex = index;
     this.isDatabaseModalVisible = true;
@@ -123,12 +129,12 @@ export class ManagerComponent implements OnInit, OnDestroy {
   onDeleteAction(database, index) {
     //this.selectedDatabaseIndex = index;
     this.modalService.confirm({
-      nzTitle: 'Delete',
-      nzContent: 'Are you sure delete ' + database.config.projectId + ' ?',
-      nzOkText: 'Delete',
+      nzTitle: this.translation.get('Delete'),
+      nzContent: this.translation.get('Confirm delete?', database.config.projectId),
+      nzOkText: this.translation.get('Delete'),
       nzOkType: 'danger',
       nzOnOk: () => this.onDeleteActionConfirm(index),
-      nzCancelText: 'Cancel'
+      nzCancelText: this.translation.get('Cancel')
     });
   }
 

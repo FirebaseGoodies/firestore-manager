@@ -16,6 +16,7 @@ import { environment } from 'src/environments/environment';
 import { NzSelectComponent } from 'ng-zorro-antd/select';
 import { Options } from 'src/app/models/options.model';
 import { AppService } from 'src/app/services/app.service';
+import { TranslateService } from 'src/app/services/translate.service';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -69,6 +70,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     private firestore: FirestoreService,
     private storage: StorageService,
     private notification: NotificationService,
+    private translation: TranslateService,
     private app: AppService,
     private message: NzMessageService,
     private modal: NzModalService,
@@ -415,8 +417,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.isSaveModalVisible = false;
       this.unsavedChanges = false;
       // Display success message
-      this.message.create('success', 'Changes successfully saved!');
-      this.notification.create('Saving changes completed!');
+      this.message.create('success', this.translation.get('Changes successfully saved!'));
+      this.notification.create(this.translation.get('Saving changes completed!'));
     });
   }
 
@@ -434,8 +436,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   onGoBackIconClick() {
     this.modal.confirm({
-      nzTitle: 'Confirm go back to the main page?',
-      nzContent: 'Any unsaved changes will be lost.',
+      nzTitle: this.translation.get('Confirm go back to the main page?'),
+      nzContent: this.translation.get('Any unsaved changes will be lost.'),
       nzOnOk: () => this.router.navigate(['/manager'])
     });
   }

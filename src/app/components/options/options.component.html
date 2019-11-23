@@ -1,34 +1,34 @@
 <div nz-row [ngStyle]="{ padding: '10px' }">
   <div nz-col nzSpan="10" [ngStyle]="{ 'margin-top': '5px' }">
-    <label>Default editor mode: </label>
+    <label translate>Default editor mode: </label>
   </div>
   <div nz-col nzSpan="14">
     <nz-radio-group nzButtonStyle="solid" [(ngModel)]="options.editorMode" (ngModelChange)="saveOptions()">
-      <label nz-radio-button nzValue="tree"><span>Tree</span></label>
-      <label nz-radio-button nzValue="form"><span>Form</span></label>
-      <label nz-radio-button nzValue="code"><span>Code</span></label>
+      <label nz-radio-button nzValue="tree"><span translate>Tree</span></label>
+      <label nz-radio-button nzValue="form"><span translate>Form</span></label>
+      <label nz-radio-button nzValue="code"><span translate>Code</span></label>
     </nz-radio-group>
   </div>
 </div>
 <div nz-row [ngStyle]="{ padding: '10px' }">
   <div nz-col nzSpan="10" [ngStyle]="{ 'margin-top': '5px' }">
-    <label>Default diff style: </label>
+    <label translate>Default diff style: </label>
   </div>
   <div nz-col nzSpan="14">
     <nz-radio-group nzButtonStyle="solid" [(ngModel)]="options.diffStyle" (ngModelChange)="saveOptions()">
-      <label nz-radio-button nzValue="word"><span>Word diff</span></label>
-      <label nz-radio-button nzValue="char"><span>Char diff</span></label>
+      <label nz-radio-button nzValue="word"><span translate>Word diff</span></label>
+      <label nz-radio-button nzValue="char"><span translate>Char diff</span></label>
     </nz-radio-group>
   </div>
 </div>
 <div nz-row [ngStyle]="{ padding: '10px' }">
   <div nz-col nzSpan="10" [ngStyle]="{ 'margin-top': '5px' }">
-    <label>Default diff output format: </label>
+    <label translate>Default diff output format: </label>
   </div>
   <div nz-col nzSpan="14">
     <nz-radio-group nzButtonStyle="solid" [(ngModel)]="options.diffOutputFormat" (ngModelChange)="saveOptions()">
-      <label nz-radio-button nzValue="side-by-side"><span>Side by Side</span></label>
-      <label nz-radio-button nzValue="line-by-line"><span>Line by Line</span></label>
+      <label nz-radio-button nzValue="side-by-side"><span translate>Side by Side</span></label>
+      <label nz-radio-button nzValue="line-by-line"><span translate>Line by Line</span></label>
     </nz-radio-group>
   </div>
 </div>

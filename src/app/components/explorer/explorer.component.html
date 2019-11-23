@@ -40,7 +40,7 @@
   </nz-header>
   <nz-layout>
     <nz-sider nzTheme="light" nzWidth="300px">
-      <nz-spin nzTip="Reloading..." [nzSpinning]="isReloadingCollections">
+      <nz-spin nzTip="{{ 'Reloading' | translate }}..." [nzSpinning]="isReloadingCollections">
         <div *ngIf="!enableCollectionDeleteMode" [ngStyle]="{ 'margin-bottom': '10px' }">
           <nz-alert
             *ngIf="unsavedChanges"
@@ -51,10 +51,10 @@
             <ng-template #unsavedChangesTpl>
               <div nz-row nzGutter="8">
                 <div nz-col nzSpan="16">
-                  <span>You have some unsaved changes! <i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="Click on 'View' to see all the modifications." nzType="question-circle" nzTheme="outline"></i></span>
+                  <span><span translate>You have some unsaved changes!</span> <i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="{{ 'Click on \'View\' to see all the modifications.' | translate }}" nzType="question-circle" nzTheme="outline"></i></span>
                 </div>
                 <div nz-col nzSpan="8">
-                  <button nz-button nzType="primary" (click)="onViewUnsavedChangesClick()" [ngStyle]="{ float: 'right' }">View</button>
+                  <button nz-button nzType="primary" (click)="onViewUnsavedChangesClick()" [ngStyle]="{ float: 'right' }"><span translate>View</span></button>
                 </div>
               </div>
             </ng-template>
@@ -66,9 +66,9 @@
                   nzShowSearch
                   nzAllowClear
                   [nzLoading]="isSearchCollectionLoading"
-                  nzPlaceHolder="Collection"
+                  nzPlaceHolder="{{ 'Collection' | translate }}"
                   [nzSuffixIcon]="searchIcon"
-                  nzNotFoundContent="No collection found"
+                  nzNotFoundContent="{{ 'No collection found' | translate }}"
                   [(ngModel)]="searchValue"
                   (nzOnSearch)="searchCollection($event)"
                   [ngStyle]="{ width: '100%' }"
@@ -85,10 +85,10 @@
               </button>
               <nz-dropdown-menu #collectionMenu="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item (click)="isDrawerVisible = true">Add Collection</li>
-                  <li nz-menu-item (click)="onDeleteCollectionClick()">Delete</li>
+                  <li nz-menu-item (click)="isDrawerVisible = true" translate>Add Collection</li>
+                  <li nz-menu-item (click)="onDeleteCollectionClick()" translate>Delete</li>
                   <li nz-menu-divider></li>
-                  <li nz-menu-item (click)="onReloadCollectionClick()">Reload</li>
+                  <li nz-menu-item (click)="onReloadCollectionClick()" translate>Reload</li>
                 </ul>
               </nz-dropdown-menu>
             </div>
@@ -97,8 +97,8 @@
             *ngIf="!collectionNodes.length"
             nzBanner
             nzType="info"
-            nzMessage="Welcome!"
-            nzDescription="Start by typing a collection name in the search box above."
+            nzMessage="{{ 'Welcome!' | translate }}"
+            nzDescription="{{ 'Start by typing a collection name in the search box above.' | translate }}"
             [ngStyle]="{ 'margin-top': '10px' }"
             nzCloseable
           ></nz-alert>
@@ -111,13 +111,13 @@
                 nzType="dashed"
                 nzBlock
                 nz-tooltip
-                nzTooltipTitle="Select All"
+                nzTooltipTitle="{{ 'Select All' | translate }}"
                 nzTooltipPlacement="bottom"
                 [disabled]="!collectionNodes.length"
                 (click)="onSelectAllClick()"><i nz-icon nzType="check-square" nzTheme="outline"></i></button>
             </div>
             <div nz-col nzSpan="10">
-              <button nz-button nzType="default" nzBlock (click)="enableCollectionDeleteMode = false">Cancel</button>
+              <button nz-button nzType="default" nzBlock (click)="enableCollectionDeleteMode = false"><span translate>Cancel</span></button>
             </div>
             <div nz-col nzSpan="10">
               <button nz-button
@@ -127,18 +127,18 @@
                 [nzPopconfirmTitle]="confirmDeleteTpl"
                 nzPopconfirmPlacement="bottom"
                 [disabled]="!collectionNodesCheckedKeys.length"
-                (nzOnConfirm)="onCollectionDeleteConfirm()">Delete</button>
+                (nzOnConfirm)="onCollectionDeleteConfirm()"><span translate>Delete</span></button>
               <ng-template #confirmDeleteTpl>
-                <span><i nz-icon nzType="exclamation-circle" nzTheme="fill" style="color: #faad14; margin-right: 5px;"></i><strong>Confirm delete?</strong></span>
+                <span><i nz-icon nzType="exclamation-circle" nzTheme="fill" style="color: #faad14; margin-right: 5px;"></i><strong translate>Delete?</strong></span>
                 <div [ngStyle]="{ 'margin-top': '10px' }">
-                  <label nz-checkbox [(ngModel)]="permanentlyDeleteDocuments">Permanently delete documents?</label>
+                  <label nz-checkbox [(ngModel)]="permanentlyDeleteDocuments" translate>Permanently delete documents?</label>
                 </div>
               </ng-template>
             </div>
           </div>
           <nz-alert nzBanner [nzMessage]="deleteWarningTpl" nzCloseable>
             <ng-template #deleteWarningTpl>
-              Only documents can be permanently deleted, collections will be removed only from the browser cache! If you want to permanently delete a collection please use the <a [href]="databaseUrl" target="_blank">Firebase Console</a>.
+              <span translate>Only documents can be permanently deleted, collections will be removed only from the browser cache! If you want to permanently delete a collection please use the</span> <a [href]="databaseUrl" target="_blank" translate>Firebase Console</a>.
             </ng-template>
           </nz-alert>
         </div>
@@ -184,9 +184,9 @@
     <div nz-row>
       <div nz-col nzSpan="24">
         <nz-form-item>
-          <nz-form-label nzRequired>Name</nz-form-label>
-          <nz-form-control nzErrorTip="{{ addCollectionForm.controls.name.errors && addCollectionForm.controls.name.errors.notUnique ? 'A collection with the same name already exists!' : 'please enter collection name' }}">
-            <input nz-input formControlName="name" placeholder="my collection" />
+          <nz-form-label nzRequired><span translate>Name</span></nz-form-label>
+          <nz-form-control nzErrorTip="{{ addCollectionForm.controls.name.errors && addCollectionForm.controls.name.errors.notUnique ? 'A collection with the same name already exists!' : 'please enter collection name' | translate }}">
+            <input nz-input formControlName="name" placeholder="{{ 'my collection' | translate }}" />
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -194,27 +194,28 @@
     <div nz-row>
       <div nz-col nzSpan="24">
         <nz-form-item>
-          <nz-form-label nzRequired><span>Content <i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="Content of the first document in json" nzType="question-circle" nzTheme="outline"></i></span></nz-form-label>
+          <nz-form-label nzRequired><span translate>Content</span> <i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="{{ 'Content of the first document in json' | translate }}" nzType="question-circle" nzTheme="outline"></i></nz-form-label>
           <button nz-button nzType="default" nzShape="circle" nzSize="small" (click)="onRandomContentClick($event)" nz-tooltip nzTooltipTitle="Random" nzTooltipPlacement="left" [ngStyle]="{ float: 'right', bottom: '-5px' }">
             <i nz-icon nzType="sync" nzTheme="outline"></i>
           </button>
-          <nz-form-control nzErrorTip="please enter a valid json content">
+          <nz-form-control nzErrorTip="{{ 'please enter a valid json content' | translate }}">
             <textarea nz-input class="tab-size" formControlName="content" spellcheck="false" [placeholder]="collectionContentExample" [nzAutosize]="{ minRows: 14, maxRows: 24 }"></textarea>
           </nz-form-control>
         </nz-form-item>
       </div>
     </div>
     <div class="drawer-footer">
-      <button nz-button nzType="default" (click)="isDrawerVisible = false" [ngStyle]="{ 'margin-right': '8px' }"><span>Cancel</span></button>
-      <button nz-button nzType="primary" [nzLoading]="isAddCollectionButtonLoading" (click)="onAddCollectionClick()"><span>Add</span></button>
+      <button nz-button nzType="default" (click)="isDrawerVisible = false" [ngStyle]="{ 'margin-right': '8px' }"><span translate>Cancel</span></button>
+      <button nz-button nzType="primary" [nzLoading]="isAddCollectionButtonLoading" (click)="onAddCollectionClick()"><span translate>Add</span></button>
     </div>
   </form>
 </nz-drawer>
 <nz-modal
   *ngIf="isSaveModalVisible"
   [(nzVisible)]="isSaveModalVisible"
-  nzTitle="Unsaved Changes"
-  nzOkText="Save"
+  nzTitle="{{ 'Unsaved Changes' | translate }}"
+  nzOkText="{{ 'Save' | translate }}"
+  nzCancelText="{{ 'Cancel' | translate }}"
   nzWidth="60%"
   (nzOnCancel)="isSaveModalVisible = false"
   (nzOnOk)="onSaveChangesClick()"
@@ -230,7 +231,7 @@
   <nz-alert
     *ngIf="!isSaveButtonDisabled"
     nzBanner
-    nzMessage="Once saved, the above changes will override your existing firestore data. This operation is not reversible!"
+    nzMessage="{{ 'Once saved, the above changes will override your existing firestore data. This operation is not reversible!' | translate }}"
     nzCloseable
     [ngStyle]="{ 'margin-top': '20px' }"
   ></nz-alert>
@@ -241,7 +242,7 @@
   [nzOffsetX]="0"
   [nzWidth]="500"
   [nzVisible]="isSettingsDrawerVisible"
-  nzTitle="Settings"
+  nzTitle="{{ 'Settings' | translate }}"
   (nzOnClose)="onSettingsDrawerClose()"
 >
   <iframe src="./options" width="100%" frameBorder="0" [ngStyle]="{ 'min-height': '200px' }"></iframe>

@@ -1,4 +1,4 @@
-<nz-spin nzTip="Loading..." [nzSpinning]="isLoading" [ngStyle]="{ 'min-height': '150px' }">
+<nz-spin nzTip="{{ 'Loading' | translate }}..." [nzSpinning]="isLoading" [ngStyle]="{ 'min-height': '150px' }">
   <div nz-row nzGutter="16">
     <div nz-col nzSpan="6" [ngStyle]="{ 'max-height': '300px', overflow: 'auto' }">
       <nz-tree
@@ -28,14 +28,14 @@
       <div nz-row [ngStyle]="{ 'margin-bottom': '15px' }">
         <div nz-col nzSpan="8">
           <nz-radio-group [(ngModel)]="diffStyle" nzSize="small" (ngModelChange)="reloadDiff()">
-              <label nz-radio-button nzValue="word">Word diff</label>
-            <label nz-radio-button nzValue="char">Char diff</label>
+            <label nz-radio-button nzValue="word" translate>Word diff</label>
+            <label nz-radio-button nzValue="char" translate>Char diff</label>
           </nz-radio-group>
         </div>
         <div nz-col nzSpan="8" nzOffset="8">
           <nz-radio-group [(ngModel)]="outputFormat" nzSize="small" (ngModelChange)="reloadDiff()" [ngStyle]="{ 'float': 'right' }">
-            <label nz-radio-button nzValue="side-by-side">Side by Side</label>
-            <label nz-radio-button nzValue="line-by-line">Line by Line</label>
+            <label nz-radio-button nzValue="side-by-side" translate>Side by Side</label>
+            <label nz-radio-button nzValue="line-by-line" translate>Line by Line</label>
           </nz-radio-group>
         </div> 
       </div>
@@ -44,6 +44,6 @@
   </div>
   <nz-empty
     *ngIf="!isLoading && !diff"
-    nzNotFoundContent="No unsaved changes"
+    nzNotFoundContent="{{ 'No unsaved changes' | translate }}"
   ></nz-empty>
 </nz-spin>

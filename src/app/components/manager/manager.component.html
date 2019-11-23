@@ -36,27 +36,27 @@
     <ng-template #headerTpl>
       <div nz-row>
         <div nz-col nzSpan="8">
-          <h4>Databases</h4>
+          <h4 translate>Databases</h4>
         </div>
         <div nz-col nzSpan="8" nzOffset="8">
-          <button nz-button nzType="primary" [ngStyle]="{ float: 'right' }" (click)="onAddDatabaseButtonClick()">Add Database</button>
+          <button nz-button nzType="primary" [ngStyle]="{ float: 'right' }" (click)="onAddDatabaseButtonClick()"><span translate>Add Database</span></button>
         </div>
       </div>
     </ng-template>
     <ng-template #itemTpl let-database let-index="index">
       <nz-list-item [nzActions]="[consoleAction, moreAction]">
-        <ng-template #consoleAction><a [href]="database.config.databaseURL" target="_blank" nz-tooltip nzTooltipTitle="Firebase Console" nzTooltipPlacement="bottom"><i nz-icon nzType="fire" nzTheme="outline"></i></a></ng-template>
+        <ng-template #consoleAction><a [href]="database.config.databaseURL" target="_blank" nz-tooltip nzTooltipTitle="{{ 'Firebase Console' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="fire" nzTheme="outline"></i></a></ng-template>
         <ng-template #moreAction><a nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"><i nz-icon nzType="more" nzTheme="outline"></i></a></ng-template>
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu>
-            <li nz-menu-item (click)="onEditAction(database, index)">Edit</li>
+            <li nz-menu-item (click)="onEditAction(database, index)" translate>Edit</li>
             <!-- <li nz-menu-divider></li> -->
-            <li nz-menu-item (click)="onDeleteAction(database, index)">Delete</li>
+            <li nz-menu-item (click)="onDeleteAction(database, index)" translate>Delete</li>
           </ul>
         </nz-dropdown-menu>
         <nz-list-item-meta [nzTitle]="nzTitle">
           <ng-template #nzTitle>
-            <a [href]="explorerUrl" target="_blank" (click)="onSelectAction($event, database, index)" nz-tooltip nzTooltipTitle="Select" nzTooltipPlacement="bottom">{{ database.config.projectId }}</a>
+            <a [href]="explorerUrl" target="_blank" (click)="onSelectAction($event, database, index)" nz-tooltip nzTooltipTitle="{{ 'Select' | translate }}" nzTooltipPlacement="bottom">{{ database.config.projectId }}</a>
           </ng-template>
         </nz-list-item-meta>
       </nz-list-item>
@@ -67,7 +67,8 @@
   <nz-modal
       [nzStyle]="{ top: '20px' }"
       [(nzVisible)]="isDatabaseModalVisible"
-      nzTitle="Paste your database configuration below"
+      nzTitle="{{ 'Paste your database configuration below' | translate }}"
+      nzCancelText="{{ 'Cancel' | translate }}"
       (nzOnCancel)="onDatabaseModalCancel()"
       (nzOnOk)="onDatabaseModalConfirm()"
       [nzOkText]="databaseModalOkButtonText"
@@ -86,11 +87,11 @@
 
   <!-- Footer -->
   <footer>
-      Love Firestore Manager?&nbsp;
-      <a href="https://github.com/AXeL-dev/firestore-manager" target="_blank" rel="noopener"> Give our repo a star.
+      <span translate>Love Firestore Manager?</span>&nbsp;
+      <a href="https://github.com/AXeL-dev/firestore-manager" target="_blank" rel="noopener"> <span translate>Give our repo a star.</span>
         <div class="github-star-badge">
-            <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          Star
+          <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <span translate>Star</span>
         </div>
       </a>
       <a href="https://github.com/AXeL-dev/firestore-manager" target="_blank" rel="noopener">

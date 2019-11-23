@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 
 /** config angular i18n **/
 import { registerLocaleData } from '@angular/common';
@@ -26,11 +26,18 @@ import { CacheDiffComponent } from './components/partials/cache-diff/cache-diff.
 import { NotificationService } from './services/notification.service';
 import { CanDeactivateGuard } from './services/can-deactivate-guard.service';
 import { AppService } from './services/app.service';
+import { TranslateService } from './services/translate.service';
+import { TranslateDirective } from './directives/translate.directive';
+import { TranslatePipe } from './pipes/translate.pipe';
 
 export function initializeApp() {
   const config = StorageService.getTmp('firebase_config');
   //console.log(config);
   return config;
+}
+
+export function loadTranslations(translateService: TranslateService) {
+  return () => translateService.init();
 }
 
 @NgModule({
@@ -40,7 +47,9 @@ export function initializeApp() {
     BackgroundComponent,
     ManagerComponent,
     ExplorerComponent,
-    CacheDiffComponent
+    CacheDiffComponent,
+    TranslateDirective,
+    TranslatePipe
   ],
   imports: [
     BrowserModule,
@@ -59,6 +68,8 @@ export function initializeApp() {
     CanDeactivateGuard,
     FirestoreService,
     NotificationService,
+    TranslateService,
+    { provide: APP_INITIALIZER, useFactory: loadTranslations, deps: [TranslateService], multi: true },
     { provide: StorageService, useFactory: StorageService.getInstance },
     { provide: AppService, useFactory: AppService.getInstance },
     /** config ng-zorro-antd i18n (language && date) **/
