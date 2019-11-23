@@ -227,11 +227,13 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   onDeleteCollectionClick() {
-    this.collectionNodesCheckedKeys = [];
-    this.collectionNodesSelectedKeys = [];
-    this.collectionNodesExpandedKeys = [];
-    this.permanentlyDeleteDocuments = false;
-    this.enableCollectionDeleteMode = true;
+    if (this.collectionNodes.length) {
+      this.collectionNodesCheckedKeys = [];
+      this.collectionNodesSelectedKeys = [];
+      this.collectionNodesExpandedKeys = [];
+      this.permanentlyDeleteDocuments = false;
+      this.enableCollectionDeleteMode = true;
+    }
   }
 
   onCollectionDeleteConfirm() {
@@ -449,26 +451,28 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   onReloadCollectionClick() {
-    // console.log(this.firestore.cache);
-    const cacheBackup = {...this.firestore.cache}; // get/assign a copy
-    let promises: Promise<any>[] = [];
-    this.isReloadingCollections = true;
-    // Clear cache
-    this.firestore.clearCache();
-    this.selectedCollection = null;
-    this.updateEditor({});
-    this.collectionNodesSelectedKeys = [];
-    // Reload collections
-    this.collectionNodes.forEach(node => {
-      promises.push(this.reloadCollection(node));
-    });
-    Promise.all(promises).then(() => {
-      // console.log('All collections reloaded');
-      this.collectionNodes = [...this.collectionNodes]; // refresh
-      // Restore cache
-      this.firestore.cache = cacheBackup;
-      this.isReloadingCollections = false;
-    });
+    if (this.collectionNodes.length) {
+      // console.log(this.firestore.cache);
+      const cacheBackup = {...this.firestore.cache}; // get/assign a copy
+      let promises: Promise<any>[] = [];
+      this.isReloadingCollections = true;
+      // Clear cache
+      this.firestore.clearCache();
+      this.selectedCollection = null;
+      this.updateEditor({});
+      this.collectionNodesSelectedKeys = [];
+      // Reload collections
+      this.collectionNodes.forEach(node => {
+        promises.push(this.reloadCollection(node));
+      });
+      Promise.all(promises).then(() => {
+        // console.log('All collections reloaded');
+        this.collectionNodes = [...this.collectionNodes]; // refresh
+        // Restore cache
+        this.firestore.cache = cacheBackup;
+        this.isReloadingCollections = false;
+      });
+    }
   }
 
   private reloadCollection(node: any): Promise<void> {

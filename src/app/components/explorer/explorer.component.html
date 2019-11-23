@@ -86,9 +86,9 @@
               <nz-dropdown-menu #collectionMenu="nzDropdownMenu">
                 <ul nz-menu>
                   <li nz-menu-item (click)="isDrawerVisible = true" translate>Add Collection</li>
-                  <li nz-menu-item (click)="onDeleteCollectionClick()" translate>Delete</li>
+                  <li nz-menu-item (click)="onDeleteCollectionClick()" [nzDisabled]="!collectionNodes.length" translate>Delete</li>
                   <li nz-menu-divider></li>
-                  <li nz-menu-item (click)="onReloadCollectionClick()" translate>Reload</li>
+                  <li nz-menu-item (click)="onReloadCollectionClick()" [nzDisabled]="!collectionNodes.length" translate>Reload</li>
                 </ul>
               </nz-dropdown-menu>
             </div>
