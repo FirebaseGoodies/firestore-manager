@@ -9,7 +9,7 @@ export class FirestoreService {
     db: AngularFirestore;
     cache: any = {};
     private unchangedCache: any = {};
-    private subscriptions: Subscription[] = [];
+    private subscriptions: { [key: string]: Subscription } = {};
 
     constructor(afs: AngularFirestore) {
       this.db = afs;
@@ -25,11 +25,18 @@ export class FirestoreService {
       this.unsubscribe();
     }
 
-    unsubscribe() {
-      this.subscriptions.forEach(subscription => {
-        subscription.unsubscribe();
-      });
-      this.subscriptions = [];
+    unsubscribe(subscription: string = null) {
+      if (subscription !== null) {
+        // Remove solo subscription
+        this.subscriptions[subscription].unsubscribe();
+        delete this.subscriptions[subscription];
+      } else {
+        // Remove all subscriptions
+        Object.keys(this.subscriptions).forEach(subscription => {
+          this.subscriptions[subscription].unsubscribe();
+        });
+        this.subscriptions = {};
+      }
     }
 
     isCollection(name: string): Promise<boolean> {
@@ -49,31 +56,29 @@ export class FirestoreService {
         if (this.cache[name]) {
           // console.log(name + ' found in cache');
           resolve(this.cache[name]);
-        } else {
-          this.subscriptions.push(
-            this.db.collection(name).snapshotChanges().pipe(
-              map(actions => {
-                return actions.map(a => {
-                  const data = a.payload.doc.data();
-                  const id = a.payload.doc.id;
-                  return { id: id, data: data };
-                });
-              })
-            ).subscribe(snapshot => {
-              // console.log(snapshot);
-              let docs = {};
-              snapshot.forEach(doc => {
-                // console.log(doc);
-                docs[doc.id] = doc.data;
+        } else if (! this.subscriptions[name]) {
+          this.subscriptions[name] = this.db.collection(name).snapshotChanges().pipe(
+            map(actions => {
+              return actions.map(a => {
+                const data = a.payload.doc.data();
+                const id = a.payload.doc.id;
+                return { id: id, data: data };
               });
-              // console.log(docs);
-              if (Object.keys(this.cache).length === 0) {
-                this.cache[name] = docs;
-              }
-              this.unchangedCache[name] = {...docs}; // assign a copy
-              resolve(docs);
             })
-          );
+          ).subscribe(snapshot => {
+            // console.log(snapshot);
+            let docs = {};
+            snapshot.forEach(doc => {
+              // console.log(doc);
+              docs[doc.id] = doc.data;
+            });
+            // console.log(docs);
+            if (! this.cache[name]) {
+              this.cache[name] = docs;
+            }
+            this.unchangedCache[name] = {...docs}; // assign a copy
+            resolve(docs);
+          });
         }
       });
     }
@@ -88,6 +93,9 @@ export class FirestoreService {
         if (this.unchangedCache[collectionName]) {
           delete this.unchangedCache[collectionName];
         }
+        if (this.subscriptions[collectionName]) {
+          this.unsubscribe(collectionName);
+        }
         return true;
       }
       return false;
@@ -95,20 +103,19 @@ export class FirestoreService {
 
     getDocument(collectionName: string, documentName: string): Promise<any> {
       return new Promise((resolve, reject) => {
+        const subscriptionName = collectionName + '.' + documentName;
         if (this.cache[collectionName] && this.cache[collectionName][documentName]) {
           // console.log(collectionName + ' > ' + documentName + ' found in cache');
           resolve(this.cache[collectionName][documentName]);
-        } else {
-          this.subscriptions.push(
-            this.db.collection(collectionName).doc(documentName).valueChanges().subscribe((doc) => {
-              // console.log(doc);
-              if (Object.keys(this.cache).length === 0) {
-                this.cache[collectionName][documentName] = doc;
-              }
-              this.unchangedCache[collectionName][documentName] = {...doc}; // assign a copy
-              resolve(doc);
-            })
-          );
+        } else if (! this.subscriptions[subscriptionName]) {
+          this.subscriptions[subscriptionName] = this.db.collection(collectionName).doc(documentName).valueChanges().subscribe((doc) => {
+            // console.log(doc);
+            if (! this.cache[collectionName][documentName]) {
+              this.cache[collectionName][documentName] = doc;
+            }
+            this.unchangedCache[collectionName][documentName] = {...doc}; // assign a copy
+            resolve(doc);
+          });
         }
       });
     }
@@ -119,6 +126,10 @@ export class FirestoreService {
           delete this.cache[collectionName][documentName];
           if (this.unchangedCache[collectionName][documentName]) {
             delete this.unchangedCache[collectionName][documentName];
+          }
+          const subscription = collectionName + '.' + documentName;
+          if (this.subscriptions[subscription]) {
+            this.unsubscribe(subscription);
           }
         }
         if (permanently) {
