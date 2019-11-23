@@ -21,7 +21,7 @@ export class TranslateService {
   }
 
   private loadTranslations(): Promise<void> {
-    return this.http.get(`../../_locales/${this.defaultLanguage}/messages.json`).toPromise().then(translations => {
+    return this.http.get(`./_locales/${this.defaultLanguage}/messages.json`).toPromise().then(translations => {
       this.translations = translations;
       // console.log(this.translations);
     });

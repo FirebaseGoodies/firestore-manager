@@ -24,6 +24,7 @@
               "src/assets",
               "src/_locales",
               "src/manifest.json",
+              "src/.nojekyll",
               {
                 "glob": "**/*",
                 "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
@@ -97,7 +98,8 @@
               "src/favicon.ico",
               "src/assets",
               "src/_locales",
-              "src/manifest.json"
+              "src/manifest.json",
+              "src/.nojekyll"
             ],
             "styles": [
               "src/styles.css"
