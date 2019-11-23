@@ -25,15 +25,15 @@ export class FirestoreService {
       this.unsubscribe();
     }
 
-    unsubscribe(subscription: string = null) {
-      if (subscription !== null) {
+    unsubscribe(subscriptionName: string = null) {
+      if (subscriptionName !== null) {
         // Remove solo subscription
-        this.subscriptions[subscription].unsubscribe();
-        delete this.subscriptions[subscription];
+        this.subscriptions[subscriptionName].unsubscribe();
+        delete this.subscriptions[subscriptionName];
       } else {
         // Remove all subscriptions
-        Object.keys(this.subscriptions).forEach(subscription => {
-          this.subscriptions[subscription].unsubscribe();
+        Object.keys(this.subscriptions).forEach(subscriptionName => {
+          this.subscriptions[subscriptionName].unsubscribe();
         });
         this.subscriptions = {};
       }
@@ -131,9 +131,9 @@ export class FirestoreService {
           if (this.unchangedCache[collectionName][documentName]) {
             delete this.unchangedCache[collectionName][documentName];
           }
-          const subscription = collectionName + '.' + documentName;
-          if (this.subscriptions[subscription]) {
-            this.unsubscribe(subscription);
+          const subscriptionName = collectionName + '.' + documentName;
+          if (this.subscriptions[subscriptionName]) {
+            this.unsubscribe(subscriptionName);
           }
         }
         if (permanently) {
