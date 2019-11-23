@@ -46,6 +46,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   isReloadingCollections: boolean = false;
   isSearchCollectionLoading: boolean = false;
   isSettingsDrawerVisible: boolean = false;
+  isSettingsDrawerLoaded: boolean = false;
   addCollectionForm: FormGroup;
   isAddCollectionButtonLoading: boolean = false;
   isDrawerVisible: boolean = false;

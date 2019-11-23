@@ -237,7 +237,7 @@
   ></nz-alert>
 </nz-modal>
 <nz-drawer
-  *ngIf="!isWebExtension"
+  *ngIf="!isWebExtension && (isSettingsDrawerVisible || isSettingsDrawerLoaded)"
   [nzClosable]="false"
   [nzOffsetX]="0"
   [nzWidth]="500"
@@ -245,5 +245,7 @@
   nzTitle="{{ 'Settings' | translate }}"
   (nzOnClose)="onSettingsDrawerClose()"
 >
-  <iframe src="./options" width="100%" frameBorder="0" [ngStyle]="{ 'min-height': '200px' }"></iframe>
+  <nz-spin nzTip="{{ 'Loading' | translate }}..." [nzSpinning]="!isSettingsDrawerLoaded">
+    <iframe src="./options" width="100%" frameBorder="0" (load)="isSettingsDrawerLoaded = true" [ngStyle]="{ 'min-height': '200px' }"></iframe>
+  </nz-spin>
 </nz-drawer>
