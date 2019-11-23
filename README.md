@@ -34,7 +34,9 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 ## Todo
 
-- [ ] Translations (create a translate pipe + directive?)
+- [x] Translations
+- [ ] Handle sub-collections
+- [ ] Add filter for documents (field - operator - value)
 
 ## License
 
