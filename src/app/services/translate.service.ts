@@ -27,7 +27,7 @@ export class TranslateService {
     });
   }
 
-  getLanguage() {
+  getLanguage(): string {
     return this.app.isWebExtension ? browser.i18n.getUILanguage() : this.defaultLanguage;
   }
 
