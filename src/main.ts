@@ -9,9 +9,15 @@ if (environment.production) {
   enableProdMode();
 }
 
+// Get database config & index from storage before bootstrapping the module
 StorageService.getInstance().getMany('firebase_config', 'database_index').then(([config, index]) => {
-  // console.log('firebase_config in storage', config);
-  StorageService.setTmp('firebase_config', config);
-  StorageService.setTmp('database_index', index);
+  // Save as temporary values
+  const values = {
+    firebase_config: config,
+    database_index: index
+  };
+  // console.log(values);
+  StorageService.saveTmp(values);
+  // Bootstrap main module
   platformBrowserDynamic().bootstrapModule(AppModule).catch(err => console.error(err));
 });

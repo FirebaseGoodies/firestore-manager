@@ -24,6 +24,12 @@ export class StorageService {
     StorageService.tmpStorage[key] = value;
   }
 
+  static saveTmp(values: { [key: string]: any }) {
+    Object.keys(values).forEach(key => {
+      StorageService.setTmp(key, values[key]);
+    });
+  }
+
   get(key: string): Promise<any> {
     return new Promise((resolve, reject) => {
       if (this.app.isWebExtension) {
