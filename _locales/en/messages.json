@@ -115,9 +115,6 @@
     "No collection found": {
         "message": "No collection found"
     },
-    "Add Collection": {
-        "message": "Add Collection"
-    },
     "Reload": {
         "message": "Reload"
     },
@@ -189,5 +186,59 @@
     },
     "Confirm": {
         "message": "Confirm"
+    },
+    "Document": {
+        "message": "Document"
+    },
+    "New Document": {
+        "message": "New Document"
+    },
+    "Content of the document in json": {
+        "message": "Content of the document in json"
+    },
+    "Select a collection": {
+        "message": "Select a collection"
+    },
+    "please select a collection": {
+        "message": "please select a collection"
+    },
+    "Duplicate document?": {
+        "message": "Duplicate document?"
+    },
+    "please enter a valid numeric value": {
+        "message": "please enter a valid numeric value"
+    },
+    "Import": {
+        "message": "Import"
+    },
+    "Export": {
+        "message": "Export"
+    },
+    "Exporting": {
+        "message": "Exporting"
+    },
+    "Importing": {
+        "message": "Importing"
+    },
+    "Data successfully imported!": {
+        "message": "Data successfully imported!"
+    },
+    "Import completed!": {
+        "message": "Import completed!"
+    },
+    "File is empty!": {
+        "message": "File is empty!"
+    },
+    "Expand": {
+        "message": "Expand"
+    },
+    "All": {
+        "message": "All"
+    },
+    "None": {
+        "message": "None"
+    },
+    "Expanding": {
+        "message": "Expanding"
     }
 }

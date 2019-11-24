@@ -115,9 +115,6 @@
     "No collection found": {
         "message": "Aucune collection trouvée"
     },
-    "Add Collection": {
-        "message": "Ajouter une collection"
-    },
     "Reload": {
         "message": "Recharger"
     },
@@ -155,7 +152,7 @@
         "message": "Contenu"
     },
     "Content of the first document in json": {
-        "message": "Contenu du premier document en json"
+        "message": "Contenu du premier document au format json"
     },
     "please enter a valid json content": {
         "message": "Veuillez entrer un contenu JSON valide"
@@ -189,5 +186,59 @@
     },
     "Confirm": {
         "message": "Confirmer"
+    },
+    "Document": {
+        "message": "Document"
+    },
+    "New Document": {
+        "message": "Nouveau document"
+    },
+    "Content of the document in json": {
+        "message": "Contenu du document au format json"
+    },
+    "Select a collection": {
+        "message": "Sélectionnez une collection"
+    },
+    "please select a collection": {
+        "message": "Veuillez sélectionner une collection"
+    },
+    "Duplicate document?": {
+        "message": "Dupliquer le document?"
+    },
+    "please enter a valid numeric value": {
+        "message": "Veuillez entrer une valeur numérique valide"
+    },
+    "Import": {
+        "message": "Importer"
+    },
+    "Export": {
+        "message": "Exporter"
+    },
+    "Exporting": {
+        "message": "Exportation en cours"
+    },
+    "Importing": {
+        "message": "Importation en cours"
+    },
+    "Data successfully imported!": {
+        "message": "Données importées avec succès!"
+    },
+    "Import completed!": {
+        "message": "Importation terminée!"
+    },
+    "File is empty!": {
+        "message": "Le fichier est vide!"
+    },
+    "Expand": {
+        "message": "Développer"
+    },
+    "All": {
+        "message": "Tout"
+    },
+    "None": {
+        "message": "Aucun"
+    },
+    "Expanding": {
+        "message": "Expansion en cours"
     }
 }
