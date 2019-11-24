@@ -189,5 +189,23 @@
     },
     "Confirm": {
         "message": "Confirm"
+    },
+    "New Document": {
+        "message": "New Document"
+    },
+    "Content of the document in json": {
+        "message": "Content of the document in json"
+    },
+    "Select a collection": {
+        "message": "Select a collection"
+    },
+    "please select a collection": {
+        "message": "please select a collection"
+    },
+    "Duplicate document?": {
+        "message": "Duplicate document?"
+    },
+    "please enter a valid numeric value": {
+        "message": "please enter a valid numeric value"
     }
 }

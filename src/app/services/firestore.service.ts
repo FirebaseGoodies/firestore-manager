@@ -124,6 +124,10 @@ export class FirestoreService {
       });
     }
 
+    addDocument(collectionName: string, content: any): Promise<any> {
+      return this.addCollection(collectionName, content);
+    }
+
     deleteDocument(collectionName: string, documentName: string, permanently: boolean = true): Promise<void> {
       return new Promise((resolve, reject) => {
         if (this.cache[collectionName][documentName]) {

@@ -48,11 +48,14 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   isSettingsDrawerVisible: boolean = false;
   isSettingsDrawerLoaded: boolean = false;
   addCollectionForm: FormGroup;
+  addDocumentForm: FormGroup;
   isAddCollectionButtonLoading: boolean = false;
-  isDrawerVisible: boolean = false;
+  isAddCollectionDrawerVisible: boolean = false;
+  isAddDocumentDrawerVisible: boolean = false;
+  isAddDocumentButtonLoading: boolean = false;
   searchValue: string = null;
   collectionList: string[] = [];
-  collectionContentExample: string = `{\n\t"field": "value",\n\t...\n}`;
+  documentContentExample: string = `{\n\t"field": "value",\n\t...\n}`;
   editorOptions: JsonEditorOptions;
   @ViewChild('collectionSearch', { static: false }) collectionSearch: NzSelectComponent;
   @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
@@ -65,6 +68,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     diffStyle: 'word',
     diffOutputFormat: 'line-by-line'
   };
+  formatterDuplicateTimes = (value: number) => `x ${value}`;
+  parserDuplicateTimes = (value: string) => value.replace('x ', '');
 
   constructor(
     private fb: FormBuilder,
@@ -102,10 +107,16 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       }
       this.editor.setMode(this.options.editorMode);
     });
-    // Init add collection form
+    // Init forms
     this.addCollectionForm = this.fb.group({
       name: [null, [Validators.required]],
       content: [null, [Validators.required, jsonValidator]]
+    });
+    this.addDocumentForm = this.fb.group({
+      collection: [null, [Validators.required]],
+      content: [null, [Validators.required, jsonValidator]],
+      duplicate: [false, [Validators.required]],
+      duplicateTimes: [2, [Validators.pattern("^[0-9]*$")]]
     });
     // Init editor options
     this.editorOptions = new JsonEditorOptions();
@@ -191,10 +202,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     });
   }
 
-  submitCollectionForm(): void {
-    for (const i in this.addCollectionForm.controls) {
-      this.addCollectionForm.controls[i].markAsDirty();
-      this.addCollectionForm.controls[i].updateValueAndValidity();
+  submitForm(form: FormGroup): void {
+    for (const i in form.controls) {
+      form.controls[i].markAsDirty();
+      form.controls[i].updateValueAndValidity();
     }
   }
 
@@ -215,13 +226,39 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           }).catch(error => {
             console.log(error.message);
           });
-          this.isDrawerVisible = false;
+          this.isAddCollectionDrawerVisible = false;
         }
       }).catch((error) => {
         console.log(error.message);
         this.message.create('error', error.message);
       }).finally(() => {
         this.isAddCollectionButtonLoading = false;
+      });
+    }
+  }
+
+  onAddDocumentClick() {
+    if (this.addDocumentForm.valid) {
+      this.isAddDocumentButtonLoading = true;
+      const collection = this.addDocumentForm.controls.collection.value;
+      const content = JSON.parse(this.addDocumentForm.controls.content.value);
+      const duplicate = this.addDocumentForm.controls.duplicate.value;
+      const duplicateTimes = duplicate ? this.addDocumentForm.controls.duplicateTimes.value : 1;
+      let promises: Promise<any>[] = [];
+      for (let doc = 0; doc < duplicateTimes; doc++) {
+        // Add document
+        promises.push(this.firestore.addDocument(collection, content));
+      }
+      Promise.all(promises).then((results) => {
+        // console.log(results);
+        // Reload collections
+        this.onReloadCollectionClick();
+        this.isAddDocumentDrawerVisible = false;
+      }).catch(error => {
+        console.log(error.message);
+        this.message.create('error', error.message);
+      }).finally(() => {
+        this.isAddDocumentButtonLoading = false;
       });
     }
   }
@@ -274,10 +311,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     });
   }
 
-  onRandomContentClick(event) {
+  onRandomContentClick(event: Event, form: FormGroup) {
     event.preventDefault();
     // Generate random content
-    this.addCollectionForm.controls.content.setValue(`{
+    form.controls.content.setValue(`{
       "id": "${this.randomString(3, Chars.Numeric)}",
       "firstname": "${this.randomString(6, Chars.Alpha)}",
       "lastname": "${this.randomString(8, Chars.Alpha)}",
@@ -469,7 +506,14 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         // console.log('All collections reloaded');
         this.collectionNodes = [...this.collectionNodes]; // refresh
         // Restore cache
-        this.firestore.cache = cacheBackup;
+        Object.keys(cacheBackup).forEach(collectionName => {
+          Object.keys(cacheBackup[collectionName]).forEach(documentName => {
+            if (! this.firestore.cache[collectionName]) {
+              this.firestore.cache[collectionName] = cacheBackup[collectionName];
+            }
+            this.firestore.cache[collectionName][documentName] = cacheBackup[collectionName][documentName];
+          });
+        });
         this.isReloadingCollections = false;
       });
     }
