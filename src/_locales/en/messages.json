@@ -115,9 +115,6 @@
     "No collection found": {
         "message": "No collection found"
     },
-    "Add Collection": {
-        "message": "Add Collection"
-    },
     "Reload": {
         "message": "Reload"
     },
@@ -189,6 +186,9 @@
     },
     "Confirm": {
         "message": "Confirm"
+    },
+    "Document": {
+        "message": "Document"
     },
     "New Document": {
         "message": "New Document"

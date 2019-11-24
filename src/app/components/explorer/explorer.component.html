@@ -84,9 +84,13 @@
                 <i nz-icon nzType="more" nzTheme="outline"></i>
               </button>
               <nz-dropdown-menu #collectionMenu="nzDropdownMenu">
-                <ul nz-menu>
-                  <li nz-menu-item (click)="isAddCollectionDrawerVisible = true" translate>Add Collection</li>
-                  <li nz-menu-item (click)="isAddDocumentDrawerVisible = collectionNodes.length ? true : false" [nzDisabled]="!collectionNodes.length" translate>Add Document</li>
+                <ul nz-menu [ngStyle]="{ 'min-width': '100px' }">
+                  <li nz-submenu nzTitle="{{ 'Add' | translate }}">
+                    <ul>
+                      <li nz-menu-item (click)="isAddCollectionDrawerVisible = true" translate>Collection</li>
+                      <li nz-menu-item (click)="isAddDocumentDrawerVisible = collectionNodes.length ? true : false" [nzDisabled]="!collectionNodes.length" translate>Document</li>
+                    </ul>
+                  </li>
                   <li nz-menu-item (click)="onDeleteCollectionClick()" [nzDisabled]="!collectionNodes.length" translate>Delete</li>
                   <li nz-menu-item (click)="onReloadCollectionClick()" [nzDisabled]="!collectionNodes.length" translate>Reload</li>
                   <li nz-menu-divider></li>
