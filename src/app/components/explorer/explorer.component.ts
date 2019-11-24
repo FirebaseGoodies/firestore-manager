@@ -17,6 +17,8 @@ import { NzSelectComponent } from 'ng-zorro-antd/select';
 import { Options } from 'src/app/models/options.model';
 import { AppService } from 'src/app/services/app.service';
 import { TranslateService } from 'src/app/services/translate.service';
+import { download } from 'src/app/helpers/download.helper';
+import { DatabaseConfig } from 'src/app/models/database-config.model';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -32,7 +34,7 @@ const Chars = {
 export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
 
   private databaseIndex: number;
-  databaseUrl: string;
+  databaseConfig: DatabaseConfig;
   collectionNodes: any[] = [];
   collectionNodesSelectedKeys: any[] = [];
   collectionNodesCheckedKeys: any[] = [];
@@ -43,7 +45,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   isSaveModalVisible: boolean = false;
   isSaveButtonLoading: boolean = false;
   isSaveButtonDisabled: boolean = false;
-  isReloadingCollections: boolean = false;
+  isCollectionListLoading: boolean = false;
   isSearchCollectionLoading: boolean = false;
   isSettingsDrawerVisible: boolean = false;
   isSettingsDrawerLoaded: boolean = false;
@@ -70,6 +72,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   };
   formatterDuplicateTimes = (value: number) => `x ${value}`;
   parserDuplicateTimes = (value: string) => value.replace('x ', '');
+  collectionListLoadingTip: string = 'Reloading';
 
   constructor(
     private fb: FormBuilder,
@@ -95,7 +98,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   ngOnInit() {
     // Get data from storage
     this.databaseIndex = StorageService.getTmp('database_index');
-    this.databaseUrl = StorageService.getTmp('firebase_config').databaseURL;
+    this.databaseConfig = StorageService.getTmp('firebase_config');
     this.storage.getMany('databases', 'options').then(([databases, options]) => {
       if (databases && databases[this.databaseIndex].collections) {
         const collections = databases[this.databaseIndex].collections;
@@ -159,7 +162,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
-  private saveCollection(name: string): Promise<boolean> {
+  private saveCollection(name: string, addToNodes: boolean = true): Promise<boolean> {
     return new Promise((resolve, reject) => {
       // Add to list
       this.collectionList.push(name);
@@ -170,13 +173,15 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           databases[this.databaseIndex].collections.push(name);
           this.storage.save('databases', databases);
           // Add to nodes
-          const node: any = { title: name, key: name };
-          this.addNode(node).then(() => {
-            node.level = 0;
-            this.collectionNodesExpandedKeys = [node.key];
-            this.collectionNodesSelectedKeys = [node.key];
-            this.selectNode(node);
-          });
+          if (addToNodes) {
+            const node: any = { title: name, key: name };
+            this.addNode(node).then(() => {
+              node.level = 0;
+              this.collectionNodesExpandedKeys = [node.key];
+              this.collectionNodesSelectedKeys = [node.key];
+              this.selectNode(node);
+            });
+          }
           resolve(true);
         }
         resolve(false);
@@ -489,34 +494,40 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   onReloadCollectionClick() {
     if (this.collectionNodes.length) {
-      // console.log(this.firestore.cache);
-      const cacheBackup = {...this.firestore.cache}; // get/assign a copy
-      let promises: Promise<any>[] = [];
-      this.isReloadingCollections = true;
-      // Clear cache
-      this.firestore.clearCache();
-      this.selectedCollection = null;
-      this.updateEditor({});
-      this.collectionNodesSelectedKeys = [];
-      // Reload collections
-      this.collectionNodes.forEach(node => {
-        promises.push(this.reloadCollection(node));
-      });
-      Promise.all(promises).then(() => {
-        // console.log('All collections reloaded');
-        this.collectionNodes = [...this.collectionNodes]; // refresh
-        // Restore cache
-        Object.keys(cacheBackup).forEach(collectionName => {
-          Object.keys(cacheBackup[collectionName]).forEach(documentName => {
-            if (! this.firestore.cache[collectionName]) {
-              this.firestore.cache[collectionName] = cacheBackup[collectionName];
-            }
-            this.firestore.cache[collectionName][documentName] = cacheBackup[collectionName][documentName];
-          });
-        });
-        this.isReloadingCollections = false;
+      this.collectionListLoadingTip = 'Reloading';
+      this.isCollectionListLoading = true;
+      this.reloadCollections().finally(() => {
+        this.isCollectionListLoading = false;
       });
     }
+  }
+
+  private reloadCollections(): Promise<void> {
+    // console.log(this.firestore.cache);
+    const cacheBackup = {...this.firestore.cache}; // get/assign a copy
+    let promises: Promise<any>[] = [];
+    // Clear cache
+    this.firestore.clearCache();
+    this.selectedCollection = null;
+    this.updateEditor({});
+    this.collectionNodesSelectedKeys = [];
+    // Reload collections
+    this.collectionNodes.forEach(node => {
+      promises.push(this.reloadCollection(node));
+    });
+    return Promise.all(promises).then(() => {
+      // console.log('All collections reloaded');
+      this.collectionNodes = [...this.collectionNodes]; // refresh
+      // Restore cache
+      Object.keys(cacheBackup).forEach(collectionName => {
+        Object.keys(cacheBackup[collectionName]).forEach(documentName => {
+          if (! this.firestore.cache[collectionName]) {
+            this.firestore.cache[collectionName] = cacheBackup[collectionName];
+          }
+          this.firestore.cache[collectionName][documentName] = cacheBackup[collectionName][documentName];
+        });
+      });
+    });
   }
 
   private reloadCollection(node: any): Promise<void> {
@@ -530,6 +541,84 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         resolve();
       });
     });
+  }
+
+  onExportJsonClick() {
+    if (this.collectionNodes.length) {
+      this.collectionListLoadingTip = 'Exporting';
+      this.isCollectionListLoading = true;
+      this.reloadCollections().then(() => {
+        const c = JSON.stringify(this.firestore.cache, null, 4);
+        const file = new Blob([c], {type: 'text/json'});
+        download(file, this.databaseConfig.projectId + '.json');
+      }).finally(() => {
+        this.isCollectionListLoading = false;
+      });
+    }
+  }
+
+  onImportFileChanged(event: any) {
+    // Read file
+    const selectedFile = event.target.files[0];
+    const fileReader: any = new FileReader();
+    fileReader.readAsText(selectedFile, 'UTF-8');
+    fileReader.onload = () => {
+      this.collectionListLoadingTip = 'Importing';
+      this.isCollectionListLoading = true;
+      let newCollections: string[] = [];
+      // Parse data from file
+      try {
+        const data = JSON.parse(fileReader.result);
+        const collections = Object.keys(data);
+        if (collections.length) {
+          let promises: Promise<any>[] = [];
+          // Loop on all collections (in data)
+          collections.forEach(collectionName => {
+            // Loop on documents
+            Object.keys(data[collectionName]).forEach(documentName => {
+              // Set/update document (will create the collection also if not exist)
+              // console.log(collectionName, documentName, data[collectionName][documentName]);
+              promises.push(this.firestore.setDocument(collectionName, documentName, data[collectionName][documentName]));
+            });
+            // Save collection if not exist
+            if (this.collectionList.indexOf(collectionName) === -1) {
+              newCollections.push(collectionName);
+            }
+          });
+          Promise.all(promises).then((results) => {
+            // console.log(results);
+            // Save new collections
+            let promise: Promise<any> = Promise.resolve(); // used to execute promises syncly
+            newCollections.forEach(collectionName => {
+              promise = promise.then(() => this.saveCollection(collectionName, false));
+            });
+            // Update collection nodes
+            this.setCollectionNodes(newCollections);
+            // Reload collections
+            this.reloadCollections().finally(() => {
+              // Display success message
+              this.message.create('success', this.translation.get('Data successfully imported!'));
+              this.notification.create(this.translation.get('Import completed!'));
+              this.isCollectionListLoading = false;
+            });
+          }).catch(error => {
+            throw new Error(error.message);
+          });
+        } else {
+          this.message.create('error', this.translation.get('File is empty!'));
+          this.isCollectionListLoading = false;
+        }
+      }
+      catch(error) {
+        console.log(error.message);
+        this.message.create('error', error.message);
+        this.isCollectionListLoading = false;
+      }
+    };
+    fileReader.onerror = (error) => {
+      console.log(error);
+      this.message.create('error', error);
+    };
   }
 
 }

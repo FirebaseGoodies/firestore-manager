@@ -150,7 +150,11 @@ export class FirestoreService {
       });
     }
 
+    setDocument(collectionName: string, documentName: string, content: any): Promise<any> {
+      return this.db.collection(collectionName).doc(documentName).set(content);
+    }
+
     saveDocument(collectionName: string, documentName: string): Promise<any> {
-      return this.db.collection(collectionName).doc(documentName).set(this.cache[collectionName][documentName]);
+      return this.setDocument(collectionName, documentName, this.cache[collectionName][documentName]);
     }
 }

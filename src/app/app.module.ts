@@ -29,9 +29,10 @@ import { AppService } from './services/app.service';
 import { TranslateService } from './services/translate.service';
 import { TranslateDirective } from './directives/translate.directive';
 import { TranslatePipe } from './pipes/translate.pipe';
+import { DatabaseConfig } from './models/database-config.model';
 
 export function initializeApp() {
-  const config = StorageService.getTmp('firebase_config');
+  const config: DatabaseConfig = StorageService.getTmp('firebase_config');
   //console.log(config);
   return config;
 }

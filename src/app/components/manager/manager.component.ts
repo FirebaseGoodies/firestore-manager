@@ -6,6 +6,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { StorageService } from 'src/app/services/storage.service';
 import { AppService } from 'src/app/services/app.service';
 import { TranslateService } from 'src/app/services/translate.service';
+import { DatabaseConfig } from 'src/app/models/database-config.model';
 
 @Component({
   selector: 'fm-manager',
@@ -78,7 +79,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
     return new Promise(resolve => {
       setTimeout(() => {
         try {
-          const config = eval('(' + this.databaseConfig + ')');
+          const config: DatabaseConfig = eval('(' + this.databaseConfig + ')');
           //console.log(config);
           if (config.apiKey && config.authDomain && config.databaseURL && config.projectId && config.storageBucket && config.messagingSenderId && config.appId) {
             // Add

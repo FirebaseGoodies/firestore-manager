@@ -40,10 +40,10 @@
   </nz-header>
   <nz-layout>
     <nz-sider nzTheme="light" nzWidth="300px">
-      <nz-spin nzTip="{{ 'Reloading' | translate }}..." [nzSpinning]="isReloadingCollections">
+      <nz-spin nzTip="{{ collectionListLoadingTip | translate }}..." [nzSpinning]="isCollectionListLoading">
         <div *ngIf="!enableCollectionDeleteMode" [ngStyle]="{ 'margin-bottom': '10px' }">
           <nz-alert
-            *ngIf="unsavedChanges"
+            *ngIf="unsavedChanges && !isCollectionListLoading"
             nzBanner
             [nzMessage]="unsavedChangesTpl"
             [ngStyle]="{ 'margin': '-20px -20px 10px' }"
@@ -88,8 +88,19 @@
                   <li nz-menu-item (click)="isAddCollectionDrawerVisible = true" translate>Add Collection</li>
                   <li nz-menu-item (click)="isAddDocumentDrawerVisible = collectionNodes.length ? true : false" [nzDisabled]="!collectionNodes.length" translate>Add Document</li>
                   <li nz-menu-item (click)="onDeleteCollectionClick()" [nzDisabled]="!collectionNodes.length" translate>Delete</li>
-                  <li nz-menu-divider></li>
                   <li nz-menu-item (click)="onReloadCollectionClick()" [nzDisabled]="!collectionNodes.length" translate>Reload</li>
+                  <li nz-menu-divider></li>
+                  <li nz-submenu nzTitle="{{ 'Import' | translate }}">
+                    <ul>
+                      <li nz-menu-item (click)="importFileInput.click()">JSON</li>
+                    </ul>
+                    <input type="file" accept=".json" [hidden]="true" (change)="onImportFileChanged($event)" #importFileInput>
+                  </li>
+                  <li nz-submenu nzTitle="{{ 'Export' | translate }}" [nzDisabled]="!collectionNodes.length">
+                    <ul>
+                      <li nz-menu-item (click)="onExportJsonClick()">JSON</li>
+                    </ul>
+                  </li>
                 </ul>
               </nz-dropdown-menu>
             </div>
@@ -141,7 +152,7 @@
           </div>
           <nz-alert nzBanner [nzMessage]="deleteWarningTpl" nzCloseable>
             <ng-template #deleteWarningTpl>
-              <span translate>Only documents can be permanently deleted, collections will be removed only from the browser cache! If you want to permanently delete a collection please use the</span>&nbsp;<a [href]="databaseUrl" target="_blank" translate>Firebase Console</a>.
+              <span translate>Only documents can be permanently deleted, collections will be removed only from the browser cache! If you want to permanently delete a collection please use the</span>&nbsp;<a [href]="databaseConfig.databaseURL" target="_blank" translate>Firebase Console</a>.
             </ng-template>
           </nz-alert>
         </div>

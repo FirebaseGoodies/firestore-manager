@@ -207,5 +207,26 @@
     },
     "please enter a valid numeric value": {
         "message": "please enter a valid numeric value"
+    },
+    "Import": {
+        "message": "Import"
+    },
+    "Export": {
+        "message": "Export"
+    },
+    "Exporting": {
+        "message": "Exporting"
+    },
+    "Importing": {
+        "message": "Importing"
+    },
+    "Data successfully imported!": {
+        "message": "Data successfully imported!"
+    },
+    "Import completed!": {
+        "message": "Import completed!"
+    },
+    "File is empty!": {
+        "message": "File is empty!"
     }
 }
