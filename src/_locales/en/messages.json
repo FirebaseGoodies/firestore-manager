@@ -228,5 +228,17 @@
     },
     "File is empty!": {
         "message": "File is empty!"
+    },
+    "Expand": {
+        "message": "Expand"
+    },
+    "All": {
+        "message": "All"
+    },
+    "None": {
+        "message": "None"
+    },
+    "Expanding": {
+        "message": "Expanding"
     }
 }

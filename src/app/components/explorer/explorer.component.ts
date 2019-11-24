@@ -513,7 +513,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     this.collectionNodesSelectedKeys = [];
     // Reload collections
     this.collectionNodes.forEach(node => {
-      promises.push(this.reloadCollection(node));
+      promises.push(this.loadCollection(node, true));
     });
     return Promise.all(promises).then(() => {
       // console.log('All collections reloaded');
@@ -530,16 +530,20 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     });
   }
 
-  private reloadCollection(node: any): Promise<void> {
+  private loadCollection(node: any, force: boolean = false): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.firestore.getCollection(node.key).then((documents) => {
-        // console.log('Reload collection: ' + node.key);
-        node.children = [];
-        Object.keys(documents).forEach((documentId: string) => {
-          node.children.push({ title: documentId, key: documentId, isLeaf: true });
-        });
+      if (!force && node.children && node.children.length) {
         resolve();
-      });
+      } else {
+        this.firestore.getCollection(node.key).then((documents) => {
+          // console.log('Reload collection: ' + node.key);
+          node.children = [];
+          Object.keys(documents).forEach((documentId: string) => {
+            node.children.push({ title: documentId, key: documentId, isLeaf: true });
+          });
+          resolve();
+        });
+      }
     });
   }
 
@@ -619,6 +623,25 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       console.log(error);
       this.message.create('error', error);
     };
+  }
+
+  expandAllCollectionNodes() {
+    this.collectionListLoadingTip = 'Expanding';
+    this.isCollectionListLoading = true;
+    let promises: Promise<any>[] = [];
+    this.collectionNodes.forEach(node => {
+      if (! this.collectionNodesExpandedKeys[node.key]) {
+        promises.push(this.loadCollection(node));
+        this.collectionNodesExpandedKeys.push(node.key);
+      }
+    });
+    Promise.all(promises).then(() => {
+      // Refresh nodes
+      this.collectionNodesExpandedKeys = [...this.collectionNodesExpandedKeys];
+      this.collectionNodes = [...this.collectionNodes];
+    }).finally(() => {
+      this.isCollectionListLoading = false;
+    });
   }
 
 }
