@@ -154,8 +154,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           });
         }
       }).catch((error) => {
-        console.log(error.message);
-        this.message.create('error', error.message);
+        this.displayError(error);
       }).finally(() => {
         this.isSearchCollectionLoading = false;
       });
@@ -234,8 +233,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           this.isAddCollectionDrawerVisible = false;
         }
       }).catch((error) => {
-        console.log(error.message);
-        this.message.create('error', error.message);
+        this.displayError(error);
       }).finally(() => {
         this.isAddCollectionButtonLoading = false;
       });
@@ -260,8 +258,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         this.onReloadCollectionClick();
         this.isAddDocumentDrawerVisible = false;
       }).catch(error => {
-        console.log(error.message);
-        this.message.create('error', error.message);
+        this.displayError(error);
       }).finally(() => {
         this.isAddDocumentButtonLoading = false;
       });
@@ -497,8 +494,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.collectionListLoadingTip = 'Reloading';
       this.isCollectionListLoading = true;
       this.reloadCollections().catch((error) => {
-        console.log(error.message);
-        this.message.create('error', error.message);
+        this.displayError(error);
       }).finally(() => {
         this.isCollectionListLoading = false;
       });
@@ -561,8 +557,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         const file = new Blob([c], {type: 'text/json'});
         download(file, this.databaseConfig.projectId + '.json');
       }).catch((error) => {
-        console.log(error.message);
-        this.message.create('error', error.message);
+        this.displayError(error);
       }).finally(() => {
         this.isCollectionListLoading = false;
       });
@@ -578,8 +573,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.message.create('success', this.translation.get('Data successfully imported!'));
       this.notification.create(this.translation.get('Import completed!'));
     }).catch((error) => {
-      console.log(error.message);
-      this.message.create('error', error.message);
+      this.displayError(error);
     }).finally(() => {
       this.isCollectionListLoading = false;
     });
@@ -595,8 +589,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         try {
           const data = JSON.parse(fileReader.result);
           const collections = Object.keys(data);
-          let newCollections: string[] = [];
           if (collections.length) {
+            let newCollections: string[] = [];
             let promises: Promise<any>[] = [];
             // Loop on all collections (in data)
             collections.forEach(collectionName => {
@@ -658,11 +652,15 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.collectionNodesExpandedKeys = [...this.collectionNodesExpandedKeys];
       this.collectionNodes = [...this.collectionNodes];
     }).catch((error) => {
-      console.log(error.message);
-      this.message.create('error', error.message);
+      this.displayError(error);
     }).finally(() => {
       this.isCollectionListLoading = false;
     });
+  }
+
+  private displayError(error) {
+    console.log(error.message);
+    this.message.create('error', error.message);
   }
 
 }
