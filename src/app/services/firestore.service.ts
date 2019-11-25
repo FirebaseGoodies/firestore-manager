@@ -65,7 +65,7 @@ export class FirestoreService {
                 return { id: id, data: data };
               });
             })
-          ).subscribe(snapshot => {
+          ).subscribe((snapshot) => {
             // console.log(snapshot);
             let docs = {};
             snapshot.forEach(doc => {
@@ -78,6 +78,8 @@ export class FirestoreService {
             }
             this.unchangedCache[name] = {...docs}; // assign a copy
             resolve(docs);
+          }, (error) => {
+            reject(error);
           });
         } else {
           resolve(null);
@@ -117,6 +119,8 @@ export class FirestoreService {
             }
             this.unchangedCache[collectionName][documentName] = {...doc}; // assign a copy
             resolve(doc);
+          }, (error) => {
+            reject(error);
           });
         } else {
           resolve(null);
@@ -143,6 +147,8 @@ export class FirestoreService {
         if (permanently) {
           this.db.collection(collectionName).doc(documentName).delete().then(() => {
             resolve();
+          }, (error) => {
+            reject(error);
           });
         } else {
           resolve();

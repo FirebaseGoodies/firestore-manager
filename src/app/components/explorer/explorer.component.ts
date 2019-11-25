@@ -496,7 +496,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     if (this.collectionNodes.length) {
       this.collectionListLoadingTip = 'Reloading';
       this.isCollectionListLoading = true;
-      this.reloadCollections().finally(() => {
+      this.reloadCollections().catch((error) => {
+        console.log(error.message);
+        this.message.create('error', error.message);
+      }).finally(() => {
         this.isCollectionListLoading = false;
       });
     }
@@ -542,6 +545,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
             node.children.push({ title: documentId, key: documentId, isLeaf: true });
           });
           resolve();
+        }).catch((error) => {
+          reject(error);
         });
       }
     });
@@ -555,6 +560,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         const c = JSON.stringify(this.firestore.cache, null, 4);
         const file = new Blob([c], {type: 'text/json'});
         download(file, this.databaseConfig.projectId + '.json');
+      }).catch((error) => {
+        console.log(error.message);
+        this.message.create('error', error.message);
       }).finally(() => {
         this.isCollectionListLoading = false;
       });
@@ -562,67 +570,77 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   onImportFileChanged(event: any) {
-    // Read file
     const selectedFile = event.target.files[0];
-    const fileReader: any = new FileReader();
-    fileReader.readAsText(selectedFile, 'UTF-8');
-    fileReader.onload = () => {
-      this.collectionListLoadingTip = 'Importing';
-      this.isCollectionListLoading = true;
-      let newCollections: string[] = [];
-      // Parse data from file
-      try {
-        const data = JSON.parse(fileReader.result);
-        const collections = Object.keys(data);
-        if (collections.length) {
-          let promises: Promise<any>[] = [];
-          // Loop on all collections (in data)
-          collections.forEach(collectionName => {
-            // Loop on documents
-            Object.keys(data[collectionName]).forEach(documentName => {
-              // Set/update document (will create the collection also if not exist)
-              // console.log(collectionName, documentName, data[collectionName][documentName]);
-              promises.push(this.firestore.setDocument(collectionName, documentName, data[collectionName][documentName]));
+    this.collectionListLoadingTip = 'Importing';
+    this.isCollectionListLoading = true;
+    this.importFile(selectedFile).then(() => {
+      // Display success message
+      this.message.create('success', this.translation.get('Data successfully imported!'));
+      this.notification.create(this.translation.get('Import completed!'));
+    }).catch((error) => {
+      console.log(error.message);
+      this.message.create('error', error.message);
+    }).finally(() => {
+      this.isCollectionListLoading = false;
+    });
+  }
+
+  private importFile(file: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // Read file
+      const fileReader: any = new FileReader();
+      fileReader.readAsText(file, 'UTF-8');
+      fileReader.onload = () => {
+        // Parse data from file
+        try {
+          const data = JSON.parse(fileReader.result);
+          const collections = Object.keys(data);
+          let newCollections: string[] = [];
+          if (collections.length) {
+            let promises: Promise<any>[] = [];
+            // Loop on all collections (in data)
+            collections.forEach(collectionName => {
+              // Loop on documents
+              Object.keys(data[collectionName]).forEach(documentName => {
+                // Set/update document (will create the collection also if not exist)
+                // console.log(collectionName, documentName, data[collectionName][documentName]);
+                promises.push(this.firestore.setDocument(collectionName, documentName, data[collectionName][documentName]));
+              });
+              // Save collection if not exist
+              if (this.collectionList.indexOf(collectionName) === -1) {
+                newCollections.push(collectionName);
+              }
             });
-            // Save collection if not exist
-            if (this.collectionList.indexOf(collectionName) === -1) {
-              newCollections.push(collectionName);
-            }
-          });
-          Promise.all(promises).then((results) => {
-            // console.log(results);
-            // Save new collections
-            let promise: Promise<any> = Promise.resolve(); // used to execute promises syncly
-            newCollections.forEach(collectionName => {
-              promise = promise.then(() => this.saveCollection(collectionName, false));
+            Promise.all(promises).then((results) => {
+              // console.log(results);
+              // Save new collections
+              let promise: Promise<any> = Promise.resolve(); // used to execute promises syncly
+              newCollections.forEach(collectionName => {
+                promise = promise.then(() => this.saveCollection(collectionName, false));
+              });
+              // Update collection nodes
+              this.setCollectionNodes(newCollections);
+              // Reload collections
+              this.reloadCollections().then(() => {
+                resolve();
+              }).catch((error) => {
+                reject(error);
+              });
+            }).catch((error) => {
+              reject(error);
             });
-            // Update collection nodes
-            this.setCollectionNodes(newCollections);
-            // Reload collections
-            this.reloadCollections().finally(() => {
-              // Display success message
-              this.message.create('success', this.translation.get('Data successfully imported!'));
-              this.notification.create(this.translation.get('Import completed!'));
-              this.isCollectionListLoading = false;
-            });
-          }).catch(error => {
-            throw new Error(error.message);
-          });
-        } else {
-          this.message.create('error', this.translation.get('File is empty!'));
-          this.isCollectionListLoading = false;
+          } else {
+            reject({message: this.translation.get('File is empty!')});
+          }
         }
-      }
-      catch(error) {
-        console.log(error.message);
-        this.message.create('error', error.message);
-        this.isCollectionListLoading = false;
-      }
-    };
-    fileReader.onerror = (error) => {
-      console.log(error);
-      this.message.create('error', error);
-    };
+        catch(error) {
+          reject(error);
+        }
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
   }
 
   expandAllCollectionNodes() {
@@ -639,6 +657,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       // Refresh nodes
       this.collectionNodesExpandedKeys = [...this.collectionNodesExpandedKeys];
       this.collectionNodes = [...this.collectionNodes];
+    }).catch((error) => {
+      console.log(error.message);
+      this.message.create('error', error.message);
     }).finally(() => {
       this.isCollectionListLoading = false;
     });
