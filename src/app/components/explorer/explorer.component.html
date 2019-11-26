@@ -39,7 +39,7 @@
       </span>
   </nz-header>
   <nz-layout>
-    <nz-sider nzTheme="light" nzWidth="300px">
+    <nz-sider nzTheme="light" nzWidth="300px" #collectionSider>
       <nz-spin nzTip="{{ collectionListLoadingTip | translate }}..." [nzSpinning]="isCollectionListLoading">
         <div *ngIf="!enableCollectionDeleteMode" [ngStyle]="{ 'margin-bottom': '10px' }">
           <nz-alert

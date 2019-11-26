@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, HostListener, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, HostListener, OnDestroy, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { jsonValidator } from 'src/app/validators/json.validator';
 import { FirestoreService } from 'src/app/services/firestore.service';
@@ -59,9 +59,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   collectionList: string[] = [];
   documentContentExample: string = `{\n\t"field": "value",\n\t...\n}`;
   editorOptions: JsonEditorOptions;
-  @ViewChild('collectionSearch', { static: false }) collectionSearch: NzSelectComponent;
-  @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
-  @ViewChild(CacheDiffComponent, { static: false }) cacheDiff: CacheDiffComponent;
+  @ViewChild('collectionSearch', { static: false }) private collectionSearch: NzSelectComponent;
+  @ViewChild('collectionSider', { static: false, read: ElementRef }) private collectionSider: ElementRef;
+  @ViewChild(JsonEditorComponent, { static: false }) private editor: JsonEditorComponent;
+  @ViewChild(CacheDiffComponent, { static: false }) private cacheDiff: CacheDiffComponent;
   private selectedCollection: string = null;
   private selectedDocument: string = null;
   isWebExtension: boolean = false;
@@ -208,9 +209,20 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         }
         this.collectionNodes.push(node);
         this.collectionNodes = [...this.collectionNodes]; // refresh
+        this.scrollDownCollectionList();
         resolve();
       });
     });
+  }
+
+  private scrollDownCollectionList() {
+    setTimeout(() => { // setTimeout used to wait for nodes to be refreshed
+      try {
+        this.collectionSider.nativeElement.scrollTo({left: 0 , top: this.collectionSider.nativeElement.scrollHeight, behavior: 'smooth'});
+      } catch(error) {
+        console.log(error.message);
+      }
+    }, 500);
   }
 
   submitForm(form: FormGroup): void {
