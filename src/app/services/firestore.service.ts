@@ -100,6 +100,7 @@ export class FirestoreService {
         if (this.subscriptions[collectionName]) {
           this.unsubscribe(collectionName);
         }
+        console.log(collectionName + ' deleted!')
         return true;
       }
       return false;
@@ -146,11 +147,13 @@ export class FirestoreService {
         }
         if (permanently) {
           this.db.collection(collectionName).doc(documentName).delete().then(() => {
+            console.log(collectionName + ' > ' + documentName + ' permanently deleted!');
             resolve();
           }, (error) => {
             reject(error);
           });
         } else {
+          console.log(collectionName + ' > ' + documentName + ' deleted!');
           resolve();
         }
       });

@@ -308,7 +308,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   onCollectionDeleteConfirm() {
+    this.collectionListLoadingTip = 'Deleting';
+    this.isCollectionListLoading = true;
     let collectionsToKeep = [];
+    let promises: Promise<any>[] = [];
     this.collectionNodes.forEach(node => {
       // Save unchecked nodes
       if (! node.checked) {
@@ -318,30 +321,30 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       if (node.children) {
         node.children.forEach(child => {
           if (child.checked) {
-            this.firestore.deleteDocument(node.key, child.key, this.permanentlyDeleteDocuments).then(() => {
-              console.log(node.key + ' > ' + child.key + (this.permanentlyDeleteDocuments ? ' permanently ' : '') + ' deleted!');
-            });
+            promises.push(this.firestore.deleteDocument(node.key, child.key, this.permanentlyDeleteDocuments));
           }
         });
       }
     });
-    // Delete collections
-    this.collectionNodesCheckedKeys.forEach(collection => {
-      if (this.firestore.deleteCollection(collection)) {
-        console.log(collection + ' deleted!');
-      }
-    });
-    this.collectionList = collectionsToKeep; // update search list
-    this.collectionNodes = []; // free nodes
-    // Save to storage
-    this.storage.get('databases').then((databases) => {
-      if (databases) {
-        databases[this.databaseIndex].collections = collectionsToKeep;
-        this.storage.save('databases', databases);
-        // Set nodes
-        this.setCollectionNodes(collectionsToKeep);
-        this.enableCollectionDeleteMode = false;
-      }
+    Promise.all(promises).then(() => {
+      // Delete collections
+      this.collectionNodesCheckedKeys.forEach(collection => {
+        this.firestore.deleteCollection(collection);
+      });
+      this.collectionList = collectionsToKeep; // update search list
+      this.collectionNodes = []; // free nodes
+      // Save to storage
+      this.storage.get('databases').then((databases) => {
+        if (databases) {
+          databases[this.databaseIndex].collections = collectionsToKeep;
+          this.storage.save('databases', databases);
+          // Set nodes
+          this.setCollectionNodes(collectionsToKeep);
+          this.enableCollectionDeleteMode = false;
+        }
+      });
+    }).finally(() => {
+      this.isCollectionListLoading = false;
     });
   }
 
