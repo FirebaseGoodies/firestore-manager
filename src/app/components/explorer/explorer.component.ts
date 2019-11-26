@@ -146,11 +146,15 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.isSearchCollectionLoading = true;
       this.firestore.isCollection(value).then((isCollection: boolean) => {
         if (isCollection && this.collectionList.indexOf(value) === -1) {
+          this.collectionListLoadingTip = 'Updating';
+          this.isCollectionListLoading = true;
           this.saveCollection(value).then((saved: boolean) => {
             if (saved) {
               this.collectionSearch.nzOpen = false;
               this.collectionSearch.blur();
             }
+          }).finally(() => {
+            this.isCollectionListLoading = false;
           });
         }
       }).catch((error) => {
@@ -179,11 +183,14 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
               this.collectionNodesExpandedKeys = [node.key];
               this.collectionNodesSelectedKeys = [node.key];
               this.selectNode(node);
+              resolve(true);
             });
+          } else {
+            resolve(true);
           }
-          resolve(true);
+        } else {
+          resolve(false);
         }
-        resolve(false);
       });
     });
   }
@@ -226,11 +233,16 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           const content = JSON.parse(this.addCollectionForm.controls.content.value);
           this.firestore.addCollection(name, content).then((results) => {
             // console.log(results);
-            this.saveCollection(name);
+            // Save collection
+            this.collectionListLoadingTip = 'Updating';
+            this.isCollectionListLoading = true;
+            this.saveCollection(name).finally(() => {
+              this.isCollectionListLoading = false;
+            });
+            this.isAddCollectionDrawerVisible = false;
           }).catch(error => {
-            console.log(error.message);
+            this.displayError(error);
           });
-          this.isAddCollectionDrawerVisible = false;
         }
       }).catch((error) => {
         this.displayError(error);
@@ -255,7 +267,15 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       Promise.all(promises).then((results) => {
         // console.log(results);
         // Reload collections
-        this.onReloadCollectionClick();
+        this.collectionListLoadingTip = 'Updating';
+        this.isCollectionListLoading = true;
+        setTimeout(() => { // Set timeout used to wait for data to be updated (fixes issue when only 1 document is returned)
+          this.reloadCollections().catch((error) => {
+            this.displayError(error);
+          }).finally(() => {
+            this.isCollectionListLoading = false;
+          });
+        }, 1000);
         this.isAddDocumentDrawerVisible = false;
       }).catch(error => {
         this.displayError(error);
