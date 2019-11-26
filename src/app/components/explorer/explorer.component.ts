@@ -147,7 +147,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.isSearchCollectionLoading = true;
       this.firestore.isCollection(value).then((isCollection: boolean) => {
         if (isCollection && this.collectionList.indexOf(value) === -1) {
-          this.collectionListLoadingTip = 'Updating';
+          this.collectionListLoadingTip = 'Loading';
           this.isCollectionListLoading = true;
           this.saveCollection(value).then((saved: boolean) => {
             if (saved) {
