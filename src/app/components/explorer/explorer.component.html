@@ -104,7 +104,7 @@
                     <ul>
                       <li nz-menu-item (click)="importFileInput.click()">JSON</li>
                     </ul>
-                    <input type="file" accept=".json" [hidden]="true" (change)="onImportFileChanged($event)" #importFileInput>
+                    <input type="file" accept=".json" [hidden]="true" (change)="onImportFileChanged($event)" (click)="$event.target.value = ''" #importFileInput>
                   </li>
                   <li nz-submenu nzTitle="{{ 'Export' | translate }}" [nzDisabled]="!collectionNodes.length">
                     <ul>
