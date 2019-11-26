@@ -73,7 +73,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   };
   formatterDuplicateTimes = (value: number) => `x ${value}`;
   parserDuplicateTimes = (value: string) => value.replace('x ', '');
-  collectionListLoadingTip: string = 'Reloading';
+  collectionListLoadingTip: string = 'Loading';
 
   constructor(
     private fb: FormBuilder,

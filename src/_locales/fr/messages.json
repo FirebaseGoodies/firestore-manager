@@ -240,5 +240,11 @@
     },
     "Expanding": {
         "message": "Expansion en cours"
+    },
+    "Updating": {
+        "message": "Actualisation en cours"
+    },
+    "Deleting": {
+        "message": "Suppression en cours"
     }
 }

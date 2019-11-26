@@ -240,5 +240,11 @@
     },
     "Expanding": {
         "message": "Expanding"
+    },
+    "Updating": {
+        "message": "Updating"
+    },
+    "Deleting": {
+        "message": "Deleting"
     }
 }
