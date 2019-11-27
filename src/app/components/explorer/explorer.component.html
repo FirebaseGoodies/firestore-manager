@@ -61,23 +61,25 @@
           </nz-alert>
           <div nz-row nzGutter="8">
             <div nz-col nzSpan="21">
-                <nz-select
-                  #collectionSearch
-                  nzShowSearch
-                  nzAllowClear
-                  [nzLoading]="isSearchCollectionLoading"
-                  nzPlaceHolder="{{ 'Collection' | translate }}"
-                  [nzSuffixIcon]="searchIcon"
-                  nzNotFoundContent="{{ 'No collection found' | translate }}"
-                  [(ngModel)]="searchValue"
-                  (nzOnSearch)="searchCollection($event)"
-                  [ngStyle]="{ width: '100%' }"
-                >
-                  <nz-option *ngFor="let c of collectionList" [nzLabel]="c" [nzValue]="c"> </nz-option>
-                </nz-select>
-                <ng-template #searchIcon>
-                  <i nz-icon nzType="search"></i>
-                </ng-template>
+                <nz-badge [nzCount]="options.displayCollectionsCount ? collectionNodes.length : 0" [ngStyle]="{ width: '100%' }">
+                  <nz-select
+                    #collectionSearch
+                    nzShowSearch
+                    nzAllowClear
+                    [nzLoading]="isSearchCollectionLoading"
+                    nzPlaceHolder="{{ 'Collection' | translate }}"
+                    [nzSuffixIcon]="searchIcon"
+                    nzNotFoundContent="{{ 'No collection found' | translate }}"
+                    [(ngModel)]="searchValue"
+                    (nzOnSearch)="searchCollection($event)"
+                    [ngStyle]="{ width: '100%' }"
+                  >
+                    <nz-option *ngFor="let c of collectionList" [nzLabel]="c" [nzValue]="c"> </nz-option>
+                  </nz-select>
+                  <ng-template #searchIcon>
+                    <i nz-icon nzType="search"></i>
+                  </ng-template>
+                </nz-badge>
             </div>
             <div nz-col nzSpan="3">
               <nz-badge [nzDot]="!collectionNodes.length">
@@ -340,7 +342,7 @@
   (nzOnClose)="onSettingsDrawerClose()"
 >
   <nz-spin nzTip="{{ 'Loading' | translate }}..." [nzSpinning]="!isSettingsDrawerLoaded">
-    <iframe src="./options" width="100%" frameBorder="0" (load)="isSettingsDrawerLoaded = true" [ngStyle]="{ 'min-height': '200px' }"></iframe>
+    <iframe src="./options" width="100%" frameBorder="0" (load)="isSettingsDrawerLoaded = true" [ngStyle]="{ 'min-height': '200px', border: 0 }"></iframe>
   </nz-spin>
 </nz-drawer>
 <ng-template #reloadModalTpl>

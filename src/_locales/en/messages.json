@@ -252,5 +252,8 @@
     },
     "Discard unsaved changes?": {
         "message": "Discard unsaved changes?"
+    },
+    "Display collections count": {
+        "message": "Display collections count"
     }
 }

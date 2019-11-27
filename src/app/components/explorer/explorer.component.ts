@@ -71,7 +71,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   options: Options = {
     editorMode: 'code',
     diffStyle: 'word',
-    diffOutputFormat: 'line-by-line'
+    diffOutputFormat: 'line-by-line',
+    displayCollectionsCount: false
   };
   formatterDuplicateTimes = (value: number) => `x ${value}`;
   parserDuplicateTimes = (value: string) => value.replace('x ', '');
