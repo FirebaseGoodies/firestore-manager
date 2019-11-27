@@ -342,7 +342,7 @@
   (nzOnClose)="onSettingsDrawerClose()"
 >
   <nz-spin nzTip="{{ 'Loading' | translate }}..." [nzSpinning]="!isSettingsDrawerLoaded">
-    <iframe src="./options" width="100%" frameBorder="0" (load)="isSettingsDrawerLoaded = true" [ngStyle]="{ 'min-height': '200px', border: 0 }"></iframe>
+    <iframe src="./options" width="100%" frameBorder="0" (load)="isSettingsDrawerLoaded = true" [ngStyle]="{ 'min-height': '300px', border: 0 }"></iframe>
   </nz-spin>
 </nz-drawer>
 <ng-template #reloadModalTpl>
