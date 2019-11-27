@@ -84,3 +84,6 @@ textarea.tab-size {
 :host ::ng-deep json-editor .jsoneditor-menu a {
   color: #999;
 }
+::ng-deep .ant-select-selection > div {
+  overflow: hidden;
+}
