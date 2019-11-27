@@ -240,5 +240,20 @@
     },
     "Expanding": {
         "message": "Expansion en cours"
+    },
+    "Updating": {
+        "message": "Actualisation en cours"
+    },
+    "Deleting": {
+        "message": "Suppression en cours"
+    },
+    "Reload all collections?": {
+        "message": "Recharger les collections?"
+    },
+    "Discard unsaved changes?": {
+        "message": "Ignorer les modifications non sauvegardées?"
+    },
+    "Display collections count:": {
+        "message": "Afficher le nombre de collections:"
     }
 }

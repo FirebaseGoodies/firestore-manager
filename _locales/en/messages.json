@@ -240,5 +240,20 @@
     },
     "Expanding": {
         "message": "Expanding"
+    },
+    "Updating": {
+        "message": "Updating"
+    },
+    "Deleting": {
+        "message": "Deleting"
+    },
+    "Reload all collections?": {
+        "message": "Reload all collections?"
+    },
+    "Discard unsaved changes?": {
+        "message": "Discard unsaved changes?"
+    },
+    "Display collections count:": {
+        "message": "Display collections count:"
     }
 }
