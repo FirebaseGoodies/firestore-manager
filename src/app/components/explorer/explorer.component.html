@@ -80,9 +80,11 @@
                 </ng-template>
             </div>
             <div nz-col nzSpan="3">
-              <button nz-button nzType="default" [ngStyle]="{ padding: '4px' }" nz-dropdown nzTrigger="click" [nzDropdownMenu]="collectionMenu">
-                <i nz-icon nzType="more" nzTheme="outline"></i>
-              </button>
+              <nz-badge [nzDot]="!collectionNodes.length">
+                <button nz-button nzType="default" [ngStyle]="{ padding: '4px' }" nz-dropdown nzTrigger="click" [nzDropdownMenu]="collectionMenu">
+                  <i nz-icon nzType="more" nzTheme="outline"></i>
+                </button>
+              </nz-badge>
               <nz-dropdown-menu #collectionMenu="nzDropdownMenu">
                 <ul nz-menu [ngStyle]="{ 'min-width': '140px' }">
                   <li nz-submenu nzTitle="{{ 'Add' | translate }}">
