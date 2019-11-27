@@ -246,5 +246,11 @@
     },
     "Deleting": {
         "message": "Deleting"
+    },
+    "Reload all collections?": {
+        "message": "Reload all collections?"
+    },
+    "Discard unsaved changes?": {
+        "message": "Discard unsaved changes?"
     }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, HostListener, OnDestroy, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, HostListener, OnDestroy, ElementRef, TemplateRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { jsonValidator } from 'src/app/validators/json.validator';
 import { FirestoreService } from 'src/app/services/firestore.service';
@@ -42,6 +42,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   enableCollectionDeleteMode: boolean = false;
   permanentlyDeleteDocuments: boolean = false;
   unsavedChanges: boolean = false;
+  discardUnsavedChanges: boolean = false;
   isSaveModalVisible: boolean = false;
   isSaveButtonLoading: boolean = false;
   isSaveButtonDisabled: boolean = false;
@@ -61,6 +62,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   editorOptions: JsonEditorOptions;
   @ViewChild('collectionSearch', { static: false }) private collectionSearch: NzSelectComponent;
   @ViewChild('collectionSider', { static: false, read: ElementRef }) private collectionSider: ElementRef;
+  @ViewChild('reloadModalTpl', { static: false }) private reloadModalTpl: TemplateRef<any>;
   @ViewChild(JsonEditorComponent, { static: false }) private editor: JsonEditorComponent;
   @ViewChild(CacheDiffComponent, { static: false }) private cacheDiff: CacheDiffComponent;
   private selectedCollection: string = null;
@@ -526,17 +528,28 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   onReloadCollectionClick() {
     if (this.collectionNodes.length) {
-      this.collectionListLoadingTip = 'Reloading';
-      this.isCollectionListLoading = true;
-      this.reloadCollections().catch((error) => {
-        this.displayError(error);
-      }).finally(() => {
-        this.isCollectionListLoading = false;
+      this.modal.confirm({
+        nzTitle: this.translation.get('Reload all collections?'),
+        nzContent: this.reloadModalTpl,
+        nzOkText: this.translation.get('Confirm'),
+        nzCancelText: this.translation.get('Cancel'),
+        nzOnOk: () => {
+          this.collectionListLoadingTip = 'Reloading';
+          this.isCollectionListLoading = true;
+          this.reloadCollections(!this.discardUnsavedChanges).catch((error) => {
+            this.displayError(error);
+          }).finally(() => {
+            if (this.discardUnsavedChanges) {
+              this.unsavedChanges = false;
+            }
+            this.isCollectionListLoading = false;
+          });
+        }
       });
     }
   }
 
-  private reloadCollections(): Promise<void> {
+  private reloadCollections(restoreCache: boolean = true): Promise<void> {
     // console.log(this.firestore.cache);
     const cacheBackup = {...this.firestore.cache}; // get/assign a copy
     let promises: Promise<any>[] = [];
@@ -553,14 +566,16 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       // console.log('All collections reloaded');
       this.collectionNodes = [...this.collectionNodes]; // refresh
       // Restore cache
-      Object.keys(cacheBackup).forEach(collectionName => {
-        Object.keys(cacheBackup[collectionName]).forEach(documentName => {
-          if (! this.firestore.cache[collectionName]) {
-            this.firestore.cache[collectionName] = cacheBackup[collectionName];
-          }
-          this.firestore.cache[collectionName][documentName] = cacheBackup[collectionName][documentName];
+      if (restoreCache) {
+        Object.keys(cacheBackup).forEach(collectionName => {
+          Object.keys(cacheBackup[collectionName]).forEach(documentName => {
+            if (! this.firestore.cache[collectionName]) {
+              this.firestore.cache[collectionName] = cacheBackup[collectionName];
+            }
+            this.firestore.cache[collectionName][documentName] = cacheBackup[collectionName][documentName];
+          });
         });
-      });
+      }
     });
   }
 

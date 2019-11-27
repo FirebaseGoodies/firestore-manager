@@ -343,3 +343,6 @@
     <iframe src="./options" width="100%" frameBorder="0" (load)="isSettingsDrawerLoaded = true" [ngStyle]="{ 'min-height': '200px' }"></iframe>
   </nz-spin>
 </nz-drawer>
+<ng-template #reloadModalTpl>
+  <label nz-checkbox [(ngModel)]="discardUnsavedChanges"><span translate>Discard unsaved changes?</span></label>
+</ng-template>
