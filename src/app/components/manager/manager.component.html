@@ -39,7 +39,17 @@
           <h4 translate>Databases</h4>
         </div>
         <div nz-col nzSpan="8" nzOffset="8">
-          <button nz-button nzType="primary" [ngStyle]="{ float: 'right' }" (click)="onAddDatabaseButtonClick()"><span translate>Add Database</span></button>
+          <nz-button-group [ngStyle]="{ float: 'right' }">
+            <button nz-button nzType="primary" [ngStyle]="{ 'vertical-align': 'middle' }" (click)="onAddDatabaseButtonClick()"><span translate>Add Database</span></button>
+            <button nz-button nzType="primary" [ngStyle]="{ 'vertical-align': 'middle' }" nz-dropdown [nzDropdownMenu]="databasesMenu"><i nz-icon nzType="down" nzTheme="outline"></i></button>
+            <nz-dropdown-menu #databasesMenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="importFileInput.click()" translate>Import</li>
+                <li nz-menu-item (click)="onExportClick()" [nzDisabled]="!databases.length" translate>Export</li>
+              </ul>
+              <input type="file" accept=".json" [hidden]="true" (change)="onImportFileChanged($event)" (click)="$event.target.value = ''" #importFileInput>
+            </nz-dropdown-menu>
+          </nz-button-group>
         </div>
       </div>
     </ng-template>

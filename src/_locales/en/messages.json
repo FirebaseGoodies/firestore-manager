@@ -255,5 +255,8 @@
     },
     "Display collections count:": {
         "message": "Display collections count:"
+    },
+    "Databases successfully imported!": {
+        "message": "Databases successfully imported!"
     }
 }

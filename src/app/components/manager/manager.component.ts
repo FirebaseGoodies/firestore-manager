@@ -7,6 +7,7 @@ import { StorageService } from 'src/app/services/storage.service';
 import { AppService } from 'src/app/services/app.service';
 import { TranslateService } from 'src/app/services/translate.service';
 import { DatabaseConfig } from 'src/app/models/database-config.model';
+import { download } from 'src/app/helpers/download.helper';
 
 @Component({
   selector: 'fm-manager',
@@ -152,6 +153,45 @@ export class ManagerComponent implements OnInit, OnDestroy {
   private stringify(obj: any) {
     const str = Object.keys(obj).map(key => `\t${key}: "${obj[key]}"`).join(",\n");
     return `{\n${str}\n}`;
+  }
+
+  onImportFileChanged(event: any) {
+    const selectedFile = event.target.files[0];
+    // Read file
+    const fileReader: any = new FileReader();
+    fileReader.readAsText(selectedFile, 'UTF-8');
+    fileReader.onload = () => {
+      // Parse data from file
+      try {
+        const databases = JSON.parse(fileReader.result);
+        if (databases) {
+          // ToDo: check if databases config is valid
+          this.databases = [...databases];
+          this.storage.save('databases', this.databases);
+          // Display success message
+          this.message.create('success', this.translation.get('Databases successfully imported!'));
+        }
+      }
+      catch(error) {
+        this.displayError(error);
+      }
+    };
+    fileReader.onerror = (error) => {
+      this.displayError(error);
+    };
+  }
+
+  private displayError(error) {
+    console.log(error.message);
+    this.message.create('error', error.message);
+  }
+
+  onExportClick() {
+    if (this.databases.length) {
+      const c = JSON.stringify(this.databases, null, 4);
+      const file = new Blob([c], {type: 'text/json'});
+      download(file, 'databases.json');
+    }
   }
 
 }
