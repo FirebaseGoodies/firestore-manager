@@ -110,7 +110,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
     this.isDatabaseModalVisible = false;
   }
 
-  onSelectAction(event, database, index) {
+  onOpenAction(event, database, index) {
     this.storage.save('firebase_config', database.config);
     this.storage.save('database_index', index);
     if (this.app.isWebExtension) {

@@ -85,8 +85,8 @@
     "Firebase Console": {
         "message": "Console Firebase"
     },
-    "Select": {
-        "message": "Sélectionner"
+    "Open": {
+        "message": "Ouvrir"
     },
     "Changes successfully saved!": {
         "message": "Modifications enregistrées avec succès!"
