@@ -85,8 +85,8 @@
     "Firebase Console": {
         "message": "Firebase Console"
     },
-    "Select": {
-        "message": "Select"
+    "Open": {
+        "message": "Open"
     },
     "Changes successfully saved!": {
         "message": "Changes successfully saved!"
@@ -255,5 +255,8 @@
     },
     "Display collections count:": {
         "message": "Display collections count:"
+    },
+    "Databases successfully imported!": {
+        "message": "Databases successfully imported!"
     }
 }
