@@ -9,7 +9,6 @@ registerLocaleData(en);
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { OptionsComponent } from './components/options/options.component';
-import { BackgroundComponent } from './components/background/background.component';
 import { ManagerComponent } from './components/manager/manager.component';
 import { ExplorerComponent } from './components/explorer/explorer.component';
 import { Guard } from './services/guard.service';
@@ -45,7 +44,6 @@ export function loadTranslations(translateService: TranslateService) {
   declarations: [
     AppComponent,
     OptionsComponent,
-    BackgroundComponent,
     ManagerComponent,
     ExplorerComponent,
     CacheDiffComponent,

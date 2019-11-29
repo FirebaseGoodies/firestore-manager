@@ -24,6 +24,7 @@
               "src/assets",
               "src/_locales",
               "src/manifest.json",
+              "src/background.js",
               "src/.nojekyll",
               {
                 "glob": "**/*",

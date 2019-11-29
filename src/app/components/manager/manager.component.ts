@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -36,6 +36,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   private addButtonTranslation: string = 'Add';
   private saveButtonTranslation: string = 'Save';
   explorerUrl: string = '';
+  @ViewChild('importFileInput', { static: false, read: ElementRef }) private importFileInput: ElementRef;
 
   constructor(
     private storage: StorageService,
@@ -153,6 +154,20 @@ export class ManagerComponent implements OnInit, OnDestroy {
   private stringify(obj: any) {
     const str = Object.keys(obj).map(key => `\t${key}: "${obj[key]}"`).join(",\n");
     return `{\n${str}\n}`;
+  }
+
+  onImportClick() {
+    if (this.app.isWebExtension) {
+      browser.runtime.getBackgroundPage().then((background: any) => {
+        if (!background) {
+          console.warn(`Background page doesn't work in private windows ...`);
+          return;
+        }
+        background.importDatabases();
+      });
+    } else {
+      this.importFileInput.nativeElement.click();
+    }
   }
 
   onImportFileChanged(event: any) {

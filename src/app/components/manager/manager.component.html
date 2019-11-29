@@ -44,7 +44,7 @@
             <button nz-button nzType="primary" [ngStyle]="{ 'vertical-align': 'middle' }" nz-dropdown [nzDropdownMenu]="databasesMenu"><i nz-icon nzType="down" nzTheme="outline"></i></button>
             <nz-dropdown-menu #databasesMenu="nzDropdownMenu">
               <ul nz-menu>
-                <li nz-menu-item (click)="importFileInput.click()" translate>Import</li>
+                <li nz-menu-item (click)="onImportClick()" translate>Import</li>
                 <li nz-menu-item (click)="onExportClick()" [nzDisabled]="!databases.length" translate>Export</li>
               </ul>
               <input type="file" accept=".json" [hidden]="true" (change)="onImportFileChanged($event)" (click)="$event.target.value = ''" #importFileInput>
