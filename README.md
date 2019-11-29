@@ -35,11 +35,15 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 ## Package
 
+Make sure you have the following package installed `npm install -g web-ext`. Then run:
+
 ```
 npm run build && npm run package
 ```
 
-## Deploy on github pages
+## Deploy on github pages
+
+Make sure you have the following package installed `npm install -g angular-cli-ghpages`. Then run:
 
 ```
 npm run ghbuild && npm run ghdeploy
