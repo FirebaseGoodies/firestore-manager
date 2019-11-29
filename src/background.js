@@ -31,6 +31,9 @@ function importDatabases() {
       console.log(error.message);
       document.body.removeChild(fileInput);
     };
+    fileReader.onabort = () => {
+      document.body.removeChild(fileInput);
+    };
   };
   document.body.appendChild(fileInput);
   fileInput.click();
