@@ -529,25 +529,31 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   onReloadCollectionClick() {
     if (this.collectionNodes.length) {
-      this.modal.confirm({
-        nzTitle: this.translation.get('Reload all collections?'),
-        nzContent: this.reloadModalTpl,
-        nzOkText: this.translation.get('Confirm'),
-        nzCancelText: this.translation.get('Cancel'),
-        nzOnOk: () => {
-          this.collectionListLoadingTip = 'Reloading';
-          this.isCollectionListLoading = true;
-          this.reloadCollections(!this.discardUnsavedChanges).catch((error) => {
-            this.displayError(error);
-          }).finally(() => {
-            if (this.discardUnsavedChanges) {
-              this.unsavedChanges = false;
-            }
-            this.isCollectionListLoading = false;
-          });
-        }
-      });
+      if (this.unsavedChanges) {
+        this.modal.confirm({
+          nzTitle: this.translation.get('Reload all collections?'),
+          nzContent: this.reloadModalTpl,
+          nzOkText: this.translation.get('Confirm'),
+          nzCancelText: this.translation.get('Cancel'),
+          nzOnOk: () => this.reload()
+        });
+      } else {
+        this.reload();
+      }
     }
+  }
+
+  private reload(): void {
+    this.collectionListLoadingTip = 'Reloading';
+    this.isCollectionListLoading = true;
+    this.reloadCollections(!this.discardUnsavedChanges).catch((error) => {
+      this.displayError(error);
+    }).finally(() => {
+      if (this.discardUnsavedChanges) {
+        this.unsavedChanges = false;
+      }
+      this.isCollectionListLoading = false;
+    });
   }
 
   private reloadCollections(restoreCache: boolean = true): Promise<void> {
