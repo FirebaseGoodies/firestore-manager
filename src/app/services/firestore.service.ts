@@ -41,11 +41,10 @@ export class FirestoreService {
 
     isCollection(name: string): Promise<boolean> {
       return new Promise((resolve, reject) => {
-        const subscription = this.db.collection(name).get().subscribe((query) => {
+        this.db.collection(name).get().toPromise().then((query) => {
           // console.log(name, query.size);
-          subscription.unsubscribe();
           resolve(!!query.size);
-        }, (error) => {
+        }).catch((error) => {
           reject(error);
         });
       });
