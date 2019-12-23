@@ -8,6 +8,7 @@ import { AppService } from 'src/app/services/app.service';
 import { TranslateService } from 'src/app/services/translate.service';
 import { DatabaseConfig } from 'src/app/models/database-config.model';
 import { download } from 'src/app/helpers/download.helper';
+import { Database } from 'src/app/models/database.model';
 
 @Component({
   selector: 'fm-manager',
@@ -35,7 +36,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   private addButtonTranslation: string = 'Add';
   private saveButtonTranslation: string = 'Save';
-  explorerUrl: string = '';
+  private explorerUrl: string = '';
   @ViewChild('importFileInput', { static: false, read: ElementRef }) private importFileInput: ElementRef;
 
   constructor(
@@ -47,14 +48,14 @@ export class ManagerComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.storage.get('databases').then((databases) => {
+    this.storage.get('databases').then((databases: Database[]) => {
       if (databases) {
         this.databases = databases;
       }
     });
     this.addButtonTranslation = this.translation.get('Add');
     this.saveButtonTranslation = this.translation.get('Save');
-    this.explorerUrl = this.app.isWebExtension ? browser.runtime.getURL('index.html') : './';
+    this.explorerUrl = this.app.isWebExtension ? browser.runtime.getURL('index.html') : '.';
     this.subscriptions.push(this.databaseConfigKeyUp.pipe(
         map((event: any) => event.target.value),
         debounceTime(300),
@@ -112,14 +113,16 @@ export class ManagerComponent implements OnInit, OnDestroy {
     this.isDatabaseModalVisible = false;
   }
 
-  onOpenAction(event, database, index) {
-    this.storage.save('firebase_config', database.config);
-    this.storage.save('database_index', index);
+  onOpenAction(event, index) {
     if (this.app.isWebExtension) {
-      browser.tabs.create({'url': this.explorerUrl});
+      browser.tabs.create({'url': this.getDatabaseUrl(index)});
       event.preventDefault();
       window.close();
     }
+  }
+
+  getDatabaseUrl(index: number) {
+    return `${this.explorerUrl}/?index=${index}`;
   }
 
   onEditAction(database, index) {

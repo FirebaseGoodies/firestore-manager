@@ -28,12 +28,12 @@ import { AppService } from './services/app.service';
 import { TranslateService } from './services/translate.service';
 import { TranslateDirective } from './directives/translate.directive';
 import { TranslatePipe } from './pipes/translate.pipe';
-import { DatabaseConfig } from './models/database-config.model';
+import { Database } from './models/database.model';
 
 export function initializeApp() {
-  const config: DatabaseConfig = StorageService.getTmp('firebase_config');
-  //console.log(config);
-  return config;
+  const database: Database = StorageService.getTmp('database');
+  //console.log(database);
+  return database ? database.config : null;
 }
 
 export function loadTranslations(translateService: TranslateService) {
@@ -68,12 +68,14 @@ export function loadTranslations(translateService: TranslateService) {
     FirestoreService,
     NotificationService,
     TranslateService,
+    StorageService,
+    AppService,
+    // Load translations (for web app only)
     { provide: APP_INITIALIZER, useFactory: loadTranslations, deps: [TranslateService], multi: true },
-    { provide: StorageService, useFactory: StorageService.getInstance },
-    { provide: AppService, useFactory: AppService.getInstance },
-    /** config ng-zorro-antd i18n (language && date) **/
-    { provide: NZ_I18N, useValue: en_US },
-    { provide: FirebaseOptionsToken, useFactory: initializeApp }
+    // Init AngularFireModule
+    { provide: FirebaseOptionsToken, useFactory: initializeApp },
+    // Config ng-zorro-antd i18n (language && date)
+    { provide: NZ_I18N, useValue: en_US }
   ],
   bootstrap: [AppComponent]
 })

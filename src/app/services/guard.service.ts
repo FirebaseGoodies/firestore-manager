@@ -1,27 +1,48 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
 import { StorageService } from './storage.service';
+import { Database } from '../models/database.model';
 
 @Injectable()
 export class Guard implements CanActivate {
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private storage: StorageService) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean>|boolean {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean>|boolean {
+    return new Promise((resolve, reject) => {
+      const page = route.queryParams['page'];
 
-    const page = route.queryParams['page'];
-
-    if (!page || page === 'popup') {
-      if (StorageService.getTmp('firebase_config')) {
-        return true;
+      if (!page || page === 'popup') {
+        const index = route.queryParams['index'];
+        //console.log(index);
+        let accessAllowed = false;
+        this.storage.get('databases').then((databases: Database[]) => {
+          if (databases && databases[index]) {
+            //console.log(databases[index]);
+            StorageService.setTmp('database', {
+              index: index,
+              config: databases[index].config,
+              collections: databases[index].collections
+            });
+            accessAllowed = true;
+          }
+        }).catch((error) => {
+          console.error(error.message);
+        }).finally(() => {
+          if (accessAllowed) {
+            //console.log('access allowed');
+            resolve(true);
+          } else {
+            //console.log('access denied');
+            this.router.navigate(['/manager']);
+            resolve(false);
+          }
+        });
+      } else {
+        this.router.navigate(['/' + page]);
+        resolve(false);
       }
-      this.router.navigate(['/manager']);
-      return false;
-    }
-
-    this.router.navigate(['/' + page]);
-    return false;
+    });
   }
 
 }
