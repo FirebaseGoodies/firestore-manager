@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { StorageService } from './storage.service';
+import { Database } from '../models/database.model';
 
 @Injectable()
 export class Guard implements CanActivate {
@@ -15,12 +16,13 @@ export class Guard implements CanActivate {
         const index = route.queryParams['index'];
         //console.log(index);
         let accessAllowed = false;
-        this.storage.get('databases').then((databases) => {
+        this.storage.get('databases').then((databases: Database[]) => {
           if (databases && databases[index]) {
             //console.log(databases[index]);
-            StorageService.saveTmp({
-              firebase_config: databases[index].config,
-              database_index: index
+            StorageService.setTmp('database', {
+              index: index,
+              config: databases[index].config,
+              collections: databases[index].collections
             });
             accessAllowed = true;
           }

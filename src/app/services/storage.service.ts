@@ -15,7 +15,7 @@ export class StorageService {
     StorageService.tmpStorage[key] = value;
   }
 
-  static saveTmp(values: { [key: string]: any }) {
+  static setTmpMany(values: { [key: string]: any }) {
     Object.keys(values).forEach(key => {
       StorageService.setTmp(key, values[key]);
     });

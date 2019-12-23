@@ -28,12 +28,12 @@ import { AppService } from './services/app.service';
 import { TranslateService } from './services/translate.service';
 import { TranslateDirective } from './directives/translate.directive';
 import { TranslatePipe } from './pipes/translate.pipe';
-import { DatabaseConfig } from './models/database-config.model';
+import { Database } from './models/database.model';
 
 export function initializeApp() {
-  const config: DatabaseConfig = StorageService.getTmp('firebase_config');
-  //console.log(config);
-  return config;
+  const database: Database = StorageService.getTmp('database');
+  //console.log(database);
+  return database ? database.config : null;
 }
 
 export function loadTranslations(translateService: TranslateService) {

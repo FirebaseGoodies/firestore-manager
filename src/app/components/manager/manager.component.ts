@@ -8,6 +8,7 @@ import { AppService } from 'src/app/services/app.service';
 import { TranslateService } from 'src/app/services/translate.service';
 import { DatabaseConfig } from 'src/app/models/database-config.model';
 import { download } from 'src/app/helpers/download.helper';
+import { Database } from 'src/app/models/database.model';
 
 @Component({
   selector: 'fm-manager',
@@ -47,7 +48,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.storage.get('databases').then((databases) => {
+    this.storage.get('databases').then((databases: Database[]) => {
       if (databases) {
         this.databases = databases;
       }

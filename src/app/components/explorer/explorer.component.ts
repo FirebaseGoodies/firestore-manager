@@ -18,7 +18,7 @@ import { Options } from 'src/app/models/options.model';
 import { AppService } from 'src/app/services/app.service';
 import { TranslateService } from 'src/app/services/translate.service';
 import { download } from 'src/app/helpers/download.helper';
-import { DatabaseConfig } from 'src/app/models/database-config.model';
+import { Database } from 'src/app/models/database.model';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -33,8 +33,7 @@ const Chars = {
 })
 export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
 
-  private databaseIndex: number;
-  databaseConfig: DatabaseConfig;
+  database: Database;
   collectionNodes: any[] = [];
   collectionNodesSelectedKeys: any[] = [];
   collectionNodesCheckedKeys: any[] = [];
@@ -101,14 +100,12 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   ngOnInit() {
     // Get data from storage
-    this.databaseIndex = StorageService.getTmp('database_index');
-    this.databaseConfig = StorageService.getTmp('firebase_config');
-    this.storage.getMany('databases', 'options').then(([databases, options]) => {
-      if (databases && databases[this.databaseIndex].collections) {
-        const collections = databases[this.databaseIndex].collections;
-        this.collectionList = collections;
-        this.setCollectionNodes(collections);
-      }
+    this.database = StorageService.getTmp('database');
+    if (this.database && this.database.collections) {
+      this.collectionList = this.database.collections;
+      this.setCollectionNodes(this.database.collections);
+    }
+    this.storage.get('options').then((options: Options) => {
       if (options) {
         this.options = options;
       }
@@ -174,10 +171,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       // Add to list
       this.collectionList.push(name);
       // Save to storage
-      this.storage.get('databases').then((databases) => {
-        if (databases && (!databases[this.databaseIndex].collections || databases[this.databaseIndex].collections.indexOf(name) === -1)) {
-          databases[this.databaseIndex].collections = databases[this.databaseIndex].collections || [];
-          databases[this.databaseIndex].collections.push(name);
+      this.storage.get('databases').then((databases: Database[]) => {
+        if (databases && (!databases[this.database.index].collections || databases[this.database.index].collections.indexOf(name) === -1)) {
+          databases[this.database.index].collections = databases[this.database.index].collections || [];
+          databases[this.database.index].collections.push(name);
           this.storage.save('databases', databases);
           // Add to nodes
           if (addToNodes) {
@@ -337,9 +334,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.collectionList = collectionsToKeep; // update search list
       this.collectionNodes = []; // free nodes
       // Save to storage
-      this.storage.get('databases').then((databases) => {
+      this.storage.get('databases').then((databases: Database[]) => {
         if (databases) {
-          databases[this.databaseIndex].collections = collectionsToKeep;
+          databases[this.database.index].collections = collectionsToKeep;
           this.storage.save('databases', databases);
           // Set nodes
           this.setCollectionNodes(collectionsToKeep);
@@ -612,7 +609,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.reloadCollections().then(() => {
         const c = JSON.stringify(this.firestore.cache, null, 4);
         const file = new Blob([c], {type: 'text/json'});
-        download(file, this.databaseConfig.projectId + '.json');
+        download(file, this.database.config.projectId + '.json');
       }).catch((error) => {
         this.displayError(error);
       }).finally(() => {

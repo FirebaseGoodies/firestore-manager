@@ -166,7 +166,7 @@
           </div>
           <nz-alert nzBanner [nzMessage]="deleteWarningTpl" nzCloseable>
             <ng-template #deleteWarningTpl>
-              <span translate>Only documents can be permanently deleted, collections will be removed only from the browser cache! If you want to permanently delete a collection please use the</span>&nbsp;<a [href]="databaseConfig.databaseURL" target="_blank" translate>Firebase Console</a>.
+              <span translate>Only documents can be permanently deleted, collections will be removed only from the browser cache! If you want to permanently delete a collection please use the</span>&nbsp;<a [href]="database.config.databaseURL" target="_blank" translate>Firebase Console</a>.
             </ng-template>
           </nz-alert>
         </div>
