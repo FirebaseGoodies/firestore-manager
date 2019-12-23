@@ -3,18 +3,9 @@ import { AppService } from './app.service';
 
 @Injectable()
 export class StorageService {
-  private static instance = null;
   private static tmpStorage = [];
 
   constructor(private app: AppService) {}
-
-  static getInstance() {
-    if (StorageService.instance == null) {
-      const app = AppService.getInstance();
-      StorageService.instance = new StorageService(app);
-    }
-    return StorageService.instance;
-  }
 
   static getTmp(key: string) {
     return StorageService.tmpStorage[key];
