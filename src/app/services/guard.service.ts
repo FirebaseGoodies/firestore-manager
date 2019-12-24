@@ -13,11 +13,11 @@ export class Guard implements CanActivate {
       const page = route.queryParams['page'];
 
       if (!page || page === 'popup') {
-        const index = route.queryParams['index'];
+        const index = route.queryParams['index'] || null;
         //console.log(index);
         let accessAllowed = false;
         this.storage.get('databases').then((databases: Database[]) => {
-          if (databases && databases[index]) {
+          if (databases && index && databases[index]) {
             //console.log(databases[index]);
             StorageService.setTmp('database', {
               index: index,
