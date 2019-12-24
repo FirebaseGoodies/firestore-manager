@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { Database } from '../models/database.model';
+import { StorageService } from './storage.service';
 
 @Injectable()
 export class FirestoreService {
@@ -13,6 +15,12 @@ export class FirestoreService {
 
     constructor(afs: AngularFirestore) {
       this.db = afs;
+    }
+
+    static getDatabaseConfig() {
+      const database: Database = StorageService.getTmp('database');
+      //console.log(database);
+      return database ? database.config : null;
     }
 
     getUnchangedCache() {
