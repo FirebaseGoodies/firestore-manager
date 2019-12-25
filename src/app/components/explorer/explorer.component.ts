@@ -422,6 +422,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           Object.keys(documents).forEach((documentId: string) => {
             node.addChildren([{ title: documentId, key: documentId, isLeaf: true }]);
           });
+        }).catch((error) => {
+          this.displayError(error);
+        }).finally(() => {
           node.isLoading = false;
           resolve();
         });
