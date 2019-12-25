@@ -64,20 +64,12 @@ export class FirestoreService {
           // console.log(name + ' found in cache');
           resolve(this.cache[name]);
         } else if (! this.subscriptions[name]) {
-          this.subscriptions[name] = this.db.collection(name).snapshotChanges().pipe(
-            map(actions => {
-              return actions.map(a => {
-                const data = a.payload.doc.data();
-                const id = a.payload.doc.id;
-                return { id: id, data: data };
-              });
-            })
-          ).subscribe((snapshot) => {
+          this.subscriptions[name] = this.db.collection(name).get().subscribe((snapshot) => {
             // console.log(snapshot);
             let docs = {};
             snapshot.forEach(doc => {
               // console.log(doc);
-              docs[doc.id] = doc.data;
+              docs[doc.id] = doc.data();
             });
             // console.log(docs);
             if (! this.cache[name]) {
