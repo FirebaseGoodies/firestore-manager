@@ -6,7 +6,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { StorageService } from 'src/app/services/storage.service';
 import { AppService } from 'src/app/services/app.service';
 import { TranslateService } from 'src/app/services/translate.service';
-import { DatabaseConfig } from 'src/app/models/database-config.model';
+import { DatabaseConfig, DatabaseConfigSample } from 'src/app/models/database-config.model';
 import { download } from 'src/app/helpers/download.helper';
 import { Database } from 'src/app/models/database.model';
 
@@ -21,17 +21,9 @@ export class ManagerComponent implements OnInit, OnDestroy {
   isDatabaseModalVisible: boolean = false;
   databaseModalOkButtonText: string = 'Add';
   isDatabaseModalOkButtonLoading: boolean = false;
-  defaultDatabaseConfig: string = `{
-    apiKey: "AIzaSyD9Br4JN2k7lMetLfguHXumHY3aaodw4yp",
-    authDomain: "myproject.firebaseapp.com",
-    databaseURL: "https://myproject.firebaseio.com",
-    projectId: "myproject",
-    storageBucket: "myproject.appspot.com",
-    messagingSenderId: "2072647547562",
-    appId: "1:2072647547562:web:90145c5cce7bdf532797b9"
-  }`;
   databaseConfigKeyUp: Subject<string> = new Subject<string>();
   databaseConfig: string = '';
+  readonly databaseConfigSample: string = DatabaseConfigSample;
   private selectedDatabaseIndex: number = -1;
   private subscriptions: Subscription[] = [];
   private addButtonTranslation: string = 'Add';
