@@ -6,8 +6,8 @@
     "start": "ng serve",
     "build": "ng build --aot --prod --sourceMap=false --outputHashing=none",
     "package": "web-ext build --source-dir=dist/firestore-manager --artifacts-dir=.",
-    "ghbuild": "ng build --prod --base-href \"/firestore-manager/\"",
-    "ghdeploy": "ngh --dir=dist/firestore-manager",
+    "build:github": "ng build --prod --base-href \"/firestore-manager/\"",
+    "deploy:github": "ngh --dir=dist/firestore-manager",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

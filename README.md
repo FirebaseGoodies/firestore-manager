@@ -46,7 +46,7 @@ npm run build && npm run package
 Make sure you have the following package installed `npm install -g angular-cli-ghpages`. Then run:
 
 ```
-npm run ghbuild && npm run ghdeploy
+npm run build:github && npm run deploy:github
 ```
 
 ## Todo
