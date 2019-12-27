@@ -22,7 +22,8 @@ export class Guard implements CanActivate {
             StorageService.setTmp('database', {
               index: index,
               config: databases[index].config,
-              collections: databases[index].collections
+              collections: databases[index].collections,
+              authentication: databases[index].authentication || null
             });
             accessAllowed = true;
           }

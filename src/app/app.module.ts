@@ -28,6 +28,7 @@ import { AppService } from './services/app.service';
 import { TranslateService } from './services/translate.service';
 import { TranslateDirective } from './directives/translate.directive';
 import { TranslatePipe } from './pipes/translate.pipe';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { TranslatePipe } from './pipes/translate.pipe';
     ReactiveFormsModule,
     AngularFireModule,
     AngularFirestoreModule,
+    AngularFireAuthModule,
     NgJsonEditorModule
   ],
   providers: [

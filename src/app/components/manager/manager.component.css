@@ -100,3 +100,10 @@ svg#clouds {
   z-index: -10;
   width: 1920px;
 }
+.radio {
+  width: 100%;
+  line-height: 30px;
+}
+.radio ::ng-deep span.ant-radio + * {
+  padding-right: 0 !important;
+}

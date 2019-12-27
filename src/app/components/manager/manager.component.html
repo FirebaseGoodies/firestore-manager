@@ -54,8 +54,9 @@
       </div>
     </ng-template>
     <ng-template #itemTpl let-database let-index="index">
-      <nz-list-item [nzActions]="[consoleAction, moreAction]">
-        <ng-template #consoleAction><a [href]="database.config.databaseURL" target="_blank" nz-tooltip nzTooltipTitle="{{ 'Firebase Console' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="fire" nzTheme="outline"></i></a></ng-template>
+      <nz-list-item [nzActions]="[authAction, consoleAction, moreAction]">
+        <ng-template #authAction><a (click)="onSetAuthenticationAction(database, index)" nz-tooltip nzTooltipTitle="{{ 'Set Authentication' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="user" nzTheme="outline"></i></a></ng-template>
+        <ng-template #consoleAction><a [href]="database.config.databaseURL" target="_blank" nz-tooltip nzTooltipTitle="{{ 'Open Firebase Console' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="fire" nzTheme="outline"></i></a></ng-template>
         <ng-template #moreAction><a nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"><i nz-icon nzType="more" nzTheme="outline"></i></a></ng-template>
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu>
@@ -75,7 +76,7 @@
 
   <!-- Database Modal -->
   <nz-modal
-      [nzStyle]="{ top: '20px' }"
+      [nzStyle]="{ top: app.isWebExtension ? '20px' : '100px' }"
       [(nzVisible)]="isDatabaseModalVisible"
       nzTitle="{{ 'Paste your database configuration below' | translate }}"
       nzCancelText="{{ 'Cancel' | translate }}"
@@ -93,6 +94,51 @@
       [nzAutosize]="{ minRows: 9, maxRows: 10 }"
       (keyup)="databaseConfigKeyUp.next($event)"
     ></textarea>
+  </nz-modal>
+
+  <!-- Authentication Modal -->
+  <nz-modal
+      [nzStyle]="{ top: app.isWebExtension ? '20px' : '100px' }"
+      [(nzVisible)]="isAuthenticationModalVisible"
+      nzTitle="{{ 'Authentication' | translate }}"
+      nzCancelText="{{ 'Cancel' | translate }}"
+      (nzOnCancel)="onAuthenticationModalCancel()"
+      (nzOnOk)="onAuthenticationModalSave()"
+      nzOkText="{{ 'Save' | translate }}"
+    >
+    <nz-radio-group [(ngModel)]="authentication.type">
+      <label nz-radio class="radio" [nzValue]="authenticationTypes.None">{{ 'No authentication' | translate }}</label>
+      <label nz-radio class="radio" [nzValue]="authenticationTypes.Anonymous">{{ 'Anonymous' | translate }}</label>
+      <label nz-radio class="radio" [nzValue]="authenticationTypes.EmailAndPassword">
+        {{ 'With email and password' | translate }}
+        <div *ngIf="authentication.type === authenticationTypes.EmailAndPassword" [ngStyle]="{ margin: '10px' }">
+          <input
+            nz-input
+            type="text"
+            placeholder="{{ 'Email' | translate }}"
+            [(ngModel)]="authentication.data.email"
+          />
+          <br>
+          <nz-input-group [nzSuffix]="passwordSuffixTpl" [ngStyle]="{ 'margin-top': '12px' }">
+            <input
+              [type]="isAuthenticationPasswordVisible ? 'text' : 'password'"
+              nz-input
+              placeholder="{{ 'Password' | translate }}"
+              [(ngModel)]="authentication.data.password"
+            />
+          </nz-input-group>
+          <ng-template #passwordSuffixTpl>
+            <i nz-icon [nzType]="isAuthenticationPasswordVisible ? 'eye-invisible' : 'eye'" (click)="isAuthenticationPasswordVisible = !isAuthenticationPasswordVisible"></i>
+          </ng-template>
+        </div>
+      </label>
+      <label nz-radio class="radio" [nzValue]="authenticationTypes.Token">
+        {{ 'With token' | translate }}
+        <div *ngIf="authentication.type === authenticationTypes.Token" [ngStyle]="{ margin: '10px' }">
+          <input nz-input type="text" placeholder="{{ 'Token' | translate }}" [(ngModel)]="authentication.data.token" />
+        </div>
+      </label>
+    </nz-radio-group>
   </nz-modal>
 
   <!-- Footer -->

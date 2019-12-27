@@ -9,6 +9,7 @@ import { TranslateService } from 'src/app/services/translate.service';
 import { DatabaseConfig, DatabaseConfigSample } from 'src/app/models/database-config.model';
 import { download } from 'src/app/helpers/download.helper';
 import { Database } from 'src/app/models/database.model';
+import { Authentication, AuthenticationType, AuthenticationData } from 'src/app/models/auth.model';
 
 @Component({
   selector: 'fm-manager',
@@ -19,11 +20,18 @@ export class ManagerComponent implements OnInit, OnDestroy {
 
   databases: any[] = [];
   isDatabaseModalVisible: boolean = false;
+  isAuthenticationModalVisible: boolean = false;
   databaseModalOkButtonText: string = 'Add';
   isDatabaseModalOkButtonLoading: boolean = false;
   databaseConfigKeyUp: Subject<string> = new Subject<string>();
   databaseConfig: string = '';
   readonly databaseConfigSample: string = DatabaseConfigSample;
+  authentication: Authentication = {
+    type: AuthenticationType.None,
+    data: AuthenticationData
+  };
+  readonly authenticationTypes: any = AuthenticationType;
+  isAuthenticationPasswordVisible: boolean = false;
   private selectedDatabaseIndex: number = -1;
   private subscriptions: Subscription[] = [];
   private addButtonTranslation: string = 'Add';
@@ -115,6 +123,40 @@ export class ManagerComponent implements OnInit, OnDestroy {
 
   getDatabaseUrl(index: number) {
     return `${this.explorerUrl}/?index=${index}`;
+  }
+
+  onSetAuthenticationAction(database, index) {
+    if (database.authentication && database.authentication.enabled) {
+      this.authentication.type = database.authentication.type;
+      this.authentication.data = database.authentication.data;
+    } else {
+      this.authentication.type = AuthenticationType.None;
+      this.authentication.data = AuthenticationData;
+    }
+    this.selectedDatabaseIndex = index;
+    this.isAuthenticationModalVisible = true;
+  }
+
+  onAuthenticationModalSave() {
+    let auth: Authentication = this.databases[this.selectedDatabaseIndex].authentication || {};
+    switch(this.authentication.type) {
+      case AuthenticationType.Anonymous:
+      case AuthenticationType.EmailAndPassword:
+      case AuthenticationType.Token:
+        auth.enabled = true;
+        auth.type = this.authentication.type;
+        auth.data = this.authentication.data;
+        break;
+      default:
+        auth.enabled = false;
+    }
+    this.databases[this.selectedDatabaseIndex].authentication = auth;
+    this.saveDatabases();
+    this.isAuthenticationModalVisible = false;
+  }
+
+  onAuthenticationModalCancel() {
+    this.isAuthenticationModalVisible = false;
   }
 
   onEditAction(database, index) {

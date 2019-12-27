@@ -19,6 +19,7 @@ import { AppService } from 'src/app/services/app.service';
 import { TranslateService } from 'src/app/services/translate.service';
 import { download } from 'src/app/helpers/download.helper';
 import { Database } from 'src/app/models/database.model';
+import { AuthService } from 'src/app/services/auth.service';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -29,7 +30,8 @@ const Chars = {
 @Component({
   selector: 'fm-explorer',
   templateUrl: './explorer.component.html',
-  styleUrls: ['./explorer.component.css']
+  styleUrls: ['./explorer.component.css'],
+  providers: [AuthService]
 })
 export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
 
@@ -84,6 +86,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     private notification: NotificationService,
     private translation: TranslateService,
     private app: AppService,
+    private auth: AuthService,
     private message: NzMessageService,
     private modal: NzModalService,
     private cdr: ChangeDetectorRef,
@@ -111,6 +114,14 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       }
       this.editor.setMode(this.options.editorMode);
     });
+    // Sign in if authentication enabled
+    if (this.database.authentication) {
+      if (this.database.authentication.enabled) {
+        this.auth.signIn(this.database.authentication);
+      } else {
+        this.auth.signOut(); // otherwise make sure that user is signed out
+      }
+    }
     // Init forms
     this.addCollectionForm = this.fb.group({
       name: [null, [Validators.required]],
@@ -132,6 +143,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   ngOnDestroy() {
     this.firestore.unsubscribe();
+    // Sign out if authentication enabled
+    if (this.database.authentication && this.database.authentication.enabled) {
+      this.auth.signOut();
+    }
   }
 
   private setCollectionNodes(collections: string[]): void {
