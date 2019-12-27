@@ -116,7 +116,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     });
     // Sign in if authentication enabled
     if (this.database.authentication) {
-      this.auth.signOut(); // first, make sure that user is signed out
+      this.auth.signOut(true); // first, make sure that user is signed out
       if (this.database.authentication.enabled) {
         this.auth.signIn(this.database.authentication);
       }
@@ -142,6 +142,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   ngOnDestroy() {
     this.firestore.unsubscribe();
+    // Sign out if authentication enabled
+    if (this.database.authentication && this.database.authentication.enabled) {
+      this.auth.signOut();
+    }
   }
 
   private setCollectionNodes(collections: string[]): void {

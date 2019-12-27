@@ -57,11 +57,13 @@ export class AuthService {
     }
   }
 
-  signOut() {
+  signOut(force: boolean = false) {
     // console.log('sign out', this.isSignedIn);
-    this.afa.auth.signOut().catch((error: firebase.FirebaseError) => {
-      console.error(`[${error.code}] ${error.message}`);
-    });
+    if (force || this.isSignedIn) {
+      this.afa.auth.signOut().catch((error: firebase.FirebaseError) => {
+        console.error(`[${error.code}] ${error.message}`);
+      });
+    }
   }
 
 }
