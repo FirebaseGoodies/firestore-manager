@@ -118,7 +118,15 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     if (this.database.authentication) {
       this.auth.signOut(true); // first, make sure that user is signed out
       if (this.database.authentication.enabled) {
-        this.auth.signIn(this.database.authentication);
+        this.collectionListLoadingTip = 'Authentication';
+        this.isCollectionListLoading = true;
+        this.auth.signIn(this.database.authentication).catch(() => {
+          if (this.auth.lastError) {
+            this.displayError(this.auth.lastError);
+          }
+        }).finally(() => {
+          this.isCollectionListLoading = false;
+        });
       }
     }
     // Init forms
