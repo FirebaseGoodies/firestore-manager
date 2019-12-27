@@ -38,14 +38,17 @@ export class ManagerComponent implements OnInit, OnDestroy {
   private saveButtonTranslation: string = 'Save';
   private explorerUrl: string = '';
   @ViewChild('importFileInput', { static: false, read: ElementRef }) private importFileInput: ElementRef;
+  app: AppService;
 
   constructor(
     private storage: StorageService,
     private message: NzMessageService,
     private modalService: NzModalService,
     private translation: TranslateService,
-    private app: AppService
-  ) { }
+    app: AppService
+  ) {
+    this.app = app;
+  }
 
   ngOnInit() {
     this.storage.get('databases').then((databases: Database[]) => {
