@@ -17,7 +17,7 @@ A simple, fast and intuitive web-extension to manage firestore databases, made w
 - 3 editing modes (thanks to [jsoneditor](https://github.com/josdejong/jsoneditor) project).
 - Powerful diff viewer (using [diff-match-patch](https://github.com/google/diff-match-patch) & [diff2html](https://github.com/rtfpessoa/diff2html)).
 - JSON export/import.
-- Authentication support (Anonymous, email & password, JWT token).
+- Firebase Authentication (Anonymous, email & password, JWT token).
 
 ## Installation
 
