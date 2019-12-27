@@ -98,7 +98,12 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   // @HostListener allows us to also guard against browser refresh, close, etc.
   @HostListener('window:beforeunload')
   canDeactivate(): Observable<boolean> | boolean {
-    return !environment.production || !this.unsavedChanges;
+    const canDeactivate = !environment.production || !this.unsavedChanges;
+    // Sign out if authentication enabled
+    if (canDeactivate && this.database.authentication && this.database.authentication.enabled) {
+      this.auth.signOut();
+    }
+    return canDeactivate;
   }
 
   ngOnInit() {
@@ -115,12 +120,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.editor.setMode(this.options.editorMode);
     });
     // Sign in if authentication enabled
-    if (this.database.authentication) {
-      if (this.database.authentication.enabled) {
-        this.auth.signIn(this.database.authentication);
-      } else {
-        this.auth.signOut(); // otherwise make sure that user is signed out
-      }
+    if (this.database.authentication && this.database.authentication.enabled) {
+      this.auth.signIn(this.database.authentication);
     }
     // Init forms
     this.addCollectionForm = this.fb.group({
@@ -143,10 +144,6 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   ngOnDestroy() {
     this.firestore.unsubscribe();
-    // Sign out if authentication enabled
-    if (this.database.authentication && this.database.authentication.enabled) {
-      this.auth.signOut();
-    }
   }
 
   private setCollectionNodes(collections: string[]): void {

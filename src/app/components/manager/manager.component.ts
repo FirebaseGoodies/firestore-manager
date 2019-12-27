@@ -134,6 +134,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
       this.authentication.data = AuthenticationData;
     }
     this.selectedDatabaseIndex = index;
+    this.isAuthenticationPasswordVisible = false;
     this.isAuthenticationModalVisible = true;
   }
 
