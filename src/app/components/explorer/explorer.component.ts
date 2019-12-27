@@ -510,20 +510,47 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     Promise.all(promises).then(() => {
       // Clear cache
       this.firestore.clearCache();
-      this.selectedCollection = null;
-      this.updateEditor({});
+      // this.selectedCollection = null;
+      // this.updateEditor({});
       this.collectionNodesExpandedKeys = [];
       this.collectionNodesSelectedKeys = [];
       this.collectionNodes.forEach(node => {
         node.children = []; // Remove child nodes (to refetch them)
       });
-      this.collectionNodes = [...this.collectionNodes]; // refresh
-      this.isSaveButtonLoading = false;
-      this.isSaveModalVisible = false;
-      this.unsavedChanges = false;
-      // Display success message
-      this.message.create('success', this.translation.get('Changes successfully saved!'));
-      this.notification.create(this.translation.get('Saving changes completed!'));
+      // Define function to execute at the end
+      const done: Function = () => {
+        this.collectionNodes = [...this.collectionNodes]; // refresh
+        this.isSaveButtonLoading = false;
+        this.isSaveModalVisible = false;
+        this.unsavedChanges = false;
+        // Display success message
+        this.message.create('success', this.translation.get('Changes successfully saved!'));
+        this.notification.create(this.translation.get('Saving changes completed!'));
+      };
+      // Reload selected collection/document
+      const selectedNode = this.collectionNodes.find((node) => node.key === this.selectedCollection);
+      if (selectedNode) {
+        this.loadCollection(selectedNode).then(() => {
+          this.collectionNodesExpandedKeys = [this.selectedCollection];
+          if (this.selectedDocument) {
+            this.selectNode({
+              level: 1,
+              key: this.selectedDocument,
+              parentNode: selectedNode
+            });
+            this.collectionNodesSelectedKeys = [this.selectedDocument];
+          } else {
+            this.selectNode(selectedNode);
+            this.collectionNodesSelectedKeys = [this.selectedCollection];
+          }
+        }).catch((error) => {
+          this.displayError(error);
+        }).finally(() => {
+          done();
+        });
+      } else {
+        done();
+      }
     });
   }
 
