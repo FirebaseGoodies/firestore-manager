@@ -288,5 +288,8 @@
     },
     "Token": {
         "message": "Token"
+    },
+    "Enable notifications": {
+        "message": "Enable notifications"
     }
 }

@@ -43,7 +43,21 @@
       [nzUnCheckedChildren]="unCheckedTemplate"
       (ngModelChange)="saveOptions()"
     ></nz-switch>
-    <ng-template #checkedTemplate><i nz-icon nzType="check"></i></ng-template>
-    <ng-template #unCheckedTemplate><i nz-icon nzType="close"></i></ng-template>
   </div>
 </div>
+<div nz-row [ngStyle]="{ padding: '10px' }" *ngIf="app.isWebExtension">
+  <div nz-col nzSpan="10">
+    <label translate>Enable notifications: </label>
+  </div>
+  <div nz-col nzSpan="14">
+    <nz-switch
+      [(ngModel)]="options.enableNotifications"
+      [nzCheckedChildren]="checkedTemplate"
+      [nzUnCheckedChildren]="unCheckedTemplate"
+      (ngModelChange)="saveOptions()"
+    ></nz-switch>
+  </div>
+</div>
+
+<ng-template #checkedTemplate><i nz-icon nzType="check"></i></ng-template>
+<ng-template #unCheckedTemplate><i nz-icon nzType="close"></i></ng-template>
