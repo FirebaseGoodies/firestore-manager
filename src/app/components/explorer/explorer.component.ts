@@ -18,7 +18,8 @@ import { Options } from 'src/app/models/options.model';
 import { AppService } from 'src/app/services/app.service';
 import { TranslateService } from 'src/app/services/translate.service';
 import { download } from 'src/app/helpers/download.helper';
-import { DatabaseConfig } from 'src/app/models/database-config.model';
+import { Database } from 'src/app/models/database.model';
+import { AuthService } from 'src/app/services/auth.service';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -29,12 +30,12 @@ const Chars = {
 @Component({
   selector: 'fm-explorer',
   templateUrl: './explorer.component.html',
-  styleUrls: ['./explorer.component.css']
+  styleUrls: ['./explorer.component.css'],
+  providers: [AuthService]
 })
 export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
 
-  private databaseIndex: number;
-  databaseConfig: DatabaseConfig;
+  database: Database;
   collectionNodes: any[] = [];
   collectionNodesSelectedKeys: any[] = [];
   collectionNodesCheckedKeys: any[] = [];
@@ -85,6 +86,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     private notification: NotificationService,
     private translation: TranslateService,
     private app: AppService,
+    private auth: AuthService,
     private message: NzMessageService,
     private modal: NzModalService,
     private cdr: ChangeDetectorRef,
@@ -101,19 +103,32 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   ngOnInit() {
     // Get data from storage
-    this.databaseIndex = StorageService.getTmp('database_index');
-    this.databaseConfig = StorageService.getTmp('firebase_config');
-    this.storage.getMany('databases', 'options').then(([databases, options]) => {
-      if (databases && databases[this.databaseIndex].collections) {
-        const collections = databases[this.databaseIndex].collections;
-        this.collectionList = collections;
-        this.setCollectionNodes(collections);
-      }
+    this.database = StorageService.getTmp('database');
+    if (this.database && this.database.collections) {
+      this.collectionList = this.database.collections;
+      this.setCollectionNodes(this.database.collections);
+    }
+    this.storage.get('options').then((options: Options) => {
       if (options) {
         this.options = options;
       }
       this.editor.setMode(this.options.editorMode);
     });
+    // Sign in if authentication enabled
+    if (this.database.authentication) {
+      this.auth.signOut(true); // first, make sure that user is signed out
+      if (this.database.authentication.enabled) {
+        this.collectionListLoadingTip = 'Authentication';
+        this.isCollectionListLoading = true;
+        this.auth.signIn(this.database.authentication).catch(() => {
+          if (this.auth.lastError) {
+            this.displayError(this.auth.lastError);
+          }
+        }).finally(() => {
+          this.isCollectionListLoading = false;
+        });
+      }
+    }
     // Init forms
     this.addCollectionForm = this.fb.group({
       name: [null, [Validators.required]],
@@ -135,6 +150,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   ngOnDestroy() {
     this.firestore.unsubscribe();
+    // Sign out if authentication enabled
+    if (this.database.authentication && this.database.authentication.enabled) {
+      this.auth.signOut();
+    }
   }
 
   private setCollectionNodes(collections: string[]): void {
@@ -174,10 +193,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       // Add to list
       this.collectionList.push(name);
       // Save to storage
-      this.storage.get('databases').then((databases) => {
-        if (databases && (!databases[this.databaseIndex].collections || databases[this.databaseIndex].collections.indexOf(name) === -1)) {
-          databases[this.databaseIndex].collections = databases[this.databaseIndex].collections || [];
-          databases[this.databaseIndex].collections.push(name);
+      this.storage.get('databases').then((databases: Database[]) => {
+        if (databases && (!databases[this.database.index].collections || databases[this.database.index].collections.indexOf(name) === -1)) {
+          databases[this.database.index].collections = databases[this.database.index].collections || [];
+          databases[this.database.index].collections.push(name);
           this.storage.save('databases', databases);
           // Add to nodes
           if (addToNodes) {
@@ -337,9 +356,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.collectionList = collectionsToKeep; // update search list
       this.collectionNodes = []; // free nodes
       // Save to storage
-      this.storage.get('databases').then((databases) => {
+      this.storage.get('databases').then((databases: Database[]) => {
         if (databases) {
-          databases[this.databaseIndex].collections = collectionsToKeep;
+          databases[this.database.index].collections = collectionsToKeep;
           this.storage.save('databases', databases);
           // Set nodes
           this.setCollectionNodes(collectionsToKeep);
@@ -425,6 +444,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           Object.keys(documents).forEach((documentId: string) => {
             node.addChildren([{ title: documentId, key: documentId, isLeaf: true }]);
           });
+        }).catch((error) => {
+          this.displayError(error);
+        }).finally(() => {
           node.isLoading = false;
           resolve();
         });
@@ -488,20 +510,47 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     Promise.all(promises).then(() => {
       // Clear cache
       this.firestore.clearCache();
-      this.selectedCollection = null;
-      this.updateEditor({});
+      // this.selectedCollection = null;
+      // this.updateEditor({});
       this.collectionNodesExpandedKeys = [];
       this.collectionNodesSelectedKeys = [];
       this.collectionNodes.forEach(node => {
         node.children = []; // Remove child nodes (to refetch them)
       });
-      this.collectionNodes = [...this.collectionNodes]; // refresh
-      this.isSaveButtonLoading = false;
-      this.isSaveModalVisible = false;
-      this.unsavedChanges = false;
-      // Display success message
-      this.message.create('success', this.translation.get('Changes successfully saved!'));
-      this.notification.create(this.translation.get('Saving changes completed!'));
+      // Define function to execute at the end
+      const done: Function = () => {
+        this.collectionNodes = [...this.collectionNodes]; // refresh
+        this.isSaveButtonLoading = false;
+        this.isSaveModalVisible = false;
+        this.unsavedChanges = false;
+        // Display success message
+        this.message.create('success', this.translation.get('Changes successfully saved!'));
+        this.notification.create(this.translation.get('Saving changes completed!'));
+      };
+      // Reload selected collection/document
+      const selectedNode = this.collectionNodes.find((node) => node.key === this.selectedCollection);
+      if (selectedNode) {
+        this.loadCollection(selectedNode).then(() => {
+          this.collectionNodesExpandedKeys = [this.selectedCollection];
+          if (this.selectedDocument) {
+            this.selectNode({
+              level: 1,
+              key: this.selectedDocument,
+              parentNode: selectedNode
+            });
+            this.collectionNodesSelectedKeys = [this.selectedDocument];
+          } else {
+            this.selectNode(selectedNode);
+            this.collectionNodesSelectedKeys = [this.selectedCollection];
+          }
+        }).catch((error) => {
+          this.displayError(error);
+        }).finally(() => {
+          done();
+        });
+      } else {
+        done();
+      }
     });
   }
 
@@ -529,25 +578,31 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   onReloadCollectionClick() {
     if (this.collectionNodes.length) {
-      this.modal.confirm({
-        nzTitle: this.translation.get('Reload all collections?'),
-        nzContent: this.reloadModalTpl,
-        nzOkText: this.translation.get('Confirm'),
-        nzCancelText: this.translation.get('Cancel'),
-        nzOnOk: () => {
-          this.collectionListLoadingTip = 'Reloading';
-          this.isCollectionListLoading = true;
-          this.reloadCollections(!this.discardUnsavedChanges).catch((error) => {
-            this.displayError(error);
-          }).finally(() => {
-            if (this.discardUnsavedChanges) {
-              this.unsavedChanges = false;
-            }
-            this.isCollectionListLoading = false;
-          });
-        }
-      });
+      if (this.unsavedChanges) {
+        this.modal.confirm({
+          nzTitle: this.translation.get('Reload all collections?'),
+          nzContent: this.reloadModalTpl,
+          nzOkText: this.translation.get('Confirm'),
+          nzCancelText: this.translation.get('Cancel'),
+          nzOnOk: () => this.reload()
+        });
+      } else {
+        this.reload();
+      }
     }
+  }
+
+  private reload(): void {
+    this.collectionListLoadingTip = 'Reloading';
+    this.isCollectionListLoading = true;
+    this.reloadCollections(!this.discardUnsavedChanges).catch((error) => {
+      this.displayError(error);
+    }).finally(() => {
+      if (this.discardUnsavedChanges) {
+        this.unsavedChanges = false;
+      }
+      this.isCollectionListLoading = false;
+    });
   }
 
   private reloadCollections(restoreCache: boolean = true): Promise<void> {
@@ -606,7 +661,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.reloadCollections().then(() => {
         const c = JSON.stringify(this.firestore.cache, null, 4);
         const file = new Blob([c], {type: 'text/json'});
-        download(file, this.databaseConfig.projectId + '.json');
+        download(file, this.database.config.projectId + '.json');
       }).catch((error) => {
         this.displayError(error);
       }).finally(() => {

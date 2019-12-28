@@ -6,8 +6,10 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { StorageService } from 'src/app/services/storage.service';
 import { AppService } from 'src/app/services/app.service';
 import { TranslateService } from 'src/app/services/translate.service';
-import { DatabaseConfig } from 'src/app/models/database-config.model';
+import { DatabaseConfig, DatabaseConfigSample } from 'src/app/models/database-config.model';
 import { download } from 'src/app/helpers/download.helper';
+import { Database } from 'src/app/models/database.model';
+import { Authentication, AuthenticationType, AuthenticationData } from 'src/app/models/auth.model';
 
 @Component({
   selector: 'fm-manager',
@@ -18,43 +20,45 @@ export class ManagerComponent implements OnInit, OnDestroy {
 
   databases: any[] = [];
   isDatabaseModalVisible: boolean = false;
+  isAuthenticationModalVisible: boolean = false;
   databaseModalOkButtonText: string = 'Add';
   isDatabaseModalOkButtonLoading: boolean = false;
-  defaultDatabaseConfig: string = `{
-    apiKey: "AIzaSyD9Br4JN2k7lMetLfguHXumHY3aaodw4yp",
-    authDomain: "myproject.firebaseapp.com",
-    databaseURL: "https://myproject.firebaseio.com",
-    projectId: "myproject",
-    storageBucket: "myproject.appspot.com",
-    messagingSenderId: "2072647547562",
-    appId: "1:2072647547562:web:90145c5cce7bdf532797b9"
-  }`;
   databaseConfigKeyUp: Subject<string> = new Subject<string>();
   databaseConfig: string = '';
+  readonly databaseConfigSample: string = DatabaseConfigSample;
+  authentication: Authentication = {
+    type: AuthenticationType.None,
+    data: AuthenticationData
+  };
+  readonly authenticationTypes: any = AuthenticationType;
+  isAuthenticationPasswordVisible: boolean = false;
   private selectedDatabaseIndex: number = -1;
   private subscriptions: Subscription[] = [];
   private addButtonTranslation: string = 'Add';
   private saveButtonTranslation: string = 'Save';
-  explorerUrl: string = '';
+  private explorerUrl: string = '';
   @ViewChild('importFileInput', { static: false, read: ElementRef }) private importFileInput: ElementRef;
+  app: AppService;
 
   constructor(
     private storage: StorageService,
     private message: NzMessageService,
     private modalService: NzModalService,
     private translation: TranslateService,
-    private app: AppService
-  ) { }
+    app: AppService
+  ) {
+    this.app = app;
+  }
 
   ngOnInit() {
-    this.storage.get('databases').then((databases) => {
+    this.storage.get('databases').then((databases: Database[]) => {
       if (databases) {
         this.databases = databases;
       }
     });
     this.addButtonTranslation = this.translation.get('Add');
     this.saveButtonTranslation = this.translation.get('Save');
-    this.explorerUrl = this.app.isWebExtension ? browser.runtime.getURL('index.html') : './';
+    this.explorerUrl = this.app.isWebExtension ? browser.runtime.getURL('index.html') : '.';
     this.subscriptions.push(this.databaseConfigKeyUp.pipe(
         map((event: any) => event.target.value),
         debounceTime(300),
@@ -112,14 +116,51 @@ export class ManagerComponent implements OnInit, OnDestroy {
     this.isDatabaseModalVisible = false;
   }
 
-  onOpenAction(event, database, index) {
-    this.storage.save('firebase_config', database.config);
-    this.storage.save('database_index', index);
+  onOpenAction(event, index) {
     if (this.app.isWebExtension) {
-      browser.tabs.create({'url': this.explorerUrl});
+      browser.tabs.create({'url': this.getDatabaseUrl(index)});
       event.preventDefault();
       window.close();
     }
+  }
+
+  getDatabaseUrl(index: number) {
+    return `${this.explorerUrl}/?index=${index}`;
+  }
+
+  onSetAuthenticationAction(database, index) {
+    if (database.authentication && database.authentication.enabled) {
+      this.authentication.type = database.authentication.type;
+      this.authentication.data = database.authentication.data;
+    } else {
+      this.authentication.type = AuthenticationType.None;
+      this.authentication.data = AuthenticationData;
+    }
+    this.selectedDatabaseIndex = index;
+    this.isAuthenticationPasswordVisible = false;
+    this.isAuthenticationModalVisible = true;
+  }
+
+  onAuthenticationModalSave() {
+    let auth: Authentication = this.databases[this.selectedDatabaseIndex].authentication || {};
+    switch(this.authentication.type) {
+      case AuthenticationType.Anonymous:
+      case AuthenticationType.EmailAndPassword:
+      case AuthenticationType.Token:
+        auth.enabled = true;
+        auth.type = this.authentication.type;
+        auth.data = this.authentication.data;
+        break;
+      default:
+        auth.enabled = false;
+    }
+    this.databases[this.selectedDatabaseIndex].authentication = auth;
+    this.saveDatabases();
+    this.isAuthenticationModalVisible = false;
+  }
+
+  onAuthenticationModalCancel() {
+    this.isAuthenticationModalVisible = false;
   }
 
   onEditAction(database, index) {

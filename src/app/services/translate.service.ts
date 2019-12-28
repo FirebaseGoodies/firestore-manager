@@ -10,10 +10,10 @@ export class TranslateService {
 
   constructor(private app: AppService, private http: HttpClient) { }
 
-  init(): Promise<void> {
-    return new Promise(resolve => {
-      if (! this.app.isWebExtension) {
-        this.loadTranslations().then(() => resolve());
+  static init(self: TranslateService): Function {
+    return () => new Promise(resolve => {
+      if (! self.app.isWebExtension) {
+        self.loadTranslations().then(() => resolve());
       } else {
         resolve();
       }

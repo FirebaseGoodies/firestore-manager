@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { Database } from '../models/database.model';
+import { StorageService } from './storage.service';
 
 @Injectable()
 export class FirestoreService {
@@ -13,6 +15,12 @@ export class FirestoreService {
 
     constructor(afs: AngularFirestore) {
       this.db = afs;
+    }
+
+    static getDatabaseConfig() {
+      const database: Database = StorageService.getTmp('database');
+      //console.log(database);
+      return database ? database.config : null;
     }
 
     getUnchangedCache() {
@@ -41,11 +49,10 @@ export class FirestoreService {
 
     isCollection(name: string): Promise<boolean> {
       return new Promise((resolve, reject) => {
-        const subscription = this.db.collection(name).get().subscribe((query) => {
+        this.db.collection(name).get().toPromise().then((query) => {
           // console.log(name, query.size);
-          subscription.unsubscribe();
           resolve(!!query.size);
-        }, (error) => {
+        }).catch((error) => {
           reject(error);
         });
       });
@@ -57,20 +64,12 @@ export class FirestoreService {
           // console.log(name + ' found in cache');
           resolve(this.cache[name]);
         } else if (! this.subscriptions[name]) {
-          this.subscriptions[name] = this.db.collection(name).snapshotChanges().pipe(
-            map(actions => {
-              return actions.map(a => {
-                const data = a.payload.doc.data();
-                const id = a.payload.doc.id;
-                return { id: id, data: data };
-              });
-            })
-          ).subscribe((snapshot) => {
+          this.subscriptions[name] = this.db.collection(name).get().subscribe((snapshot) => {
             // console.log(snapshot);
             let docs = {};
             snapshot.forEach(doc => {
               // console.log(doc);
-              docs[doc.id] = doc.data;
+              docs[doc.id] = doc.data();
             });
             // console.log(docs);
             if (! this.cache[name]) {

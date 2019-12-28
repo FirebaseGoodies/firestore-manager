@@ -19,7 +19,7 @@ export class OptionsComponent implements OnInit {
   constructor(private storage: StorageService) { }
 
   ngOnInit() {
-    this.storage.get('options').then((options) => {
+    this.storage.get('options').then((options: Options) => {
       if (options) {
         this.options.editorMode = options.editorMode ? options.editorMode : this.options.editorMode;
         this.options.diffStyle = options.diffStyle ? options.diffStyle : this.options.diffStyle;

@@ -85,6 +85,9 @@
     "Firebase Console": {
         "message": "Firebase Console"
     },
+    "Open Firebase Console": {
+        "message": "Open Firebase Console"
+    },
     "Open": {
         "message": "Open"
     },
@@ -258,5 +261,32 @@
     },
     "Databases successfully imported!": {
         "message": "Databases successfully imported!"
+    },
+    "Authentication": {
+        "message": "Authentication"
+    },
+    "Set Authentication": {
+        "message": "Set Authentication"
+    },
+    "No authentication": {
+        "message": "None"
+    },
+    "Anonymous": {
+        "message": "Anonymous"
+    },
+    "With email and password": {
+        "message": "With email and password"
+    },
+    "Email": {
+        "message": "Email"
+    },
+    "Password": {
+        "message": "Password"
+    },
+    "With token": {
+        "message": "With token"
+    },
+    "Token": {
+        "message": "Token"
     }
 }

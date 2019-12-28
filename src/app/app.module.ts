@@ -28,17 +28,7 @@ import { AppService } from './services/app.service';
 import { TranslateService } from './services/translate.service';
 import { TranslateDirective } from './directives/translate.directive';
 import { TranslatePipe } from './pipes/translate.pipe';
-import { DatabaseConfig } from './models/database-config.model';
-
-export function initializeApp() {
-  const config: DatabaseConfig = StorageService.getTmp('firebase_config');
-  //console.log(config);
-  return config;
-}
-
-export function loadTranslations(translateService: TranslateService) {
-  return () => translateService.init();
-}
+import { AngularFireAuthModule } from '@angular/fire/auth';
 
 @NgModule({
   declarations: [
@@ -60,6 +50,7 @@ export function loadTranslations(translateService: TranslateService) {
     ReactiveFormsModule,
     AngularFireModule,
     AngularFirestoreModule,
+    AngularFireAuthModule,
     NgJsonEditorModule
   ],
   providers: [
@@ -68,12 +59,14 @@ export function loadTranslations(translateService: TranslateService) {
     FirestoreService,
     NotificationService,
     TranslateService,
-    { provide: APP_INITIALIZER, useFactory: loadTranslations, deps: [TranslateService], multi: true },
-    { provide: StorageService, useFactory: StorageService.getInstance },
-    { provide: AppService, useFactory: AppService.getInstance },
-    /** config ng-zorro-antd i18n (language && date) **/
-    { provide: NZ_I18N, useValue: en_US },
-    { provide: FirebaseOptionsToken, useFactory: initializeApp }
+    StorageService,
+    AppService,
+    // Load translations (for web app only)
+    { provide: APP_INITIALIZER, useFactory: TranslateService.init, deps: [TranslateService], multi: true },
+    // Set database config (for AngularFireModule)
+    { provide: FirebaseOptionsToken, useFactory: FirestoreService.getDatabaseConfig },
+    // Config ng-zorro-antd i18n (language && date)
+    { provide: NZ_I18N, useValue: en_US }
   ],
   bootstrap: [AppComponent]
 })
