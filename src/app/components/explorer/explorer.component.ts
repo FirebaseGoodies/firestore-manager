@@ -105,7 +105,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
     this.storage.get('options').then((options: Options) => {
       if (options) {
-        this.options = options;
+        this.options = {...this.options, ...options}; // merge
       }
       this.editor.setMode(this.options.editorMode);
     });
