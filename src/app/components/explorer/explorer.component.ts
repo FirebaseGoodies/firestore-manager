@@ -551,7 +551,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   onSettingsDrawerClose() {
     // Reload options from storage
-    this.storage.get('options').then((options) => {
+    this.storage.get('options').then((options: Options) => {
       if (options) {
         this.options = options;
         this.editor.setMode(this.options.editorMode);
