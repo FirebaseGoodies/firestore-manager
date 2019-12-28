@@ -58,7 +58,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
     });
     this.addButtonTranslation = this.translation.get('Add');
     this.saveButtonTranslation = this.translation.get('Save');
-    this.explorerUrl = this.app.isWebExtension ? browser.runtime.getURL('index.html') : '.';
+    this.explorerUrl = this.app.isWebExtension ? browser.runtime.getURL('index.html') : './';
     this.subscriptions.push(this.databaseConfigKeyUp.pipe(
         map((event: any) => event.target.value),
         debounceTime(300),
@@ -125,7 +125,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   }
 
   getDatabaseUrl(index: number) {
-    return `${this.explorerUrl}/?index=${index}`;
+    return `${this.explorerUrl}?index=${index}`;
   }
 
   onSetAuthenticationAction(database, index) {
