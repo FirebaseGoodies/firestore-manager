@@ -289,7 +289,7 @@
     "Token": {
         "message": "Token"
     },
-    "Enable notifications": {
-        "message": "Enable notifications"
+    "Enable notifications:": {
+        "message": "Enable notifications:"
     }
 }

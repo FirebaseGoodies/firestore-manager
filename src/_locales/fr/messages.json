@@ -289,7 +289,7 @@
     "Token": {
         "message": "Jeton"
     },
-    "Enable notifications": {
-        "message": "Activer les notifications"
+    "Enable notifications:": {
+        "message": "Activer les notifications:"
     }
 }
