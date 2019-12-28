@@ -69,12 +69,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   private selectedCollection: string = null;
   private selectedDocument: string = null;
   isWebExtension: boolean = false;
-  options: Options = {
-    editorMode: 'code',
-    diffStyle: 'word',
-    diffOutputFormat: 'line-by-line',
-    displayCollectionsCount: false
-  };
+  options: Options = new Options();
   formatterDuplicateTimes = (value: number) => `x ${value}`;
   parserDuplicateTimes = (value: string) => value.replace('x ', '');
   collectionListLoadingTip: string = 'Loading';
@@ -524,8 +519,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         this.isSaveModalVisible = false;
         this.unsavedChanges = false;
         // Display success message
-        this.message.create('success', this.translation.get('Changes successfully saved!'));
-        this.notification.create(this.translation.get('Saving changes completed!'));
+        this.displayMessage('Changes successfully saved!');
+        this.displayNotification('Saving changes completed!');
       };
       // Reload selected collection/document
       const selectedNode = this.collectionNodes.find((node) => node.key === this.selectedCollection);
@@ -676,8 +671,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     this.isCollectionListLoading = true;
     this.importFile(selectedFile).then(() => {
       // Display success message
-      this.message.create('success', this.translation.get('Data successfully imported!'));
-      this.notification.create(this.translation.get('Import completed!'));
+      this.displayMessage('Data successfully imported!');
+      this.displayNotification('Import completed!');
     }).catch((error) => {
       this.displayError(error);
     }).finally(() => {
@@ -767,6 +762,16 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   private displayError(error) {
     console.log(error.message);
     this.message.create('error', error.message);
+  }
+
+  private displayMessage(message: string, type: string = 'success') {
+    this.message.create(type, this.translation.get(message));
+  }
+
+  private displayNotification(message: string) {
+    if (this.options.enableNotifications) {
+      this.notification.create(this.translation.get(message));
+    }
   }
 
 }

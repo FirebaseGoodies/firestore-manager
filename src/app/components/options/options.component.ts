@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StorageService } from 'src/app/services/storage.service';
 import { Options } from 'src/app/models/options.model';
+import { AppService } from 'src/app/services/app.service';
 
 @Component({
   selector: 'fm-options',
@@ -9,22 +10,17 @@ import { Options } from 'src/app/models/options.model';
 })
 export class OptionsComponent implements OnInit {
 
-  options: Options = {
-    editorMode: 'code',
-    diffStyle: 'word',
-    diffOutputFormat: 'line-by-line',
-    displayCollectionsCount: false
-  };
+  options: Options = new Options();
+  app: AppService;
 
-  constructor(private storage: StorageService) { }
+  constructor(private storage: StorageService, app: AppService) {
+    this.app = app;
+  }
 
   ngOnInit() {
     this.storage.get('options').then((options: Options) => {
       if (options) {
-        this.options.editorMode = options.editorMode ? options.editorMode : this.options.editorMode;
-        this.options.diffStyle = options.diffStyle ? options.diffStyle : this.options.diffStyle;
-        this.options.diffOutputFormat = options.diffOutputFormat ? options.diffOutputFormat : this.options.diffOutputFormat;
-        this.options.displayCollectionsCount = options.displayCollectionsCount ? options.displayCollectionsCount : this.options.displayCollectionsCount;
+        this.options = {...this.options, ...options}; // merge
       }
     });
   }
