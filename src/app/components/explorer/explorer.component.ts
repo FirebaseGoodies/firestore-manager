@@ -103,10 +103,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.collectionList = this.database.collections;
       this.setCollectionNodes(this.database.collections);
     }
-    this.storage.get('options').then((options: Options) => {
-      if (options) {
-        this.options = {...this.options, ...options}; // merge
-      }
+    this.getOptions(() => {
       this.editor.setMode(this.options.editorMode);
     });
     // Sign in if authentication enabled
@@ -149,6 +146,16 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     if (this.database.authentication && this.database.authentication.enabled) {
       this.auth.signOut();
     }
+  }
+
+  private getOptions(finallyCallback: Function) {
+    this.storage.get('options').then((options: Options) => {
+      if (options) {
+        this.options = {...this.options, ...options}; // merge
+      }
+    }).finally(() => {
+      finallyCallback();
+    });
   }
 
   private setCollectionNodes(collections: string[]): void {
@@ -551,12 +558,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   onSettingsDrawerClose() {
     // Reload options from storage
-    this.storage.get('options').then((options: Options) => {
-      if (options) {
-        this.options = options;
-        this.editor.setMode(this.options.editorMode);
-      }
-    }).finally(() => {
+    this.getOptions(() => {
+      this.editor.setMode(this.options.editorMode);
       this.isSettingsDrawerVisible = false;
     });
   }
