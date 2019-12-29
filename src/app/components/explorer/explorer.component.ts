@@ -68,11 +68,11 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   @ViewChild(CacheDiffComponent, { static: false }) private cacheDiff: CacheDiffComponent;
   private selectedCollection: string = null;
   private selectedDocument: string = null;
-  isWebExtension: boolean = false;
   options: Options = new Options();
   formatterDuplicateTimes = (value: number) => `x ${value}`;
   parserDuplicateTimes = (value: string) => value.replace('x ', '');
   collectionListLoadingTip: string = 'Loading';
+  app: AppService;
 
   constructor(
     private fb: FormBuilder,
@@ -80,14 +80,14 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     private storage: StorageService,
     private notification: NotificationService,
     private translation: TranslateService,
-    private app: AppService,
     private auth: AuthService,
     private message: NzMessageService,
     private modal: NzModalService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    app: AppService
   ) {
-    this.isWebExtension = this.app.isWebExtension;
+    this.app = app;
   }
 
   // @HostListener allows us to also guard against browser refresh, close, etc.

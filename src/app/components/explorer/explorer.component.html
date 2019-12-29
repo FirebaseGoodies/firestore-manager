@@ -18,7 +18,7 @@
         <i nz-icon nzType="bug" nzTheme="outline"></i>
       </a>
       <span
-        *ngIf="!isWebExtension"
+        *ngIf="!app.isWebExtension"
         class="toolbar-icon"
         nz-tooltip
         nzTooltipTitle="{{ 'Settings' | translate }}"
@@ -28,7 +28,7 @@
         <i nz-icon nzType="setting" nzTheme="outline"></i>
       </span>
       <span
-        *ngIf="!isWebExtension"
+        *ngIf="!app.isWebExtension"
         class="toolbar-icon"
         nz-tooltip
         nzTooltipTitle="{{ 'Go back to main page' | translate }}"
@@ -333,7 +333,7 @@
   ></nz-alert>
 </nz-modal>
 <nz-drawer
-  *ngIf="!isWebExtension && (isSettingsDrawerVisible || isSettingsDrawerLoaded)"
+  *ngIf="!app.isWebExtension && (isSettingsDrawerVisible || isSettingsDrawerLoaded)"
   [nzClosable]="false"
   [nzOffsetX]="0"
   [nzWidth]="500"
