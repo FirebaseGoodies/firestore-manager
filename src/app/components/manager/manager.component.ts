@@ -39,15 +39,17 @@ export class ManagerComponent implements OnInit, OnDestroy {
   private explorerUrl: string = '';
   @ViewChild('importFileInput', { static: false, read: ElementRef }) private importFileInput: ElementRef;
   app: AppService;
+  translation: TranslateService;
 
   constructor(
     private storage: StorageService,
     private message: NzMessageService,
     private modalService: NzModalService,
-    private translation: TranslateService,
+    translation: TranslateService,
     app: AppService
   ) {
     this.app = app;
+    this.translation = translation;
   }
 
   ngOnInit() {
@@ -248,6 +250,12 @@ export class ManagerComponent implements OnInit, OnDestroy {
       const file = new Blob([c], {type: 'text/json'});
       download(file, 'databases.json');
     }
+  }
+
+  switchLanguage(lang: string) {
+    this.storage.save('lang', lang).then(() => {
+      window.location.reload();
+    });
   }
 
 }

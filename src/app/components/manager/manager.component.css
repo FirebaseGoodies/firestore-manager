@@ -23,12 +23,29 @@ p {
 .toolbar img {
   margin: 0 16px;
 }
-.toolbar #github-logo {
-  height: 30px;
-  margin: 0 16px;
-}
-.toolbar #github-logo:hover {
+.toolbar-icon {
+  font-size: 23px;
+  margin-right: 24px;
+  cursor: pointer;
   opacity: 0.8;
+}
+.toolbar-icon i {
+  color: #fff;
+}
+.toolbar-icon:hover {
+  opacity: 1;
+}
+.lang-menu li {
+  position: relative;
+  padding: 5px 32px;
+}
+.lang-menu li i {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  font-size: 12px;
+  transform: translateY(-50%);
+  transition: all .2s;
 }
 .content {
   display: flex;

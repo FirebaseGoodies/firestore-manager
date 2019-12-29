@@ -1,27 +1,39 @@
 import { Injectable } from '@angular/core';
 import { AppService } from './app.service';
 import { HttpClient } from '@angular/common/http';
+import { StorageService } from './storage.service';
 
 @Injectable()
 export class TranslateService {
 
+  languages: object = {
+    English: 'en',
+    French: 'fr'
+  };
   private defaultLanguage: string = 'en';
   private translations: object = {};
 
-  constructor(private app: AppService, private http: HttpClient) { }
+  constructor(private app: AppService, private http: HttpClient, private storage: StorageService) { }
 
   static init(self: TranslateService): Function {
     return () => new Promise(resolve => {
       if (! self.app.isWebExtension) {
-        self.loadTranslations().then(() => resolve());
+        self.storage.get('lang').then((lang) => {
+          if (lang) {
+            self.defaultLanguage = lang;
+          }
+        }).finally(() => {
+          // console.log(`Loading ${self.defaultLanguage} translations`);
+          self.loadTranslations(self.defaultLanguage).then(() => resolve());
+        });
       } else {
         resolve();
       }
     });
   }
 
-  private loadTranslations(): Promise<void> {
-    return this.http.get(`./_locales/${this.defaultLanguage}/messages.json`).toPromise().then(translations => {
+  private loadTranslations(lang: string): Promise<void> {
+    return this.http.get(`./_locales/${lang}/messages.json`).toPromise().then(translations => {
       this.translations = translations;
       // console.log(this.translations);
     });

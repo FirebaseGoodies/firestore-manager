@@ -42,20 +42,25 @@ export class StorageService {
     });
   }
 
-  save(key: string, value: any): void {
-    if (this.app.isWebExtension) {
-      browser.storage.local.set({[key]: value});
-    }
-    else {
-      let finalValue;
-      try {
-        finalValue = JSON.stringify(value);
+  save(key: string, value: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this.app.isWebExtension) {
+        browser.storage.local.set({[key]: value}).then(() => {
+          resolve();
+        });
       }
-      catch(error) {
-        finalValue = value;
+      else {
+        let finalValue;
+        try {
+          finalValue = JSON.stringify(value);
+        }
+        catch(error) {
+          finalValue = value;
+        }
+        localStorage.setItem(key, finalValue);
+        resolve();
       }
-      localStorage.setItem(key, finalValue);
-    }
+    });
   }
 
   getMany(...keys: string[]): Promise<any> {

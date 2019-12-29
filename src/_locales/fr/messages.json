@@ -291,5 +291,11 @@
     },
     "Enable notifications:": {
         "message": "Activer les notifications:"
+    },
+    "English": {
+        "message": "Anglais"
+    },
+    "French": {
+        "message": "Français"
     }
 }
