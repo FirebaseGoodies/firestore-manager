@@ -77,7 +77,7 @@
         </nz-dropdown-menu>
         <nz-list-item-meta [nzTitle]="nzTitle">
           <ng-template #nzTitle>
-            <a [href]="getDatabaseUrl(index)" target="_blank" (click)="onOpenAction($event, index)" nz-tooltip nzTooltipTitle="{{ 'Open' | translate }}" nzTooltipPlacement="bottom">{{ database.config.projectId }}</a>
+            <a [href]="getDatabaseUrl(index)" target="_blank" (click)="onOpenAction($event, index)" (contextmenu)="$event.preventDefault()" nz-tooltip nzTooltipTitle="{{ 'Open' | translate }}" nzTooltipPlacement="bottom">{{ database.config.projectId }}</a>
           </ng-template>
         </nz-list-item-meta>
       </nz-list-item>
