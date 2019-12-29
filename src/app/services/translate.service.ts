@@ -6,7 +6,7 @@ import { StorageService } from './storage.service';
 @Injectable()
 export class TranslateService {
 
-  languages: object = {
+  languages: { [key: string]: string } = {
     English: 'en',
     French: 'fr'
   };
