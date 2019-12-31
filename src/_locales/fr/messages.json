@@ -297,5 +297,8 @@
     },
     "French": {
         "message": "Français"
+    },
+    "Try the web extension": {
+        "message": "Essayer l'extension web"
     }
 }

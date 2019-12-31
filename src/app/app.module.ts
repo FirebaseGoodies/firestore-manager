@@ -65,7 +65,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
     { provide: APP_INITIALIZER, useFactory: TranslateService.init, deps: [TranslateService], multi: true },
     // Set database config (for AngularFireModule)
     { provide: FirebaseOptionsToken, useFactory: FirestoreService.getDatabaseConfig },
-    // Config ng-zorro-antd i18n (language && date)
+    // Config ng-zorro-antd i18n (language & date)
     { provide: NZ_I18N, useValue: en_US }
   ],
   bootstrap: [AppComponent]

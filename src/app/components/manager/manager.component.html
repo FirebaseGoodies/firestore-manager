@@ -12,6 +12,7 @@
     *ngIf="!app.isWebExtension"
     class="toolbar-icon"
     nz-dropdown
+    nzPlacement="bottomRight"
     [nzDropdownMenu]="languageMenu"
   >
     <i nz-icon nzType="global" nzTheme="outline"></i>
@@ -29,6 +30,15 @@
       </li>
     </ul>
   </nz-dropdown-menu>
+  <a
+    *ngIf="!app.isWebExtension"
+    class="toolbar-icon"
+    href="https://addons.mozilla.org/firefox/addon/firestore-manager"
+    target="_blank"
+    title="{{ 'Try the web extension' | translate }}"
+  >
+    <i nz-icon nzType="experiment" nzTheme="outline"></i>
+  </a>
   <a
     class="toolbar-icon"
     href="https://github.com/AXeL-dev/firestore-manager"
