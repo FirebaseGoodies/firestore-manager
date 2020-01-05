@@ -120,7 +120,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
 
   onOpenAction(event, index) {
     if (this.app.isWebExtension) {
-      browser.tabs.create({'url': this.getDatabaseUrl(index)});
+      browser.tabs.create({url: this.getDatabaseUrl(index)});
       event.preventDefault();
       window.close();
     }
