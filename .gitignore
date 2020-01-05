@@ -5,6 +5,8 @@
 /tmp
 /out-tsc
 *.zip
+*.crx
+*.pem
 # Only exists if Bazel was run
 /bazel-out
 
