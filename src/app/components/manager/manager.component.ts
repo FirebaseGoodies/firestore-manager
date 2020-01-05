@@ -106,7 +106,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
         }
         catch(error) {
           console.log(error.message);
-          this.message.create('error', this.translation.get('Please enter a valid configuration.'));
+          this.message.create('error', this.translation.get('PleaseEnterValidConfiguration'));
         }
         this.isDatabaseModalOkButtonLoading = false;
         resolve();
@@ -176,7 +176,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
     //this.selectedDatabaseIndex = index;
     this.modalService.confirm({
       nzTitle: this.translation.get('Delete'),
-      nzContent: this.translation.get('Confirm delete?', database.config.projectId),
+      nzContent: this.translation.get('ConfirmDelete', database.config.projectId),
       nzOkText: this.translation.get('Delete'),
       nzOkType: 'danger',
       nzOnOk: () => this.onDeleteActionConfirm(index),
@@ -227,7 +227,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
           this.databases = [...databases];
           this.storage.save('databases', this.databases);
           // Display success message
-          this.message.create('success', this.translation.get('Databases successfully imported!'));
+          this.message.create('success', this.translation.get('DatabasesSuccessfullyImported'));
         }
       }
       catch(error) {

@@ -1,6 +1,6 @@
 <div nz-row [ngStyle]="{ padding: '10px' }">
   <div nz-col nzSpan="10" [ngStyle]="{ 'margin-top': '5px' }">
-    <label translate>Default editor mode: </label>
+    <label translate>DefaultEditorMode</label>
   </div>
   <div nz-col nzSpan="14">
     <nz-radio-group nzButtonStyle="solid" [(ngModel)]="options.editorMode" (ngModelChange)="saveOptions()">
@@ -12,29 +12,29 @@
 </div>
 <div nz-row [ngStyle]="{ padding: '10px' }">
   <div nz-col nzSpan="10" [ngStyle]="{ 'margin-top': '5px' }">
-    <label translate>Default diff style: </label>
+    <label translate>DefaultDiffStyle</label>
   </div>
   <div nz-col nzSpan="14">
     <nz-radio-group nzButtonStyle="solid" [(ngModel)]="options.diffStyle" (ngModelChange)="saveOptions()">
-      <label nz-radio-button nzValue="word"><span translate>Word diff</span></label>
-      <label nz-radio-button nzValue="char"><span translate>Char diff</span></label>
+      <label nz-radio-button nzValue="word"><span translate>WordDiff</span></label>
+      <label nz-radio-button nzValue="char"><span translate>CharDiff</span></label>
     </nz-radio-group>
   </div>
 </div>
 <div nz-row [ngStyle]="{ padding: '10px' }">
   <div nz-col nzSpan="10" [ngStyle]="{ 'margin-top': '5px' }">
-    <label translate>Default diff output format: </label>
+    <label translate>DefaultDiffOutputFormat</label>
   </div>
   <div nz-col nzSpan="14">
     <nz-radio-group nzButtonStyle="solid" [(ngModel)]="options.diffOutputFormat" (ngModelChange)="saveOptions()">
-      <label nz-radio-button nzValue="side-by-side"><span translate>Side by Side</span></label>
-      <label nz-radio-button nzValue="line-by-line"><span translate>Line by Line</span></label>
+      <label nz-radio-button nzValue="side-by-side"><span translate>SideBySide</span></label>
+      <label nz-radio-button nzValue="line-by-line"><span translate>LineByLine</span></label>
     </nz-radio-group>
   </div>
 </div>
 <div nz-row [ngStyle]="{ padding: '10px' }">
   <div nz-col nzSpan="10">
-    <label translate>Display collections count: </label>
+    <label translate>DisplayCollectionsCount</label>
   </div>
   <div nz-col nzSpan="14">
     <nz-switch
@@ -47,7 +47,7 @@
 </div>
 <div nz-row [ngStyle]="{ padding: '10px' }" *ngIf="app.isWebExtension">
   <div nz-col nzSpan="10">
-    <label translate>Enable notifications: </label>
+    <label translate>EnableNotifications</label>
   </div>
   <div nz-col nzSpan="14">
     <nz-switch
