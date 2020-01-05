@@ -526,8 +526,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         this.isSaveModalVisible = false;
         this.unsavedChanges = false;
         // Display success message
-        this.displayMessage('Changes successfully saved!');
-        this.displayNotification('Saving changes completed!');
+        this.displayMessage('ChangesSuccessfullySaved');
+        this.displayNotification('SavingChangesCompleted');
       };
       // Reload selected collection/document
       const selectedNode = this.collectionNodes.find((node) => node.key === this.selectedCollection);
@@ -566,8 +566,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   onGoBackIconClick() {
     this.modal.confirm({
-      nzTitle: this.translation.get('Confirm go back to the main page?'),
-      nzContent: this.translation.get('Any unsaved changes will be lost.'),
+      nzTitle: this.translation.get('ConfirmGoBack'),
+      nzContent: this.translation.get('AnyUnsavedChangesWillBeLost'),
       nzOkText: this.translation.get('Confirm'),
       nzCancelText: this.translation.get('Cancel'),
       nzOnOk: () => this.router.navigate(['/manager'])
@@ -578,7 +578,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     if (this.collectionNodes.length) {
       if (this.unsavedChanges) {
         this.modal.confirm({
-          nzTitle: this.translation.get('Reload all collections?'),
+          nzTitle: this.translation.get('ReloadAllCollections'),
           nzContent: this.reloadModalTpl,
           nzOkText: this.translation.get('Confirm'),
           nzCancelText: this.translation.get('Cancel'),
@@ -674,8 +674,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     this.isCollectionListLoading = true;
     this.importFile(selectedFile).then(() => {
       // Display success message
-      this.displayMessage('Data successfully imported!');
-      this.displayNotification('Import completed!');
+      this.displayMessage('DataSuccessfullyImported');
+      this.displayNotification('ImportCompleted');
     }).catch((error) => {
       this.displayError(error);
     }).finally(() => {
@@ -728,7 +728,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
               reject(error);
             });
           } else {
-            reject({message: this.translation.get('File is empty!')});
+            reject({message: this.translation.get('FileIsEmpty')});
           }
         }
         catch(error) {

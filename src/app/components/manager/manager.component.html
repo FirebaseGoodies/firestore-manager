@@ -35,7 +35,7 @@
     class="toolbar-icon"
     href="https://addons.mozilla.org/firefox/addon/firestore-manager"
     target="_blank"
-    title="{{ 'Try the web extension' | translate }}"
+    title="{{ 'TryTheWebExtension' | translate }}"
   >
     <i nz-icon nzType="experiment" nzTheme="outline"></i>
   </a>
@@ -60,7 +60,7 @@
         </div>
         <div nz-col nzSpan="8" nzOffset="8">
           <nz-button-group [ngStyle]="{ float: 'right' }">
-            <button nz-button nzType="primary" [ngStyle]="{ 'vertical-align': 'middle' }" (click)="onAddDatabaseButtonClick()"><span translate>Add Database</span></button>
+            <button nz-button nzType="primary" [ngStyle]="{ 'vertical-align': 'middle' }" (click)="onAddDatabaseButtonClick()"><span translate>AddDatabase</span></button>
             <button nz-button nzType="primary" [ngStyle]="{ 'vertical-align': 'middle' }" nz-dropdown [nzDropdownMenu]="databasesMenu"><i nz-icon nzType="down" nzTheme="outline"></i></button>
             <nz-dropdown-menu #databasesMenu="nzDropdownMenu">
               <ul nz-menu>
@@ -75,8 +75,8 @@
     </ng-template>
     <ng-template #itemTpl let-database let-index="index">
       <nz-list-item [nzActions]="[authAction, consoleAction, moreAction]">
-        <ng-template #authAction><a (click)="onSetAuthenticationAction(database, index)" nz-tooltip nzTooltipTitle="{{ 'Set Authentication' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="user" nzTheme="outline"></i></a></ng-template>
-        <ng-template #consoleAction><a [href]="database.config.databaseURL" target="_blank" nz-tooltip nzTooltipTitle="{{ 'Open Firebase Console' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="fire" nzTheme="outline"></i></a></ng-template>
+        <ng-template #authAction><a (click)="onSetAuthenticationAction(database, index)" nz-tooltip nzTooltipTitle="{{ 'SetAuthentication' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="user" nzTheme="outline"></i></a></ng-template>
+        <ng-template #consoleAction><a [href]="database.config.databaseURL" target="_blank" nz-tooltip nzTooltipTitle="{{ 'OpenFirebaseConsole' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="fire" nzTheme="outline"></i></a></ng-template>
         <ng-template #moreAction><a nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"><i nz-icon nzType="more" nzTheme="outline"></i></a></ng-template>
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu>
@@ -98,7 +98,7 @@
   <nz-modal
       [nzStyle]="{ top: app.isWebExtension ? '20px' : '100px' }"
       [(nzVisible)]="isDatabaseModalVisible"
-      nzTitle="{{ 'Paste your database configuration below' | translate }}"
+      nzTitle="{{ 'PasteConfigurationBelow' | translate }}"
       nzCancelText="{{ 'Cancel' | translate }}"
       (nzOnCancel)="onDatabaseModalCancel()"
       (nzOnOk)="onDatabaseModalConfirm()"
@@ -127,10 +127,10 @@
       nzOkText="{{ 'Save' | translate }}"
     >
     <nz-radio-group [(ngModel)]="authentication.type">
-      <label nz-radio class="radio" [nzValue]="authenticationTypes.None">{{ 'No authentication' | translate }}</label>
+      <label nz-radio class="radio" [nzValue]="authenticationTypes.None">{{ 'NoAuthentication' | translate }}</label>
       <label nz-radio class="radio" [nzValue]="authenticationTypes.Anonymous">{{ 'Anonymous' | translate }}</label>
       <label nz-radio class="radio" [nzValue]="authenticationTypes.EmailAndPassword">
-        {{ 'With email and password' | translate }}
+        {{ 'WithEmailAndPassword' | translate }}
         <div *ngIf="authentication.type === authenticationTypes.EmailAndPassword" [ngStyle]="{ margin: '10px' }">
           <input
             nz-input
@@ -153,7 +153,7 @@
         </div>
       </label>
       <label nz-radio class="radio" [nzValue]="authenticationTypes.Token">
-        {{ 'With token' | translate }}
+        {{ 'WithToken' | translate }}
         <div *ngIf="authentication.type === authenticationTypes.Token" [ngStyle]="{ margin: '10px' }">
           <input nz-input type="text" placeholder="{{ 'Token' | translate }}" [(ngModel)]="authentication.data.token" />
         </div>
@@ -163,8 +163,8 @@
 
   <!-- Footer -->
   <footer>
-      <span translate>Love Firestore Manager?</span>&nbsp;
-      <a href="https://github.com/AXeL-dev/firestore-manager" target="_blank" rel="noopener"> <span translate>Give our repo a star.</span>
+      <span translate>LoveFirestoreManager</span>&nbsp;
+      <a href="https://github.com/AXeL-dev/firestore-manager" target="_blank" rel="noopener"> <span translate>GiveOurRepoAstar</span>
         <div class="github-star-badge">
           <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
           <span translate>Star</span>

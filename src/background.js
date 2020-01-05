@@ -2,6 +2,8 @@
 // Workaround to allow importing databases on firefox
 // @see https://discourse.mozilla.org/t/getting-file-from-file-chooser-after-extension-popup-closed/32881
 
+var browser = browser || chrome;
+
 function importDatabases() {
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
