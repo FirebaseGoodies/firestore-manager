@@ -37,6 +37,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   private addButtonTranslation: string = 'Add';
   private saveButtonTranslation: string = 'Save';
   private explorerUrl: string = '';
+  private isPopup: boolean = false;
   @ViewChild('importFileInput', { static: false, read: ElementRef }) private importFileInput: ElementRef;
   app: AppService;
   translation: TranslateService;
@@ -53,6 +54,11 @@ export class ManagerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    if (this.app.isWebExtension) {
+      browser.tabs.getCurrent().then((tab) => {
+        this.isPopup = tab === undefined ? true : false;
+      });
+    }
     this.storage.get('databases').then((databases: Database[]) => {
       if (databases) {
         this.databases = databases;
@@ -200,7 +206,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   }
 
   onImportClick() {
-    if (this.app.isWebExtension) {
+    if (this.app.isWebExtension && this.isPopup) {
       browser.runtime.getBackgroundPage().then((background: any) => {
         if (!background) {
           console.warn(`Background page doesn't work in private windows ...`);
