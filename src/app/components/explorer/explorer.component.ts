@@ -99,7 +99,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   ngOnInit() {
     // Get data from storage
     this.database = StorageService.getTmp('database');
-    if (this.database && this.database.collections) {
+    if (this.database?.collections) {
       this.collectionList = this.database.collections;
       this.setCollectionNodes(this.database.collections);
     }
@@ -143,7 +143,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   ngOnDestroy() {
     this.firestore.unsubscribe();
     // Sign out if authentication enabled
-    if (this.database.authentication && this.database.authentication.enabled) {
+    if (this.database.authentication?.enabled) {
       this.auth.signOut();
     }
   }
@@ -166,7 +166,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   searchCollection(value: string): void {
-    if (value && value.length) {
+    if (value?.length) {
       // Check if collection exists
       this.isSearchCollectionLoading = true;
       this.firestore.isCollection(value).then((isCollection: boolean) => {
@@ -430,7 +430,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   onCollectionNodeExpand(event: Required<NzFormatEmitEvent>) {
     // console.log(event);
     const node = event.node;
-    if (node && node.isExpanded) {
+    if (node?.isExpanded) {
       this.expandNode(node);
     }
   }
@@ -635,7 +635,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   private loadCollection(node: any, force: boolean = false): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (!force && node.children && node.children.length) {
+      if (!force && node.children?.length) {
         resolve();
       } else {
         this.firestore.getCollection(node.key).then((documents) => {

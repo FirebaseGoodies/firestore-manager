@@ -22,7 +22,7 @@ function importDatabases() {
           // Parse data from file
           try {
             const databases = JSON.parse(fileReader.result);
-            if (databases && databases.length) {
+            if (databases?.length) {
               // ToDo: check if databases config is valid
               browser.storage.local.set({'databases': databases});
             }

@@ -33,12 +33,12 @@ export class AuthService {
             signInFunction = () => this.afa.auth.signInAnonymously();
             break;
           case AuthenticationType.EmailAndPassword:
-            if (authentication.data.email && authentication.data.password && authentication.data.email.length && authentication.data.password.length) {
+            if (authentication.data.email?.length && authentication.data.password?.length) {
               signInFunction = () => this.afa.auth.signInWithEmailAndPassword(authentication.data.email, authentication.data.password);
             }
             break;
           case AuthenticationType.Token:
-            if (authentication.data.token && authentication.data.token.length) {
+            if (authentication.data.token?.length) {
               signInFunction = () => this.afa.auth.signInWithCustomToken(authentication.data.token);
             }
             break;

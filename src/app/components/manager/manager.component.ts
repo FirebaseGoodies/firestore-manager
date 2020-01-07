@@ -137,7 +137,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   }
 
   onSetAuthenticationAction(database, index) {
-    if (database.authentication && database.authentication.enabled) {
+    if (database.authentication?.enabled) {
       this.authentication.type = database.authentication.type;
       this.authentication.data = database.authentication.data;
     } else {
