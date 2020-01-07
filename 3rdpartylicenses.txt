@@ -1042,6 +1042,8 @@ ng-zorro-antd/avatar
 
 ng-zorro-antd/badge
 
+ng-zorro-antd/breadcrumb
+
 ng-zorro-antd/button
 
 ng-zorro-antd/checkbox

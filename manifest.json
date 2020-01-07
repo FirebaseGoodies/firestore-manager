@@ -21,7 +21,6 @@
 
   "options_ui":{
     "page": "index.html?page=options",
-    "browser_style": false,
     "open_in_tab": false
   },
 
@@ -35,6 +34,7 @@
   "permissions": [
     "storage",
     "tabs",
-    "notifications"
+    "notifications",
+    "activeTab"
   ]
 }
