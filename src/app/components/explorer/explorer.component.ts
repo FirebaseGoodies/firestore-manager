@@ -66,8 +66,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   @ViewChild('reloadModalTpl', { static: false }) private reloadModalTpl: TemplateRef<any>;
   @ViewChild(JsonEditorComponent, { static: false }) private editor: JsonEditorComponent;
   @ViewChild(CacheDiffComponent, { static: false }) private cacheDiff: CacheDiffComponent;
-  private selectedCollection: string = null;
-  private selectedDocument: string = null;
+  selectedCollection: string = null;
+  selectedDocument: string = null;
   options: Options = new Options();
   formatterDuplicateTimes = (value: number) => `x ${value}`;
   parserDuplicateTimes = (value: string) => value.replace('x ', '');

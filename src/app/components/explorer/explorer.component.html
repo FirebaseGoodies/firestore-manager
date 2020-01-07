@@ -194,7 +194,27 @@
     <nz-layout class="right-layout">
       <nz-content>
         <div class="inner-content">
-          <json-editor [options]="editorOptions" (change)="onEditorDataChange($event)"></json-editor>
+          <div>
+            <nz-breadcrumb [ngStyle]="{ margin: '0 5px 20px' }">
+              <nz-breadcrumb-item>
+                <i nz-icon nzType="home"></i>
+              </nz-breadcrumb-item>
+              <nz-breadcrumb-item>
+                <a [href]="database.config.databaseURL" target="_blank">
+                  <i nz-icon nzType="fire"></i><span>{{ database.config.projectId }}</span>
+                </a>
+              </nz-breadcrumb-item>
+              <nz-breadcrumb-item *ngIf="selectedCollection">
+                <i nz-icon nzType="folder-open"></i><span>{{ selectedCollection }}</span>
+              </nz-breadcrumb-item>
+              <nz-breadcrumb-item *ngIf="selectedDocument">
+                <i nz-icon nzType="file"></i><span>{{ selectedDocument }}</span>
+              </nz-breadcrumb-item>
+            </nz-breadcrumb>
+          </div>
+          <div class="full-height">
+            <json-editor [options]="editorOptions" (change)="onEditorDataChange($event)"></json-editor>
+          </div>
         </div>
       </nz-content>
     </nz-layout>
