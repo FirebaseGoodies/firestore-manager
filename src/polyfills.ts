@@ -68,3 +68,9 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 (window as any).process = {
   env: { DEBUG: undefined },
 };
+
+// @ts-ignore
+// @see https://github.com/angular/angular-cli/issues/16071#issuecomment-553227215
+window.__importDefault = function(mod) {
+  return mod && mod.__esModule ? mod : { default: mod };
+};
