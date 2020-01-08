@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng run firestore-manager:build-webextension --aot --configuration=production --sourceMap=false --outputHashing=none",
+    "build": "ng run firestore-manager:build-webextension --configuration=production",
     "package": "web-ext build --source-dir=dist/firestore-manager --artifacts-dir=.",
     "build:github": "ng build --prod --base-href \"/firestore-manager/\"",
     "deploy:github": "ngh --dir=dist/firestore-manager",
