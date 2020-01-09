@@ -609,8 +609,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     let promises: Promise<any>[] = [];
     // Clear cache
     this.firestore.clearCache();
-    this.selectedCollection = null;
-    this.updateEditor({});
+    // this.selectedCollection = null;
+    // this.updateEditor({});
+    this.collectionNodesExpandedKeys = [];
     this.collectionNodesSelectedKeys = [];
     // Reload collections
     this.collectionNodes.forEach(node => {
@@ -629,6 +630,17 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
             this.firestore.cache[collectionName][documentName] = cacheBackup[collectionName][documentName];
           });
         });
+      }
+      // Restore selected collection/document
+      if (this.selectedCollection) {
+        this.collectionNodesExpandedKeys = [this.selectedCollection];
+        if (this.selectedDocument) {
+          this.updateEditor(this.firestore.cache[this.selectedCollection][this.selectedDocument]);
+          this.collectionNodesSelectedKeys = [this.selectedDocument];
+        } else {
+          this.updateEditor(this.firestore.cache[this.selectedCollection]);
+          this.collectionNodesSelectedKeys = [this.selectedCollection];
+        }
       }
     });
   }
