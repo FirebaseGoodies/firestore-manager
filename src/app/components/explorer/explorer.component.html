@@ -233,7 +233,7 @@
       <div nz-col nzSpan="24">
         <nz-form-item>
           <nz-form-label nzRequired><span translate>Name</span></nz-form-label>
-          <nz-form-control nzErrorTip="{{ (addCollectionForm.controls.name.errors && addCollectionForm.controls.name.errors.notUnique ? 'CollectionAlreadyExists' : 'EnterCollectionName') | translate }}">
+          <nz-form-control nzErrorTip="{{ (addCollectionForm.controls.name.errors?.notUnique ? 'CollectionAlreadyExists' : 'EnterCollectionName') | translate }}">
             <input nz-input formControlName="name" placeholder="{{ 'MyCollection' | translate }}" />
           </nz-form-control>
         </nz-form-item>
