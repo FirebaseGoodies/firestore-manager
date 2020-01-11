@@ -20,6 +20,8 @@ import { TranslateService } from 'src/app/services/translate.service';
 import { download } from 'src/app/helpers/download.helper';
 import { Database } from 'src/app/models/database.model';
 import { AuthService } from 'src/app/services/auth.service';
+import { Filter } from 'src/app/models/filter.model';
+import { slideInOut } from 'src/app/animations/slide-in-out.animation';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -31,7 +33,8 @@ const Chars = {
   selector: 'fm-explorer',
   templateUrl: './explorer.component.html',
   styleUrls: ['./explorer.component.css'],
-  providers: [AuthService]
+  providers: [AuthService],
+  animations: [slideInOut]
 })
 export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
 
@@ -72,6 +75,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   formatterDuplicateTimes = (value: number) => `x ${value}`;
   parserDuplicateTimes = (value: string) => value.replace('x ', '');
   collectionListLoadingTip: string = 'Loading';
+  filter: Filter = new Filter();
+  showFilter: boolean = false;
+  isFilterApplied: boolean = false;
   app: AppService;
 
   constructor(
@@ -405,7 +411,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   private selectNode(node: any) {
+    this.isFilterApplied = false;
     if (node.level > 0) {
+      this.showFilter = false;
       this.firestore.getDocument(node.parentNode.key, node.key).then((document) => {
         this.updateEditor(document);
         this.selectedCollection = node.parentNode.key;
@@ -479,7 +487,13 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     if (!event.target && this.selectedCollection !== null) {
       // Save to cache
       if (this.selectedDocument === null) {
-        this.firestore.cache[this.selectedCollection] = event;
+        if (this.isFilterApplied) {
+          Object.keys(event).forEach((documentId: string) => {
+            this.firestore.cache[this.selectedCollection][documentId] = event[documentId];
+          });
+        } else {
+          this.firestore.cache[this.selectedCollection] = event;
+        }
         this.unsavedChanges = true;
       } else {
         this.firestore.cache[this.selectedCollection][this.selectedDocument] = event;
@@ -786,6 +800,18 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   private displayNotification(message: string) {
     if (this.options.enableNotifications) {
       this.notification.create(this.translation.get(message));
+    }
+  }
+
+  applyFilter() {
+    // console.log(this.filter);
+    if (this.selectedCollection) {
+      this.firestore.filterCollection(this.selectedCollection, ref => ref.where(this.filter.field, this.filter.operator, this.filter.value)).then((documents) => {
+        this.updateEditor(documents);
+        this.isFilterApplied = true;
+      }).catch((error) => {
+        this.displayError(error);
+      });
     }
   }
 

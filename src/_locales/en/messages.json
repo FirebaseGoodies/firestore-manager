@@ -300,5 +300,23 @@
     },
     "TryTheWebExtension": {
         "message": "Try the web extension"
+    },
+    "Filter": {
+        "message": "Filter"
+    },
+    "FilterWarning": {
+        "message": "Filter only works on collections"
+    },
+    "Field": {
+        "message": "Field"
+    },
+    "Operator": {
+        "message": "Operator"
+    },
+    "Value": {
+        "message": "Value"
+    },
+    "Apply": {
+        "message": "Apply"
     }
 }

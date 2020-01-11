@@ -86,6 +86,23 @@ export class FirestoreService {
       });
     }
 
+    filterCollection(name: string, ref: any): Promise<any> {
+      return new Promise((resolve, reject) => {
+        this.db.collection(name, ref).get().toPromise().then((snapshot) => {
+          // console.log(snapshot);
+          let docs = {};
+          snapshot.forEach(doc => {
+            // console.log(doc);
+            docs[doc.id] = doc.data();
+          });
+          // console.log(docs);
+          resolve(docs);
+        }).catch((error) => {
+          reject(error);
+        });
+      });
+    }
+
     addCollection(name: string, content: any): Promise<any> {
       return this.db.collection(name).add(content);
     }

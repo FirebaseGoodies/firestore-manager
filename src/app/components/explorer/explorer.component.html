@@ -195,22 +195,51 @@
       <nz-content>
         <div class="inner-content">
           <div>
-            <nz-breadcrumb [ngStyle]="{ margin: '0 5px 20px' }">
-              <nz-breadcrumb-item>
-                <i nz-icon nzType="home"></i>
-              </nz-breadcrumb-item>
-              <nz-breadcrumb-item>
-                <a [href]="database.config.databaseURL" target="_blank">
-                  <i nz-icon nzType="fire"></i><span>{{ database.config.projectId }}</span>
-                </a>
-              </nz-breadcrumb-item>
-              <nz-breadcrumb-item *ngIf="selectedCollection">
-                <i nz-icon nzType="folder-open"></i><span>{{ selectedCollection }}</span>
-              </nz-breadcrumb-item>
-              <nz-breadcrumb-item *ngIf="selectedDocument">
-                <i nz-icon nzType="file"></i><span>{{ selectedDocument }}</span>
-              </nz-breadcrumb-item>
-            </nz-breadcrumb>
+            <div [ngStyle]="{ display: 'flex', margin: '0 5px 10px' }">
+              <nz-breadcrumb>
+                <nz-breadcrumb-item>
+                  <i nz-icon nzType="home"></i>
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item>
+                  <a [href]="database.config.databaseURL" target="_blank">
+                    <i nz-icon nzType="fire"></i><span>{{ database.config.projectId }}</span>
+                  </a>
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item *ngIf="selectedCollection">
+                  <i nz-icon nzType="folder-open"></i><span>{{ selectedCollection }}</span>
+                </nz-breadcrumb-item>
+                <nz-breadcrumb-item *ngIf="selectedDocument">
+                  <i nz-icon nzType="file"></i><span>{{ selectedDocument }}</span>
+                </nz-breadcrumb-item>
+              </nz-breadcrumb>
+              <div class="spacer"></div>
+              <button nz-button nzType="primary" nzSize="small" [nzGhost]="showFilter" nzShape="circle"
+                nz-tooltip nzTooltipPlacement="bottom" nzTitle="{{ (!selectedCollection || selectedDocument ? 'FilterWarning' : 'Filter') | translate }}"
+                [disabled]="!selectedCollection || selectedDocument"
+                (click)="showFilter=!showFilter"
+              >
+                <i nz-icon nzType="filter"></i>
+              </button>
+            </div>
+            <div *ngIf="showFilter" [@slideInOut] [ngStyle]="{ 'margin-bottom': '12px' }">
+              <nz-input-group nzCompact>
+                <input type="text" nz-input placeholder="{{ 'Field' | translate }}" style="width: 30%" [(ngModel)]="filter.field" />
+                <nz-select nzPlaceHolder="{{ 'Operator' | translate }}" style="width: 25%" [(ngModel)]="filter.operator">
+                  <nz-option nzLabel="==" nzValue="=="></nz-option>
+                  <nz-option nzLabel=">" nzValue=">"></nz-option>
+                  <nz-option nzLabel=">=" nzValue=">="></nz-option>
+                  <nz-option nzLabel="<" nzValue="<"></nz-option>
+                  <nz-option nzLabel="<=" nzValue="<="></nz-option>
+                </nz-select>
+                <input type="text" nz-input placeholder="{{ 'Value' | translate }}" style="width: 30%" [(ngModel)]="filter.value" />
+                <button nz-button nzType="default" style="width: 15%"
+                  [disabled]="!filter.field || !filter.operator || !filter.value"
+                  (click)="applyFilter()"
+                >
+                  <span translate>Apply</span>
+                </button>
+              </nz-input-group>
+            </div>
           </div>
           <div class="full-height">
             <json-editor [options]="editorOptions" (change)="onEditorDataChange($event)"></json-editor>
