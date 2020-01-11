@@ -223,9 +223,9 @@
                   <li nz-menu-item [nzDisabled]="!selectedCollection || selectedDocument" (click)="showFilter=!showFilter" translate
                     nz-tooltip nzTooltipPlacement="left" nzTitle="{{ (!selectedCollection || selectedDocument ? (selectedDocument ? 'FilterWarning' : 'PleaseSelectCollection') : '') | translate }}"
                   >Filter</li>
-                  <li nz-menu-item [nzDisabled]="!selectedCollection" (click)="reloadFromCache()" translate
-                    nz-tooltip nzTooltipPlacement="left" nzTitle="{{ (!selectedCollection ? 'PleaseSelectCollection' : 'ReloadFromCacheTip') | translate }}"
-                  >Reload</li>
+                  <li nz-menu-item [nzDisabled]="!selectedCollection" (click)="restoreFromCache()" translate
+                    nz-tooltip nzTooltipPlacement="left" nzTitle="{{ (!selectedCollection ? 'PleaseSelectCollection' : 'RestoreFromCache') | translate }}"
+                  >Restore</li>
                 </ul>
               </nz-dropdown-menu>
             </div>

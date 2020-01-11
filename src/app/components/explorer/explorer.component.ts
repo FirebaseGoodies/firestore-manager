@@ -815,7 +815,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
-  reloadFromCache() {
+  restoreFromCache() {
     if (this.selectedCollection) {
       if (this.selectedDocument) {
         this.updateEditor(this.firestore.cache[this.selectedCollection][this.selectedDocument]);
