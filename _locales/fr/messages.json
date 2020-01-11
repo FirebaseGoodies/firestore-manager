@@ -300,5 +300,26 @@
     },
     "TryTheWebExtension": {
         "message": "Essayer l'extension web"
+    },
+    "Filter": {
+        "message": "Filtrer"
+    },
+    "FilterWarning": {
+        "message": "Le filtre ne fonctionne que sur les collections"
+    },
+    "Field": {
+        "message": "Champ"
+    },
+    "Operator": {
+        "message": "Operateur"
+    },
+    "Value": {
+        "message": "Valeur"
+    },
+    "Apply": {
+        "message": "Appliquer"
+    },
+    "ReloadFromCacheTip": {
+        "message": "Recharger à partir du cache (vos modifications ne seront pas perdues)"
     }
 }
