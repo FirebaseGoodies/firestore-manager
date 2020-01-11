@@ -53,8 +53,8 @@ npm run build:github && npm run deploy:github
 ## Todo
 
 - [x] Translations
-- [ ] Handle sub-collections
 - [x] Add collections filter (field - operator - value)
+- [ ] Handle sub-collections
 
 ## License
 
