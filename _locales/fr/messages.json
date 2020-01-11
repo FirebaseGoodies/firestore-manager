@@ -319,7 +319,10 @@
     "Apply": {
         "message": "Appliquer"
     },
-    "ReloadFromCacheTip": {
-        "message": "Recharger à partir du cache (vos modifications ne seront pas perdues)"
+    "Restore": {
+        "message": "Restaurer"
+    },
+    "RestoreFromCache": {
+        "message": "Restaurer à partir du cache (vos modifications ne seront pas perdues)"
     }
 }
