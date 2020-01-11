@@ -815,4 +815,14 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
+  reloadFromCache() {
+    if (this.selectedCollection) {
+      if (this.selectedDocument) {
+        this.updateEditor(this.firestore.cache[this.selectedCollection][this.selectedDocument]);
+      } else {
+        this.updateEditor(this.firestore.cache[this.selectedCollection]);
+      }
+    }
+  }
+
 }

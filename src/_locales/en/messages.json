@@ -318,5 +318,8 @@
     },
     "Apply": {
         "message": "Apply"
+    },
+    "ReloadFromCacheTip": {
+        "message": "Reload from cache (unsaved changes will not be discarded)"
     }
 }

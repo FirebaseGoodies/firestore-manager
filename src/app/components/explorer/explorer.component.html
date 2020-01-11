@@ -213,15 +213,23 @@
                 </nz-breadcrumb-item>
               </nz-breadcrumb>
               <div class="spacer"></div>
-              <button nz-button nzType="primary" nzSize="small" [nzGhost]="showFilter" nzShape="circle"
-                nz-tooltip nzTooltipPlacement="bottom" nzTitle="{{ (!selectedCollection || selectedDocument ? 'FilterWarning' : 'Filter') | translate }}"
-                [disabled]="!selectedCollection || selectedDocument"
-                (click)="showFilter=!showFilter"
+              <button nz-button nzType="link" nzSize="small" style="color: rgba(0,0,0,.45)"
+                nz-dropdown [nzDropdownMenu]="breadcrumbMenu" nzPlacement="bottomRight"
               >
-                <i nz-icon nzType="filter"></i>
+                <i nz-icon nzType="ellipsis"></i>
               </button>
+              <nz-dropdown-menu #breadcrumbMenu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item [nzDisabled]="!selectedCollection || selectedDocument" (click)="showFilter=!showFilter" translate
+                    nz-tooltip nzTooltipPlacement="left" nzTitle="{{ (!selectedCollection || selectedDocument ? (selectedDocument ? 'FilterWarning' : 'PleaseSelectCollection') : '') | translate }}"
+                  >Filter</li>
+                  <li nz-menu-item [nzDisabled]="!selectedCollection" (click)="reloadFromCache()" translate
+                    nz-tooltip nzTooltipPlacement="left" nzTitle="{{ (!selectedCollection ? 'PleaseSelectCollection' : 'ReloadFromCacheTip') | translate }}"
+                  >Reload</li>
+                </ul>
+              </nz-dropdown-menu>
             </div>
-            <div *ngIf="showFilter" [@slideInOut] [ngStyle]="{ 'margin-bottom': '12px' }">
+            <div *ngIf="showFilter" [@slideInOut] [ngStyle]="{ 'margin-bottom': '15px' }">
               <nz-input-group nzCompact>
                 <input type="text" nz-input placeholder="{{ 'Field' | translate }}" style="width: 30%" [(ngModel)]="filter.field" />
                 <nz-select nzPlaceHolder="{{ 'Operator' | translate }}" style="width: 25%" [(ngModel)]="filter.operator">
