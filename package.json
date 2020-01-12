@@ -18,7 +18,7 @@
     "@angular/common": "^8.2.14",
     "@angular/compiler": "^8.2.14",
     "@angular/core": "^8.2.14",
-    "@angular/fire": "^5.2.3",
+    "@angular/fire": "^5.3.0",
     "@angular/forms": "^8.2.14",
     "@angular/platform-browser": "^8.2.14",
     "@angular/platform-browser-dynamic": "^8.2.14",
@@ -26,7 +26,7 @@
     "ang-jsoneditor": "^1.8.4",
     "diff-match-patch": "^1.0.4",
     "diff2html": "^2.12.2",
-    "firebase": "^7.6.1",
+    "firebase": "^7.6.2",
     "jsoneditor": "^7.5.0",
     "ng-zorro-antd": "^8.5.2",
     "path": "^0.12.7",
@@ -35,8 +35,8 @@
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.803.21",
-    "@angular/cli": "^8.3.21",
+    "@angular-devkit/build-angular": "^0.803.22",
+    "@angular/cli": "^8.3.22",
     "@angular/compiler-cli": "^8.2.14",
     "@angular/language-service": "^8.2.14",
     "@types/jasmine": "~3.3.8",
