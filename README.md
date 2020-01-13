@@ -22,7 +22,7 @@ A simple, fast and intuitive web-extension to manage firestore databases, made w
 ## Installation
 
 [![Get it for Firefox!](https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_1.png)](https://addons.mozilla.org/firefox/addon/firestore-manager/?src=external-github-download)
-[![Get it for Chrome!](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_206x58.png)](https://github.com/AXeL-dev/firestore-manager/releases/download/v1.0.3/firestore-manager-1.0.3.crx)
+[![Get it for Chrome!](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_206x58.png)](https://github.com/AXeL-dev/firestore-manager/releases/download/v1.0.4/firestore-manager-1.0.4.crx)
 
 Or [try it as a web application](https://axel-dev.github.io/firestore-manager/manager).
 
