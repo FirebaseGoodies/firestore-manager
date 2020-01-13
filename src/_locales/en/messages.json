@@ -5,7 +5,7 @@
     "extensionDesc": {
         "message": "Manage your firestore databases in ease"
     },
-    "Default editor mode:": {
+    "DefaultEditorMode": {
         "message": "Default editor mode:"
     },
     "Tree": {
@@ -17,31 +17,31 @@
     "Code": {
         "message": "Code"
     },
-    "Default diff style:": {
+    "DefaultDiffStyle": {
         "message": "Default diff style:"
     },
-    "Word diff": {
+    "WordDiff": {
         "message": "Word diff"
     },
-    "Char diff": {
+    "CharDiff": {
         "message": "Char diff"
     },
-    "Default diff output format:": {
+    "DefaultDiffOutputFormat": {
         "message": "Default diff output format:"
     },
-    "Side by Side": {
+    "SideBySide": {
         "message": "Side by Side"
     },
-    "Line by Line": {
+    "LineByLine": {
         "message": "Line by Line"
     },
-    "No unsaved changes": {
+    "NoUnsavedChanges": {
         "message": "No unsaved changes"
     },
     "Databases": {
         "message": "Databases"
     },
-    "Add Database": {
+    "AddDatabase": {
         "message": "Add Database"
     },
     "Add": {
@@ -59,22 +59,22 @@
     "Cancel": {
         "message": "Cancel"
     },
-    "Love Firestore Manager?": {
+    "LoveFirestoreManager": {
         "message": "Love Firestore Manager?"
     },
-    "Give our repo a star.": {
+    "GiveOurRepoAstar": {
         "message": "Give our repo a star."
     },
     "Star": {
         "message": "Star"
     },
-    "Paste your database configuration below": {
+    "PasteConfigurationBelow": {
         "message": "Paste your database configuration below"
     },
-    "Please enter a valid configuration.": {
+    "PleaseEnterValidConfiguration": {
         "message": "Please enter a valid configuration."
     },
-    "Confirm delete?": {
+    "ConfirmDelete": {
         "message": "Are you sure delete $name$ ?",
         "placeholders": {
             "name" : {
@@ -82,31 +82,31 @@
             }
         }
     },
-    "Firebase Console": {
+    "FirebaseConsole": {
         "message": "Firebase Console"
     },
-    "Open Firebase Console": {
+    "OpenFirebaseConsole": {
         "message": "Open Firebase Console"
     },
     "Open": {
         "message": "Open"
     },
-    "Changes successfully saved!": {
+    "ChangesSuccessfullySaved": {
         "message": "Changes successfully saved!"
     },
-    "Saving changes completed!": {
+    "SavingChangesCompleted": {
         "message": "Saving changes completed!"
     },
-    "Confirm go back to the main page?": {
+    "ConfirmGoBack": {
         "message": "Confirm go back to the main page?"
     },
-    "Any unsaved changes will be lost.": {
+    "AnyUnsavedChangesWillBeLost": {
         "message": "Any unsaved changes will be lost."
     },
-    "You have some unsaved changes!": {
+    "YouHaveUnsavedChanges": {
         "message": "You have some unsaved changes!"
     },
-    "Click on 'View' to see all the modifications.": {
+    "ClickToSeeAllModifications": {
         "message": "Click on 'View' to see all the modifications."
     },
     "View": {
@@ -115,55 +115,55 @@
     "Collection": {
         "message": "Collection"
     },
-    "No collection found": {
+    "NoCollectionFound": {
         "message": "No collection found"
     },
     "Reload": {
         "message": "Reload"
     },
-    "Welcome!": {
+    "Welcome": {
         "message": "Welcome!"
     },
-    "Start by typing a collection name in the search box above.": {
+    "StartByTypingCollectionName": {
         "message": "Start by typing a collection name in the search box above."
     },
-    "Select All": {
+    "SelectAll": {
         "message": "Select All"
     },
-    "Delete?": {
+    "DeleteQuestion": {
         "message": "Delete?"
     },
-    "Permanently delete documents?": {
+    "PermanentlyDeleteDocuments": {
         "message": "Permanently delete documents?"
     },
-    "Only documents can be permanently deleted, collections will be removed only from the browser cache! If you want to permanently delete a collection please use the": {
+    "OnlyDocumentsCanBePermanentlyDeleted": {
         "message": "Only documents can be permanently deleted, collections will be removed only from the browser cache! If you want to permanently delete a collection please use the"
     },
     "Name": {
         "message": "Name"
     },
-    "my collection": {
+    "MyCollection": {
         "message": "my collection"
     },
-    "A collection with the same name already exists!": {
+    "CollectionAlreadyExists": {
         "message": "A collection with the same name already exists!"
     },
-    "please enter collection name": {
+    "EnterCollectionName": {
         "message": "please enter collection name"
     },
     "Content": {
         "message": "Content"
     },
-    "Content of the first document in json": {
+    "ContentOfTheFirstDocument": {
         "message": "Content of the first document in json"
     },
-    "please enter a valid json content": {
+    "EnterValidJsonContent": {
         "message": "please enter a valid json content"
     },
-    "Unsaved Changes": {
+    "UnsavedChanges": {
         "message": "Unsaved Changes"
     },
-    "Once saved, the above changes will override your existing firestore data. This operation is not reversible!": {
+    "SaveWarning": {
         "message": "Once saved, the above changes will override your existing firestore data. This operation is not reversible!"
     },
     "Settings": {
@@ -175,16 +175,16 @@
     "Reloading": {
         "message": "Reloading"
     },
-    "New Collection": {
+    "NewCollection": {
         "message": "New Collection"
     },
     "Random": {
         "message": "Random"
     },
-    "Report a bug": {
+    "ReportBug": {
         "message": "Report a bug"
     },
-    "Go back to main page": {
+    "GoBackToMainPage": {
         "message": "Go back to main page"
     },
     "Confirm": {
@@ -193,22 +193,22 @@
     "Document": {
         "message": "Document"
     },
-    "New Document": {
+    "NewDocument": {
         "message": "New Document"
     },
-    "Content of the document in json": {
+    "DocumentContentInJson": {
         "message": "Content of the document in json"
     },
-    "Select a collection": {
+    "SelectCollection": {
         "message": "Select a collection"
     },
-    "please select a collection": {
+    "PleaseSelectCollection": {
         "message": "please select a collection"
     },
-    "Duplicate document?": {
+    "DuplicateDocument": {
         "message": "Duplicate document?"
     },
-    "please enter a valid numeric value": {
+    "EnterValidNumericValue": {
         "message": "please enter a valid numeric value"
     },
     "Import": {
@@ -223,13 +223,13 @@
     "Importing": {
         "message": "Importing"
     },
-    "Data successfully imported!": {
+    "DataSuccessfullyImported": {
         "message": "Data successfully imported!"
     },
-    "Import completed!": {
+    "ImportCompleted": {
         "message": "Import completed!"
     },
-    "File is empty!": {
+    "FileIsEmpty": {
         "message": "File is empty!"
     },
     "Expand": {
@@ -250,31 +250,31 @@
     "Deleting": {
         "message": "Deleting"
     },
-    "Reload all collections?": {
+    "ReloadAllCollections": {
         "message": "Reload all collections?"
     },
-    "Discard unsaved changes?": {
+    "DiscardUnsavedChanges": {
         "message": "Discard unsaved changes?"
     },
-    "Display collections count:": {
+    "DisplayCollectionsCount": {
         "message": "Display collections count:"
     },
-    "Databases successfully imported!": {
+    "DatabasesSuccessfullyImported": {
         "message": "Databases successfully imported!"
     },
     "Authentication": {
         "message": "Authentication"
     },
-    "Set Authentication": {
+    "SetAuthentication": {
         "message": "Set Authentication"
     },
-    "No authentication": {
+    "NoAuthentication": {
         "message": "None"
     },
     "Anonymous": {
         "message": "Anonymous"
     },
-    "With email and password": {
+    "WithEmailAndPassword": {
         "message": "With email and password"
     },
     "Email": {
@@ -283,13 +283,46 @@
     "Password": {
         "message": "Password"
     },
-    "With token": {
+    "WithToken": {
         "message": "With token"
     },
     "Token": {
         "message": "Token"
     },
-    "Enable notifications:": {
+    "EnableNotifications": {
         "message": "Enable notifications:"
+    },
+    "English": {
+        "message": "English"
+    },
+    "French": {
+        "message": "French"
+    },
+    "TryTheWebExtension": {
+        "message": "Try the web extension"
+    },
+    "Filter": {
+        "message": "Filter"
+    },
+    "FilterWarning": {
+        "message": "Filter only works on collections"
+    },
+    "Field": {
+        "message": "Field"
+    },
+    "Operator": {
+        "message": "Operator"
+    },
+    "Value": {
+        "message": "Value"
+    },
+    "Apply": {
+        "message": "Apply"
+    },
+    "Restore": {
+        "message": "Restore"
+    },
+    "RestoreFromCache": {
+        "message": "Restore from cache (unsaved changes will not be lost)"
     }
 }

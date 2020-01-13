@@ -5,7 +5,7 @@
     "extensionDesc": {
         "message": "Gérez vos bases de données firestore en toute simplicité"
     },
-    "Default editor mode:": {
+    "DefaultEditorMode": {
         "message": "Mode éditeur par défaut:"
     },
     "Tree": {
@@ -17,31 +17,31 @@
     "Code": {
         "message": "Code"
     },
-    "Default diff style:": {
+    "DefaultDiffStyle": {
         "message": "Style de diff par défaut:"
     },
-    "Word diff": {
+    "WordDiff": {
         "message": "Diff. de mot"
     },
-    "Char diff": {
+    "CharDiff": {
         "message": "Diff. de caractère"
     },
-    "Default diff output format:": {
+    "DefaultDiffOutputFormat": {
         "message": "Format de sortie diff par défaut:"
     },
-    "Side by Side": {
+    "SideBySide": {
         "message": "Cote à cote"
     },
-    "Line by Line": {
+    "LineByLine": {
         "message": "Ligne par ligne"
     },
-    "No unsaved changes": {
+    "NoUnsavedChanges": {
         "message": "Aucune modification non sauvegardée"
     },
     "Databases": {
         "message": "Bases de données"
     },
-    "Add Database": {
+    "AddDatabase": {
         "message": "Ajouter une base de données"
     },
     "Add": {
@@ -59,22 +59,22 @@
     "Cancel": {
         "message": "Annuler"
     },
-    "Love Firestore Manager?": {
+    "LoveFirestoreManager": {
         "message": "Vous aimez Firestore Manager?"
     },
-    "Give our repo a star.": {
+    "GiveOurRepoAstar": {
         "message": "Donner une"
     },
     "Star": {
         "message": "Étoile"
     },
-    "Paste your database configuration below": {
+    "PasteConfigurationBelow": {
         "message": "Collez votre configuration de base de données ci-dessous"
     },
-    "Please enter a valid configuration.": {
+    "PleaseEnterValidConfiguration": {
         "message": "Veuillez entrer une configuration valide."
     },
-    "Confirm delete?": {
+    "ConfirmDelete": {
         "message": "Êtes-vous sûr de vouloir supprimer $name$ ?",
         "placeholders": {
             "name" : {
@@ -82,31 +82,31 @@
             }
         }
     },
-    "Firebase Console": {
+    "FirebaseConsole": {
         "message": "Console Firebase"
     },
-    "Open Firebase Console": {
+    "OpenFirebaseConsole": {
         "message": "Ouvrir la console Firebase"
     },
     "Open": {
         "message": "Ouvrir"
     },
-    "Changes successfully saved!": {
+    "ChangesSuccessfullySaved": {
         "message": "Modifications enregistrées avec succès!"
     },
-    "Saving changes completed!": {
+    "SavingChangesCompleted": {
         "message": "Enregistrement des modifications terminé!"
     },
-    "Confirm go back to the main page?": {
+    "ConfirmGoBack": {
         "message": "Voulez-vous revenir à la page principale?"
     },
-    "Any unsaved changes will be lost.": {
+    "AnyUnsavedChangesWillBeLost": {
         "message": "Toutes les modifications non sauvegardées seront perdues."
     },
-    "You have some unsaved changes!": {
+    "YouHaveUnsavedChanges": {
         "message": "Vous avez des modifications non sauvegardées!"
     },
-    "Click on 'View' to see all the modifications.": {
+    "ClickToSeeAllModifications": {
         "message": "Cliquez sur 'Voir' pour voir toutes les modifications."
     },
     "View": {
@@ -115,55 +115,55 @@
     "Collection": {
         "message": "Collection"
     },
-    "No collection found": {
+    "NoCollectionFound": {
         "message": "Aucune collection trouvée"
     },
     "Reload": {
         "message": "Recharger"
     },
-    "Welcome!": {
+    "Welcome": {
         "message": "Bienvenue!"
     },
-    "Start by typing a collection name in the search box above.": {
+    "StartByTypingCollectionName": {
         "message": "Commencez par taper un nom de collection dans le champ de recherche ci-dessus."
     },
-    "Select All": {
+    "SelectAll": {
         "message": "Tout sélectionner"
     },
-    "Delete?": {
+    "DeleteQuestion": {
         "message": "Supprimer?"
     },
-    "Permanently delete documents?": {
+    "PermanentlyDeleteDocuments": {
         "message": "Supprimer définitivement les documents?"
     },
-    "Only documents can be permanently deleted, collections will be removed only from the browser cache! If you want to permanently delete a collection please use the": {
+    "OnlyDocumentsCanBePermanentlyDeleted": {
         "message": "Seuls les documents peuvent être définitivement supprimés, les collections ne seront supprimées que du cache du navigateur! Si vous souhaitez supprimer définitivement une collection, veuillez utiliser la"
     },
     "Name": {
         "message": "Nom"
     },
-    "my collection": {
+    "MyCollection": {
         "message": "ma collection"
     },
-    "A collection with the same name already exists!": {
+    "CollectionAlreadyExists": {
         "message": "Une collection du même nom existe déjà!"
     },
-    "please enter collection name": {
+    "EnterCollectionName": {
         "message": "Veuillez entrer le nom de la collection"
     },
     "Content": {
         "message": "Contenu"
     },
-    "Content of the first document in json": {
+    "ContentOfTheFirstDocument": {
         "message": "Contenu du premier document au format json"
     },
-    "please enter a valid json content": {
+    "EnterValidJsonContent": {
         "message": "Veuillez entrer un contenu JSON valide"
     },
-    "Unsaved Changes": {
+    "UnsavedChanges": {
         "message": "Modifications non sauvegardées"
     },
-    "Once saved, the above changes will override your existing firestore data. This operation is not reversible!": {
+    "SaveWarning": {
         "message": "Une fois enregistrées, les modifications ci-dessus remplaceront vos données existantes sur firetore. Cette opération n'est pas réversible!"
     },
     "Settings": {
@@ -175,16 +175,16 @@
     "Reloading": {
         "message": "Rechargement en cours"
     },
-    "New Collection": {
+    "NewCollection": {
         "message": "Nouvelle collection"
     },
     "Random": {
         "message": "Aléatoire"
     },
-    "Report a bug": {
+    "ReportBug": {
         "message": "Signaler un bug"
     },
-    "Go back to main page": {
+    "GoBackToMainPage": {
         "message": "Retourner à la page principale"
     },
     "Confirm": {
@@ -193,22 +193,22 @@
     "Document": {
         "message": "Document"
     },
-    "New Document": {
+    "NewDocument": {
         "message": "Nouveau document"
     },
-    "Content of the document in json": {
+    "DocumentContentInJson": {
         "message": "Contenu du document au format json"
     },
-    "Select a collection": {
+    "SelectCollection": {
         "message": "Sélectionnez une collection"
     },
-    "please select a collection": {
+    "PleaseSelectCollection": {
         "message": "Veuillez sélectionner une collection"
     },
-    "Duplicate document?": {
+    "DuplicateDocument": {
         "message": "Dupliquer le document?"
     },
-    "please enter a valid numeric value": {
+    "EnterValidNumericValue": {
         "message": "Veuillez entrer une valeur numérique valide"
     },
     "Import": {
@@ -223,13 +223,13 @@
     "Importing": {
         "message": "Importation en cours"
     },
-    "Data successfully imported!": {
+    "DataSuccessfullyImported": {
         "message": "Données importées avec succès!"
     },
-    "Import completed!": {
+    "ImportCompleted": {
         "message": "Importation terminée!"
     },
-    "File is empty!": {
+    "FileIsEmpty": {
         "message": "Le fichier est vide!"
     },
     "Expand": {
@@ -250,31 +250,31 @@
     "Deleting": {
         "message": "Suppression en cours"
     },
-    "Reload all collections?": {
+    "ReloadAllCollections": {
         "message": "Recharger les collections?"
     },
-    "Discard unsaved changes?": {
+    "DiscardUnsavedChanges": {
         "message": "Ignorer les modifications non sauvegardées?"
     },
-    "Display collections count:": {
+    "DisplayCollectionsCount": {
         "message": "Afficher le nombre de collections:"
     },
-    "Databases successfully imported!": {
+    "DatabasesSuccessfullyImported": {
         "message": "Bases de données importées avec succès!"
     },
     "Authentication": {
         "message": "Authentification"
     },
-    "Set Authentication": {
+    "SetAuthentication": {
         "message": "Définir une authentification"
     },
-    "No authentication": {
+    "NoAuthentication": {
         "message": "Aucune"
     },
     "Anonymous": {
         "message": "Anonyme"
     },
-    "With email and password": {
+    "WithEmailAndPassword": {
         "message": "Avec email et mot de passe"
     },
     "Email": {
@@ -283,13 +283,46 @@
     "Password": {
         "message": "Mot de passe"
     },
-    "With token": {
+    "WithToken": {
         "message": "Avec jeton"
     },
     "Token": {
         "message": "Jeton"
     },
-    "Enable notifications:": {
+    "EnableNotifications": {
         "message": "Activer les notifications:"
+    },
+    "English": {
+        "message": "Anglais"
+    },
+    "French": {
+        "message": "Français"
+    },
+    "TryTheWebExtension": {
+        "message": "Essayer l'extension web"
+    },
+    "Filter": {
+        "message": "Filtrer"
+    },
+    "FilterWarning": {
+        "message": "Le filtre ne fonctionne que sur les collections"
+    },
+    "Field": {
+        "message": "Champ"
+    },
+    "Operator": {
+        "message": "Operateur"
+    },
+    "Value": {
+        "message": "Valeur"
+    },
+    "Apply": {
+        "message": "Appliquer"
+    },
+    "Restore": {
+        "message": "Restaurer"
+    },
+    "RestoreFromCache": {
+        "message": "Restaurer à partir du cache (vos modifications ne seront pas perdues)"
     }
 }

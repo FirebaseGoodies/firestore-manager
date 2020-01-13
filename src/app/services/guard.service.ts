@@ -19,12 +19,13 @@ export class Guard implements CanActivate {
         this.storage.get('databases').then((databases: Database[]) => {
           if (databases && index && databases[index]) {
             //console.log(databases[index]);
-            StorageService.setTmp('database', {
+            const database: Database = {
               index: index,
               config: databases[index].config,
               collections: databases[index].collections,
               authentication: databases[index].authentication || null
-            });
+            };
+            StorageService.setTmp('database', database);
             accessAllowed = true;
           }
         }).catch((error) => {

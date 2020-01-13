@@ -37,20 +37,28 @@ export class ManagerComponent implements OnInit, OnDestroy {
   private addButtonTranslation: string = 'Add';
   private saveButtonTranslation: string = 'Save';
   private explorerUrl: string = '';
+  private isPopup: boolean = false;
   @ViewChild('importFileInput', { static: false, read: ElementRef }) private importFileInput: ElementRef;
   app: AppService;
+  translation: TranslateService;
 
   constructor(
     private storage: StorageService,
     private message: NzMessageService,
     private modalService: NzModalService,
-    private translation: TranslateService,
+    translation: TranslateService,
     app: AppService
   ) {
     this.app = app;
+    this.translation = translation;
   }
 
   ngOnInit() {
+    if (this.app.isWebExtension) {
+      browser.tabs.getCurrent().then((tab) => {
+        this.isPopup = tab === undefined ? true : false;
+      });
+    }
     this.storage.get('databases').then((databases: Database[]) => {
       if (databases) {
         this.databases = databases;
@@ -104,7 +112,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
         }
         catch(error) {
           console.log(error.message);
-          this.message.create('error', this.translation.get('Please enter a valid configuration.'));
+          this.message.create('error', this.translation.get('PleaseEnterValidConfiguration'));
         }
         this.isDatabaseModalOkButtonLoading = false;
         resolve();
@@ -118,7 +126,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
 
   onOpenAction(event, index) {
     if (this.app.isWebExtension) {
-      browser.tabs.create({'url': this.getDatabaseUrl(index)});
+      browser.tabs.create({url: this.getDatabaseUrl(index)});
       event.preventDefault();
       window.close();
     }
@@ -174,7 +182,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
     //this.selectedDatabaseIndex = index;
     this.modalService.confirm({
       nzTitle: this.translation.get('Delete'),
-      nzContent: this.translation.get('Confirm delete?', database.config.projectId),
+      nzContent: this.translation.get('ConfirmDelete', database.config.projectId),
       nzOkText: this.translation.get('Delete'),
       nzOkType: 'danger',
       nzOnOk: () => this.onDeleteActionConfirm(index),
@@ -198,7 +206,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   }
 
   onImportClick() {
-    if (this.app.isWebExtension) {
+    if (this.app.isWebExtension && this.isPopup) {
       browser.runtime.getBackgroundPage().then((background: any) => {
         if (!background) {
           console.warn(`Background page doesn't work in private windows ...`);
@@ -225,7 +233,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
           this.databases = [...databases];
           this.storage.save('databases', this.databases);
           // Display success message
-          this.message.create('success', this.translation.get('Databases successfully imported!'));
+          this.message.create('success', this.translation.get('DatabasesSuccessfullyImported'));
         }
       }
       catch(error) {
@@ -248,6 +256,12 @@ export class ManagerComponent implements OnInit, OnDestroy {
       const file = new Blob([c], {type: 'text/json'});
       download(file, 'databases.json');
     }
+  }
+
+  switchLanguage(lang: string) {
+    this.storage.save('lang', lang).then(() => {
+      window.location.reload();
+    });
   }
 
 }

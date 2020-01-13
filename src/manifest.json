@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "__MSG_extensionName__",
-  "version": "1.0.3",
+  "version": "1.0.4",
 
   "default_locale": "en",
   "description": "__MSG_extensionDesc__",
@@ -21,7 +21,6 @@
 
   "options_ui":{
     "page": "index.html?page=options",
-    "browser_style": false,
     "open_in_tab": false
   },
 
@@ -35,6 +34,7 @@
   "permissions": [
     "storage",
     "tabs",
-    "notifications"
+    "notifications",
+    "activeTab"
   ]
 }

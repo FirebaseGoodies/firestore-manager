@@ -20,6 +20,8 @@ import { TranslateService } from 'src/app/services/translate.service';
 import { download } from 'src/app/helpers/download.helper';
 import { Database } from 'src/app/models/database.model';
 import { AuthService } from 'src/app/services/auth.service';
+import { Filter } from 'src/app/models/filter.model';
+import { slideInOut } from 'src/app/animations/slide-in-out.animation';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -31,7 +33,8 @@ const Chars = {
   selector: 'fm-explorer',
   templateUrl: './explorer.component.html',
   styleUrls: ['./explorer.component.css'],
-  providers: [AuthService]
+  providers: [AuthService],
+  animations: [slideInOut]
 })
 export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
 
@@ -66,13 +69,16 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   @ViewChild('reloadModalTpl', { static: false }) private reloadModalTpl: TemplateRef<any>;
   @ViewChild(JsonEditorComponent, { static: false }) private editor: JsonEditorComponent;
   @ViewChild(CacheDiffComponent, { static: false }) private cacheDiff: CacheDiffComponent;
-  private selectedCollection: string = null;
-  private selectedDocument: string = null;
-  isWebExtension: boolean = false;
+  selectedCollection: string = null;
+  selectedDocument: string = null;
   options: Options = new Options();
   formatterDuplicateTimes = (value: number) => `x ${value}`;
   parserDuplicateTimes = (value: string) => value.replace('x ', '');
   collectionListLoadingTip: string = 'Loading';
+  filter: Filter = new Filter();
+  showFilter: boolean = false;
+  isFilterApplied: boolean = false;
+  app: AppService;
 
   constructor(
     private fb: FormBuilder,
@@ -80,14 +86,14 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     private storage: StorageService,
     private notification: NotificationService,
     private translation: TranslateService,
-    private app: AppService,
     private auth: AuthService,
     private message: NzMessageService,
     private modal: NzModalService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    app: AppService
   ) {
-    this.isWebExtension = this.app.isWebExtension;
+    this.app = app;
   }
 
   // @HostListener allows us to also guard against browser refresh, close, etc.
@@ -103,10 +109,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.collectionList = this.database.collections;
       this.setCollectionNodes(this.database.collections);
     }
-    this.storage.get('options').then((options: Options) => {
-      if (options) {
-        this.options = options;
-      }
+    this.getOptions(() => {
       this.editor.setMode(this.options.editorMode);
     });
     // Sign in if authentication enabled
@@ -149,6 +152,16 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     if (this.database.authentication && this.database.authentication.enabled) {
       this.auth.signOut();
     }
+  }
+
+  private getOptions(finallyCallback: Function) {
+    this.storage.get('options').then((options: Options) => {
+      if (options) {
+        this.options = {...this.options, ...options}; // merge
+      }
+    }).finally(() => {
+      finallyCallback();
+    });
   }
 
   private setCollectionNodes(collections: string[]): void {
@@ -398,7 +411,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   private selectNode(node: any) {
+    this.isFilterApplied = false;
     if (node.level > 0) {
+      this.showFilter = false;
       this.firestore.getDocument(node.parentNode.key, node.key).then((document) => {
         this.updateEditor(document);
         this.selectedCollection = node.parentNode.key;
@@ -472,7 +487,13 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     if (!event.target && this.selectedCollection !== null) {
       // Save to cache
       if (this.selectedDocument === null) {
-        this.firestore.cache[this.selectedCollection] = event;
+        if (this.isFilterApplied) {
+          Object.keys(event).forEach((documentId: string) => {
+            this.firestore.cache[this.selectedCollection][documentId] = event[documentId];
+          });
+        } else {
+          this.firestore.cache[this.selectedCollection] = event;
+        }
         this.unsavedChanges = true;
       } else {
         this.firestore.cache[this.selectedCollection][this.selectedDocument] = event;
@@ -519,8 +540,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         this.isSaveModalVisible = false;
         this.unsavedChanges = false;
         // Display success message
-        this.displayMessage('Changes successfully saved!');
-        this.displayNotification('Saving changes completed!');
+        this.displayMessage('ChangesSuccessfullySaved');
+        this.displayNotification('SavingChangesCompleted');
       };
       // Reload selected collection/document
       const selectedNode = this.collectionNodes.find((node) => node.key === this.selectedCollection);
@@ -551,20 +572,16 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   onSettingsDrawerClose() {
     // Reload options from storage
-    this.storage.get('options').then((options) => {
-      if (options) {
-        this.options = options;
-        this.editor.setMode(this.options.editorMode);
-      }
-    }).finally(() => {
+    this.getOptions(() => {
+      this.editor.setMode(this.options.editorMode);
       this.isSettingsDrawerVisible = false;
     });
   }
 
   onGoBackIconClick() {
     this.modal.confirm({
-      nzTitle: this.translation.get('Confirm go back to the main page?'),
-      nzContent: this.translation.get('Any unsaved changes will be lost.'),
+      nzTitle: this.translation.get('ConfirmGoBack'),
+      nzContent: this.translation.get('AnyUnsavedChangesWillBeLost'),
       nzOkText: this.translation.get('Confirm'),
       nzCancelText: this.translation.get('Cancel'),
       nzOnOk: () => this.router.navigate(['/manager'])
@@ -575,7 +592,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     if (this.collectionNodes.length) {
       if (this.unsavedChanges) {
         this.modal.confirm({
-          nzTitle: this.translation.get('Reload all collections?'),
+          nzTitle: this.translation.get('ReloadAllCollections'),
           nzContent: this.reloadModalTpl,
           nzOkText: this.translation.get('Confirm'),
           nzCancelText: this.translation.get('Cancel'),
@@ -606,8 +623,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     let promises: Promise<any>[] = [];
     // Clear cache
     this.firestore.clearCache();
-    this.selectedCollection = null;
-    this.updateEditor({});
+    // this.selectedCollection = null;
+    // this.updateEditor({});
+    this.collectionNodesExpandedKeys = [];
     this.collectionNodesSelectedKeys = [];
     // Reload collections
     this.collectionNodes.forEach(node => {
@@ -626,6 +644,17 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
             this.firestore.cache[collectionName][documentName] = cacheBackup[collectionName][documentName];
           });
         });
+      }
+      // Restore selected collection/document
+      if (this.selectedCollection) {
+        this.collectionNodesExpandedKeys = [this.selectedCollection];
+        if (this.selectedDocument) {
+          this.updateEditor(this.firestore.cache[this.selectedCollection][this.selectedDocument]);
+          this.collectionNodesSelectedKeys = [this.selectedDocument];
+        } else {
+          this.updateEditor(this.firestore.cache[this.selectedCollection]);
+          this.collectionNodesSelectedKeys = [this.selectedCollection];
+        }
       }
     });
   }
@@ -671,8 +700,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     this.isCollectionListLoading = true;
     this.importFile(selectedFile).then(() => {
       // Display success message
-      this.displayMessage('Data successfully imported!');
-      this.displayNotification('Import completed!');
+      this.displayMessage('DataSuccessfullyImported');
+      this.displayNotification('ImportCompleted');
     }).catch((error) => {
       this.displayError(error);
     }).finally(() => {
@@ -725,7 +754,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
               reject(error);
             });
           } else {
-            reject({message: this.translation.get('File is empty!')});
+            reject({message: this.translation.get('FileIsEmpty')});
           }
         }
         catch(error) {
@@ -771,6 +800,28 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   private displayNotification(message: string) {
     if (this.options.enableNotifications) {
       this.notification.create(this.translation.get(message));
+    }
+  }
+
+  applyFilter() {
+    // console.log(this.filter);
+    if (this.selectedCollection) {
+      this.firestore.filterCollection(this.selectedCollection, ref => ref.where(this.filter.field, this.filter.operator, this.filter.value)).then((documents) => {
+        this.updateEditor(documents);
+        this.isFilterApplied = true;
+      }).catch((error) => {
+        this.displayError(error);
+      });
+    }
+  }
+
+  restoreFromCache() {
+    if (this.selectedCollection) {
+      if (this.selectedDocument) {
+        this.updateEditor(this.firestore.cache[this.selectedCollection][this.selectedDocument]);
+      } else {
+        this.updateEditor(this.firestore.cache[this.selectedCollection]);
+      }
     }
   }
 

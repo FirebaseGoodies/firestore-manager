@@ -86,6 +86,23 @@ export class FirestoreService {
       });
     }
 
+    filterCollection(name: string, ref: any): Promise<any> {
+      return new Promise((resolve, reject) => {
+        this.db.collection(name, ref).get().toPromise().then((snapshot) => {
+          // console.log(snapshot);
+          let docs = {};
+          snapshot.forEach(doc => {
+            // console.log(doc);
+            docs[doc.id] = doc.data();
+          });
+          // console.log(docs);
+          resolve(docs);
+        }).catch((error) => {
+          reject(error);
+        });
+      });
+    }
+
     addCollection(name: string, content: any): Promise<any> {
       return this.db.collection(name).add(content);
     }
@@ -112,7 +129,7 @@ export class FirestoreService {
           // console.log(collectionName + ' > ' + documentName + ' found in cache');
           resolve(this.cache[collectionName][documentName]);
         } else if (! this.subscriptions[subscriptionName]) {
-          this.subscriptions[subscriptionName] = this.db.collection(collectionName).doc(documentName).valueChanges().subscribe((doc) => {
+          this.subscriptions[subscriptionName] = this.db.collection(collectionName).doc(documentName).valueChanges().subscribe((doc: any) => {
             // console.log(doc);
             if (! this.cache[collectionName][documentName]) {
               this.cache[collectionName][documentName] = doc;

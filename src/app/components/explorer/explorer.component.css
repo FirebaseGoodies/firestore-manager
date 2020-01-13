@@ -41,7 +41,15 @@ nz-sider {
   overflow: initial;
 }
 .inner-content {
+  display: table;
+  width: 100%;
+  height: 100%;
   padding: 20px;
+}
+.inner-content > div {
+  display: table-row;
+}
+.inner-content > div.full-height {
   height: 100%;
 }
 .drawer-footer {
