@@ -57,6 +57,11 @@ export class ManagerComponent implements OnInit, OnDestroy {
     if (this.app.isWebExtension) {
       browser.tabs.getCurrent().then((tab) => {
         this.isPopup = tab === undefined ? true : false;
+        // Fix popup height issue on chrome
+        // @see https://github.com/AXeL-dev/firestore-manager/issues/15
+        if (this.isPopup) {
+          document.documentElement.style.height = 'auto';
+        }
       });
     }
     this.storage.get('databases').then((databases: Database[]) => {
