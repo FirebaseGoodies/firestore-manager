@@ -69,8 +69,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   @ViewChild('reloadModalTpl', { static: false }) private reloadModalTpl: TemplateRef<any>;
   @ViewChild(JsonEditorComponent, { static: false }) private editor: JsonEditorComponent;
   @ViewChild(CacheDiffComponent, { static: false }) private cacheDiff: CacheDiffComponent;
-  selectedCollection: string = null;
-  selectedDocument: string = null;
+  selectedCollection: NzTreeNode = null;
+  selectedDocument: NzTreeNode = null;
   options: Options = new Options();
   formatterDuplicateTimes = (value: number) => `x ${value}`;
   parserDuplicateTimes = (value: string) => value.replace('x ', '');
@@ -228,12 +228,12 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   private addNode(node: any): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.firestore.getCollection(node.key).then((documents) => {
+      this.firestore.getCollection(node.title).then((documents) => {
         const keys = Object.keys(documents);
         if (keys.length) {
           node.children = [];
           Object.keys(documents).forEach((documentId: string) => {
-            node.children.push({ title: documentId, key: documentId, isLeaf: true });
+            node.children.push({ title: documentId, key: node.key + '.' + documentId, isLeaf: true });
           });
           node.expanded = true;
         }
@@ -345,13 +345,13 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     this.collectionNodes.forEach(node => {
       // Save unchecked nodes
       if (! node.checked) {
-        collectionsToKeep.push(node.key);
+        collectionsToKeep.push(node.title);
       }
       // Delete documents
       if (node.children) {
         node.children.forEach(child => {
           if (child.checked) {
-            promises.push(this.firestore.deleteDocument(node.key, child.key, this.permanentlyDeleteDocuments));
+            promises.push(this.firestore.deleteDocument(node.title, child.title, this.permanentlyDeleteDocuments));
           }
         });
       }
@@ -414,15 +414,15 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     this.isFilterApplied = false;
     if (node.level > 0) {
       this.showFilter = false;
-      this.firestore.getDocument(node.parentNode.key, node.key).then((document) => {
+      this.firestore.getDocument(node.parentNode.title, node.title).then((document) => {
         this.updateEditor(document);
-        this.selectedCollection = node.parentNode.key;
-        this.selectedDocument = node.key;
+        this.selectedCollection = node.parentNode;
+        this.selectedDocument = node;
       });
     } else {
-      this.firestore.getCollection(node.key).then((documents) => {
+      this.firestore.getCollection(node.title).then((documents) => {
         this.updateEditor(documents);
-        this.selectedCollection = node.key;
+        this.selectedCollection = node;
         this.selectedDocument = null;
       });
     }
@@ -450,9 +450,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       if (!node.isLeaf && node.getChildren().length === 0) {
         node.isLoading = true;
         // Add node childrens
-        this.firestore.getCollection(node.key).then((documents) => {
+        this.firestore.getCollection(node.title).then((documents) => {
           Object.keys(documents).forEach((documentId: string) => {
-            node.addChildren([{ title: documentId, key: documentId, isLeaf: true }]);
+            node.addChildren([{ title: documentId, key: node.key + '.' + documentId, isLeaf: true }]);
           });
         }).catch((error) => {
           this.displayError(error);
@@ -489,14 +489,14 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       if (this.selectedDocument === null) {
         if (this.isFilterApplied) {
           Object.keys(event).forEach((documentId: string) => {
-            this.firestore.cache[this.selectedCollection][documentId] = event[documentId];
+            this.firestore.cache[this.selectedCollection.title][documentId] = event[documentId];
           });
         } else {
-          this.firestore.cache[this.selectedCollection] = event;
+          this.firestore.cache[this.selectedCollection.title] = event;
         }
         this.unsavedChanges = true;
       } else {
-        this.firestore.cache[this.selectedCollection][this.selectedDocument] = event;
+        this.firestore.cache[this.selectedCollection.title][this.selectedDocument.title] = event;
         this.unsavedChanges = true;
       }
     }
@@ -519,7 +519,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     this.cacheDiff.collectionNodes.forEach(node => {
       if (node.children) {
         node.children.forEach(child => {
-          promises.push(this.firestore.saveDocument(node.key, child.key));
+          promises.push(this.firestore.saveDocument(node.title, child.title));
         });
       }
     });
@@ -544,20 +544,22 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         this.displayNotification('SavingChangesCompleted');
       };
       // Reload selected collection/document
-      const selectedNode = this.collectionNodes.find((node) => node.key === this.selectedCollection);
+      const selectedNode = this.collectionNodes.find((node) => node.key === this.selectedCollection.key);
       if (selectedNode) {
+        //console.log(selectedNode);
         this.loadCollection(selectedNode).then(() => {
-          this.collectionNodesExpandedKeys = [this.selectedCollection];
+          this.collectionNodesExpandedKeys = [this.selectedCollection.key];
           if (this.selectedDocument) {
             this.selectNode({
               level: 1,
-              key: this.selectedDocument,
+              key: this.selectedDocument.key,
+              title: this.selectedDocument.title,
               parentNode: selectedNode
             });
-            this.collectionNodesSelectedKeys = [this.selectedDocument];
+            this.collectionNodesSelectedKeys = [this.selectedDocument.key];
           } else {
             this.selectNode(selectedNode);
-            this.collectionNodesSelectedKeys = [this.selectedCollection];
+            this.collectionNodesSelectedKeys = [this.selectedCollection.key];
           }
         }).catch((error) => {
           this.displayError(error);
@@ -647,13 +649,13 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       }
       // Restore selected collection/document
       if (this.selectedCollection) {
-        this.collectionNodesExpandedKeys = [this.selectedCollection];
+        this.collectionNodesExpandedKeys = [this.selectedCollection.key];
         if (this.selectedDocument) {
-          this.updateEditor(this.firestore.cache[this.selectedCollection][this.selectedDocument]);
-          this.collectionNodesSelectedKeys = [this.selectedDocument];
+          this.updateEditor(this.firestore.cache[this.selectedCollection.title][this.selectedDocument.title]);
+          this.collectionNodesSelectedKeys = [this.selectedDocument.key];
         } else {
-          this.updateEditor(this.firestore.cache[this.selectedCollection]);
-          this.collectionNodesSelectedKeys = [this.selectedCollection];
+          this.updateEditor(this.firestore.cache[this.selectedCollection.title]);
+          this.collectionNodesSelectedKeys = [this.selectedCollection.key];
         }
       }
     });
@@ -664,11 +666,11 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       if (!force && node.children && node.children.length) {
         resolve();
       } else {
-        this.firestore.getCollection(node.key).then((documents) => {
-          // console.log('Reload collection: ' + node.key);
+        this.firestore.getCollection(node.title).then((documents) => {
+          // console.log('Reload collection: ' + node.title);
           node.children = [];
           Object.keys(documents).forEach((documentId: string) => {
-            node.children.push({ title: documentId, key: documentId, isLeaf: true });
+            node.children.push({ title: documentId, key: node.key + '.' + documentId, isLeaf: true });
           });
           resolve();
         }).catch((error) => {
@@ -806,7 +808,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   applyFilter() {
     // console.log(this.filter);
     if (this.selectedCollection) {
-      this.firestore.filterCollection(this.selectedCollection, ref => ref.where(this.filter.field, this.filter.operator, this.filter.value)).then((documents) => {
+      this.firestore.filterCollection(this.selectedCollection.title, ref => ref.where(this.filter.field, this.filter.operator, this.filter.value)).then((documents) => {
         this.updateEditor(documents);
         this.isFilterApplied = true;
       }).catch((error) => {
@@ -818,9 +820,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   restoreFromCache() {
     if (this.selectedCollection) {
       if (this.selectedDocument) {
-        this.updateEditor(this.firestore.cache[this.selectedCollection][this.selectedDocument]);
+        this.updateEditor(this.firestore.cache[this.selectedCollection.title][this.selectedDocument.title]);
       } else {
-        this.updateEditor(this.firestore.cache[this.selectedCollection]);
+        this.updateEditor(this.firestore.cache[this.selectedCollection.title]);
       }
     }
   }
