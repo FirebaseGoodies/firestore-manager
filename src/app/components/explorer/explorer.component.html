@@ -206,10 +206,10 @@
                   </a>
                 </nz-breadcrumb-item>
                 <nz-breadcrumb-item *ngIf="selectedCollection">
-                  <i nz-icon nzType="folder-open"></i><span>{{ selectedCollection }}</span>
+                  <i nz-icon nzType="folder-open"></i><span>{{ selectedCollection.title }}</span>
                 </nz-breadcrumb-item>
                 <nz-breadcrumb-item *ngIf="selectedDocument">
-                  <i nz-icon nzType="file"></i><span>{{ selectedDocument }}</span>
+                  <i nz-icon nzType="file"></i><span>{{ selectedDocument.title }}</span>
                 </nz-breadcrumb-item>
               </nz-breadcrumb>
               <div class="spacer"></div>
