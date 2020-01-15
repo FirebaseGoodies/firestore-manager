@@ -1,5 +1,5 @@
-<div nz-row [ngStyle]="{ padding: '10px' }">
-  <div nz-col nzSpan="10" [ngStyle]="{ 'margin-top': '5px' }">
+<div nz-row class="option">
+  <div nz-col nzSpan="10" class="label with-margin">
     <label translate>DefaultEditorMode</label>
   </div>
   <div nz-col nzSpan="14">
@@ -10,8 +10,8 @@
     </nz-radio-group>
   </div>
 </div>
-<div nz-row [ngStyle]="{ padding: '10px' }">
-  <div nz-col nzSpan="10" [ngStyle]="{ 'margin-top': '5px' }">
+<div nz-row class="option">
+  <div nz-col nzSpan="10" class="label with-margin">
     <label translate>DefaultDiffStyle</label>
   </div>
   <div nz-col nzSpan="14">
@@ -21,8 +21,8 @@
     </nz-radio-group>
   </div>
 </div>
-<div nz-row [ngStyle]="{ padding: '10px' }">
-  <div nz-col nzSpan="10" [ngStyle]="{ 'margin-top': '5px' }">
+<div nz-row class="option">
+  <div nz-col nzSpan="10" class="label with-margin">
     <label translate>DefaultDiffOutputFormat</label>
   </div>
   <div nz-col nzSpan="14">
@@ -32,8 +32,8 @@
     </nz-radio-group>
   </div>
 </div>
-<div nz-row [ngStyle]="{ padding: '10px' }">
-  <div nz-col nzSpan="10">
+<div nz-row class="option">
+  <div nz-col nzSpan="10" class="label">
     <label translate>DisplayCollectionsCount</label>
   </div>
   <div nz-col nzSpan="14">
@@ -45,8 +45,8 @@
     ></nz-switch>
   </div>
 </div>
-<div nz-row [ngStyle]="{ padding: '10px' }" *ngIf="app.isWebExtension">
-  <div nz-col nzSpan="10">
+<div nz-row class="option" *ngIf="app.isWebExtension">
+  <div nz-col nzSpan="10" class="label">
     <label translate>EnableNotifications</label>
   </div>
   <div nz-col nzSpan="14">
