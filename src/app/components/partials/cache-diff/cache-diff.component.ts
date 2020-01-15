@@ -126,11 +126,11 @@ export class CacheDiffComponent implements AfterViewInit {
   }
 
   isNewNode(node: NzTreeNode): boolean {
-    return this.newNodes.includes(node.parentNode.title + '.' + node.title);
+    return this.newNodes.includes(node.key);
   }
 
   isRemovedNode(node: NzTreeNode): boolean {
-    return this.removedNodes.includes(node.parentNode.title + '.' + node.title);
+    return this.removedNodes.includes(node.key);
   }
 
 }
