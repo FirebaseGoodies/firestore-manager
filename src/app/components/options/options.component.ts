@@ -15,6 +15,13 @@ export class OptionsComponent implements OnInit {
 
   constructor(private storage: StorageService, app: AppService) {
     this.app = app;
+    if (this.app.isWebExtension) {
+      document.documentElement.style.height = 'auto';
+      if (navigator.userAgent.indexOf('Chrome') != -1) {
+        document.body.style.width = '500px';
+        document.body.style.padding = '10px';
+      }
+    }
   }
 
   ngOnInit() {

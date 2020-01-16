@@ -63,7 +63,7 @@ export class CacheDiffComponent implements AfterViewInit {
                   this.newNodes.push(collectionName + '.' + documentName); // add collection name to avoid conflict with documents from other collections
                   oldContent = '';//newContent;
                 }
-                node.children.push({ title: documentName, key: documentName, oldContent: oldContent, newContent: newContent, isLeaf: true });
+                node.children.push({ title: documentName, key: collectionName + '.' + documentName, oldContent: oldContent, newContent: newContent, isLeaf: true });
               }
             });
             // Add node
@@ -126,11 +126,11 @@ export class CacheDiffComponent implements AfterViewInit {
   }
 
   isNewNode(node: NzTreeNode): boolean {
-    return this.newNodes.includes(node.parentNode.key + '.' + node.key);
+    return this.newNodes.includes(node.key);
   }
 
   isRemovedNode(node: NzTreeNode): boolean {
-    return this.removedNodes.includes(node.parentNode.key + '.' + node.key);
+    return this.removedNodes.includes(node.key);
   }
 
 }

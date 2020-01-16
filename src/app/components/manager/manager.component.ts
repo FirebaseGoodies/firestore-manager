@@ -57,6 +57,11 @@ export class ManagerComponent implements OnInit, OnDestroy {
     if (this.app.isWebExtension) {
       browser.tabs.getCurrent().then((tab) => {
         this.isPopup = tab === undefined ? true : false;
+        // Fix popup height issue on chrome
+        // @see https://github.com/AXeL-dev/firestore-manager/issues/15
+        if (this.isPopup) {
+          document.documentElement.style.height = 'auto';
+        }
       });
     }
     this.storage.get('databases').then((databases: Database[]) => {
@@ -93,7 +98,12 @@ export class ManagerComponent implements OnInit, OnDestroy {
     return new Promise(resolve => {
       setTimeout(() => {
         try {
-          const config: DatabaseConfig = eval('(' + this.databaseConfig + ')');
+          const validJson = this.databaseConfig.replace(/(["':\w]+)(:)/g, (match, $1, $2) => {
+            //console.log($1);
+            return $1.match(/["':]/g) ? $1 + $2 : `"${$1}":`;
+          }).replace(/'/g, '"');
+          //console.log(validJson);
+          const config: DatabaseConfig = JSON.parse(validJson);
           //console.log(config);
           if (config.apiKey && config.authDomain && config.databaseURL && config.projectId && config.storageBucket && config.messagingSenderId && config.appId) {
             // Add

@@ -1,0 +1,9 @@
+.option {
+  padding: 10px;
+}
+.option .label {
+  text-align: left;
+}
+.option .label.with-margin {
+  margin-top: 5px;
+}
