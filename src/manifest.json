@@ -12,8 +12,6 @@
 
   "web_accessible_resources": ["assets/images/*.png"],
 
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
-
   "browser_action": {
     "default_icon": "assets/images/firestore_logo.png",
     "default_popup": "index.html?page=manager"

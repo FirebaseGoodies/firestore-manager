@@ -98,7 +98,12 @@ export class ManagerComponent implements OnInit, OnDestroy {
     return new Promise(resolve => {
       setTimeout(() => {
         try {
-          const config: DatabaseConfig = eval('(' + this.databaseConfig + ')');
+          const validJson = this.databaseConfig.replace(/(["':\w]+)(:)/g, (match, $1, $2) => {
+            //console.log($1);
+            return $1.match(/["':]/g) ? $1 + $2 : `"${$1}":`;
+          }).replace(/'/g, '"');
+          //console.log(validJson);
+          const config: DatabaseConfig = JSON.parse(validJson);
           //console.log(config);
           if (config.apiKey && config.authDomain && config.databaseURL && config.projectId && config.storageBucket && config.messagingSenderId && config.appId) {
             // Add
