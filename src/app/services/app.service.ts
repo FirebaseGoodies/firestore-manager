@@ -7,11 +7,7 @@ export class AppService {
 
   constructor() {
     try {
-      if (browser) {
-        const id = browser.runtime.id;
-        console.info('Extension id:', id);
-        this.isWebExtension = true;
-      }
+      this.isWebExtension = !!browser;
     } catch(error) {
       // console.log(error.message);
       // this.isWebExtension = false;
