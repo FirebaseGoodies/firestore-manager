@@ -45,6 +45,19 @@
     ></nz-switch>
   </div>
 </div>
+<div nz-row class="option">
+  <div nz-col nzSpan="10" class="label">
+    <label translate>DisplayDocumentsCount</label>
+  </div>
+  <div nz-col nzSpan="14">
+    <nz-switch
+      [(ngModel)]="options.displayDocumentsCount"
+      [nzCheckedChildren]="checkedTemplate"
+      [nzUnCheckedChildren]="unCheckedTemplate"
+      (ngModelChange)="saveOptions()"
+    ></nz-switch>
+  </div>
+</div>
 <div nz-row class="option" *ngIf="app.isWebExtension">
   <div nz-col nzSpan="10" class="label">
     <label translate>EnableNotifications</label>

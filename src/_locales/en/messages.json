@@ -259,6 +259,9 @@
     "DisplayCollectionsCount": {
         "message": "Display collections count:"
     },
+    "DisplayDocumentsCount": {
+        "message": "Display documents count of each collection:"
+    },
     "DatabasesSuccessfullyImported": {
         "message": "Databases successfully imported!"
     },

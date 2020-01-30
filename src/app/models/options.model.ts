@@ -4,6 +4,7 @@ export class Options {
   diffStyle: 'word' | 'char';
   diffOutputFormat: 'side-by-side' | 'line-by-line';
   displayCollectionsCount: boolean;
+  displayDocumentsCount: boolean;
   enableNotifications: boolean;
 
   constructor() {
@@ -11,6 +12,7 @@ export class Options {
     this.diffStyle = 'word';
     this.diffOutputFormat = 'line-by-line';
     this.displayCollectionsCount = false;
+    this.displayDocumentsCount = false;
     this.enableNotifications = true;
   }
 }

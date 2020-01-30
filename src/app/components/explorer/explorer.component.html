@@ -180,6 +180,7 @@
           [nzSelectedKeys]="collectionNodesSelectedKeys"
           [nzExpandedKeys]="collectionNodesExpandedKeys"
           [nzExpandedIcon]="expandedIconTpl"
+          [nzTreeTemplate]="treeTpl"
           (nzClick)="onCollectionNodeClick($event)"
           (nzCheckBoxChange)="onCollectionNodeCheck($event)"
           (nzExpandChange)="onCollectionNodeExpand($event)"
@@ -187,6 +188,18 @@
           <ng-template #expandedIconTpl let-node>
             <i *ngIf="!node.origin.isLeaf" nz-icon [nzType]="node.isLoading ? 'loading' : node.isExpanded ? 'folder-open' : 'folder'" class="ant-tree-switcher-line-icon"></i>
             <i *ngIf="node.origin.isLeaf" nz-icon nzType="file" class="ant-tree-switcher-line-icon"></i>
+          </ng-template>
+          <ng-template #treeTpl let-node>
+            <span class="custom-node" [class.active]="node.isSelected">
+              <span *ngIf="!node.isLeaf">{{ node.title }}</span>
+              <span *ngIf="node.isLeaf">{{ node.title }}</span>
+            </span>
+            <nz-badge
+              *ngIf="!node.isLeaf"
+              [nzCount]="options.displayDocumentsCount ? node.children?.length : 0"
+              [nzStyle]="{ top: '-1px', left: '5px', backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset' }"
+              [nzOverflowCount]="999"
+            ></nz-badge>
           </ng-template>
         </nz-tree>
       </nz-spin>
