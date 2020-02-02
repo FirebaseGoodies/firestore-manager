@@ -24,12 +24,10 @@
     "@angular/platform-browser-dynamic": "^8.2.14",
     "@angular/router": "^8.2.14",
     "ang-jsoneditor": "^1.8.4",
-    "diff-match-patch": "^1.0.4",
-    "diff2html": "^2.12.2",
     "firebase": "^7.6.2",
     "jsoneditor": "^7.5.0",
     "ng-zorro-antd": "^8.5.2",
-    "path": "^0.12.7",
+    "ngx-diff2html": "^0.1.1",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"

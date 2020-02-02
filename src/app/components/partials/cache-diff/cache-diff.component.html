@@ -21,25 +21,32 @@
       </nz-tree>
     </div>
     <div
-      *ngIf="diff"
+      *ngIf="diffContent"
       nz-col nzSpan="18"
       [ngStyle]="{ 'max-height': '300px', overflow: 'auto' }"
     >
       <div nz-row [ngStyle]="{ 'margin-bottom': '15px' }">
         <div nz-col nzSpan="8">
-          <nz-radio-group [(ngModel)]="diffStyle" nzSize="small" (ngModelChange)="reloadDiff()">
+          <nz-radio-group [(ngModel)]="diffStyle" nzSize="small">
             <label nz-radio-button nzValue="word"><span translate>WordDiff</span></label>
             <label nz-radio-button nzValue="char"><span translate>CharDiff</span></label>
           </nz-radio-group>
         </div>
         <div nz-col nzSpan="8" nzOffset="8">
-          <nz-radio-group [(ngModel)]="outputFormat" nzSize="small" (ngModelChange)="reloadDiff()" [ngStyle]="{ 'float': 'right' }">
+          <nz-radio-group [(ngModel)]="outputFormat" nzSize="small" [ngStyle]="{ 'float': 'right' }">
             <label nz-radio-button nzValue="side-by-side"><span translate>SideBySide</span></label>
             <label nz-radio-button nzValue="line-by-line"><span translate>LineByLine</span></label>
           </nz-radio-group>
         </div> 
       </div>
-      <div [innerHtml]="diffOutput"></div>
+      <ngx-diff2html
+        [left]="diffContent?.left"
+        [right]="diffContent?.right"
+        [filename]="diffContent?.filename"
+        [format]="outputFormat"
+        [style]="diffStyle"
+        (diffChange)="diff = $event"
+      ></ngx-diff2html>
     </div>
   </div>
   <nz-empty

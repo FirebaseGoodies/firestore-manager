@@ -1,8 +1,9 @@
+import { DiffStyle, DiffFormat } from 'ngx-diff2html';
 
 export class Options {
   editorMode: 'tree' | 'form' | 'code';
-  diffStyle: 'word' | 'char';
-  diffOutputFormat: 'side-by-side' | 'line-by-line';
+  diffStyle: DiffStyle;
+  diffOutputFormat: DiffFormat;
   displayCollectionsCount: boolean;
   displayDocumentsCount: boolean;
   enableNotifications: boolean;
