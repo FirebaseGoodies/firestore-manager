@@ -41,24 +41,24 @@
   <nz-layout>
     <nz-sider nzTheme="light" nzWidth="300px" #collectionSider>
       <nz-spin nzTip="{{ collectionListLoadingTip | translate }}..." [nzSpinning]="isCollectionListLoading">
-        <div *ngIf="!enableCollectionDeleteMode" [ngStyle]="{ 'margin-bottom': '10px' }">
-          <nz-alert
-            *ngIf="unsavedChanges && !isCollectionListLoading"
-            nzBanner
-            [nzMessage]="unsavedChangesTpl"
-            [ngStyle]="{ 'margin': '-20px -20px 10px' }"
-          >
-            <ng-template #unsavedChangesTpl>
-              <div nz-row nzGutter="8">
-                <div nz-col nzSpan="16">
-                  <span><span translate>YouHaveUnsavedChanges</span>&nbsp;<i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="{{ 'ClickToSeeAllModifications' | translate }}" nzType="question-circle" nzTheme="outline"></i></span>
-                </div>
-                <div nz-col nzSpan="8">
-                  <button nz-button nzType="primary" (click)="onViewUnsavedChangesClick()" [ngStyle]="{ float: 'right' }"><span translate>View</span></button>
-                </div>
+        <nz-alert
+          *ngIf="unsavedChanges && !isCollectionListLoading"
+          nzBanner
+          [nzMessage]="unsavedChangesTpl"
+          [ngStyle]="{ 'position': 'sticky', 'top': '-20px', 'margin': '-20px -20px 10px', 'z-index': 100 }"
+        >
+          <ng-template #unsavedChangesTpl>
+            <div nz-row nzGutter="8">
+              <div nz-col nzSpan="16">
+                <span><span translate>YouHaveUnsavedChanges</span>&nbsp;<i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="{{ 'ClickToSeeAllModifications' | translate }}" nzType="question-circle" nzTheme="outline"></i></span>
               </div>
-            </ng-template>
-          </nz-alert>
+              <div nz-col nzSpan="8">
+                <button nz-button nzType="primary" (click)="onViewUnsavedChangesClick()" [ngStyle]="{ float: 'right' }"><span translate>View</span></button>
+              </div>
+            </div>
+          </ng-template>
+        </nz-alert>
+        <div *ngIf="!enableCollectionDeleteMode" [ngStyle]="{ 'margin-bottom': '10px' }">
           <div nz-row nzGutter="8">
             <div nz-col nzSpan="21">
                 <nz-badge [nzCount]="options.displayCollectionsCount ? collectionNodes.length : 0" [ngStyle]="{ width: '100%' }">
