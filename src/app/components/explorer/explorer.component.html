@@ -146,16 +146,18 @@
               <button nz-button nzType="default" nzBlock (click)="enableCollectionDeleteMode = false"><span translate>Cancel</span></button>
             </div>
             <div nz-col nzSpan="10">
-              <button nz-button
-                nzType="danger"
-                nzBlock
-                nz-popconfirm
-                [nzPopconfirmTitle]="confirmDeleteTpl"
-                nzPopconfirmPlacement="bottom"
-                nzCancelText="{{ 'Cancel' | translate }}"
-                nzOkText="{{ 'Confirm' | translate }}"
-                [disabled]="!collectionNodesCheckedKeys.length"
-                (nzOnConfirm)="onCollectionDeleteConfirm()"><span translate>Delete</span></button>
+              <nz-badge [nzCount]="collectionTree.getCheckedNodeList().length" [nzOverflowCount]="999">
+                <button nz-button
+                  nzType="danger"
+                  nzBlock
+                  nz-popconfirm
+                  [nzPopconfirmTitle]="confirmDeleteTpl"
+                  nzPopconfirmPlacement="bottom"
+                  nzCancelText="{{ 'Cancel' | translate }}"
+                  nzOkText="{{ 'Confirm' | translate }}"
+                  [disabled]="!collectionNodesCheckedKeys.length"
+                  (nzOnConfirm)="onCollectionDeleteConfirm()"><span translate>Delete</span></button>
+              </nz-badge>
               <ng-template #confirmDeleteTpl>
                 <span><i nz-icon nzType="exclamation-circle" nzTheme="fill" style="color: #faad14; margin-right: 5px;"></i><strong translate>DeleteQuestion</strong></span>
                 <div [ngStyle]="{ 'margin-top': '10px' }">
@@ -184,6 +186,7 @@
           (nzClick)="onCollectionNodeClick($event)"
           (nzCheckBoxChange)="onCollectionNodeCheck($event)"
           (nzExpandChange)="onCollectionNodeExpand($event)"
+          #collectionTree
         >
           <ng-template #expandedIconTpl let-node>
             <i *ngIf="!node.origin.isLeaf" nz-icon [nzType]="node.isLoading ? 'loading' : node.isExpanded ? 'folder-open' : 'folder'" class="ant-tree-switcher-line-icon"></i>
