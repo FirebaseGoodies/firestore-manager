@@ -648,6 +648,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           this.collectionNodesSelectedKeys = [this.selectedCollection.key];
         }
       }
+      // Reset filters
+      Object.keys(this.filters).forEach((collectionName: string) => {
+        this.filters[collectionName].isApplied = false;
+      });
     });
   }
 
