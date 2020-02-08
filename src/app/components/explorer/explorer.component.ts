@@ -631,16 +631,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         this.restoreCache(cacheBackup);
       }
       // Restore selected collection/document
-      if (this.selectedCollection) {
-        this.collectionNodesExpandedKeys = [this.selectedCollection.key];
-        if (this.selectedDocument) {
-          this.updateEditor(this.firestore.cache[this.selectedCollection.title][this.selectedDocument.title]);
-          this.collectionNodesSelectedKeys = [this.selectedDocument.key];
-        } else {
-          this.updateEditor(this.firestore.cache[this.selectedCollection.title]);
-          this.collectionNodesSelectedKeys = [this.selectedCollection.key];
-        }
-      }
+      this.restoreSelection();
       // Reset filters
       Object.keys(this.filters).forEach((collectionName: string) => {
         this.filters[collectionName].isApplied = false;
@@ -657,6 +648,19 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         this.firestore.cache[collectionName][documentName] = cacheBackup[collectionName][documentName];
       });
     });
+  }
+
+  private restoreSelection() {
+    if (this.selectedCollection) {
+      this.collectionNodesExpandedKeys = [this.selectedCollection.key];
+      if (this.selectedDocument && this.firestore.cache[this.selectedCollection.title][this.selectedDocument.title]) {
+        this.updateEditor(this.firestore.cache[this.selectedCollection.title][this.selectedDocument.title]);
+        this.collectionNodesSelectedKeys = [this.selectedDocument.key];
+      } else {
+        this.updateEditor(this.firestore.cache[this.selectedCollection.title]);
+        this.collectionNodesSelectedKeys = [this.selectedCollection.key];
+      }
+    }
   }
 
   private restoreCollectionCache(cacheBackup: any, collection: NzTreeNode) {
@@ -854,8 +858,11 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       });
       collection.addChildren(children);
       this.restoreCollectionCache(cacheBackup, collection);
-      if (this.selectedCollection && this.selectedCollection.key == collection.key) {
-        this.updateEditor(this.firestore.cache[collection.title]);
+      // Restore selected collection/document
+      if (this.selectedCollection && this.selectedCollection.key === collection.key) {
+        this.collectionNodesExpandedKeys = [];
+        this.collectionNodesSelectedKeys = [];
+        this.restoreSelection();
       }
     }).catch((error) => {
       this.displayError(error);
