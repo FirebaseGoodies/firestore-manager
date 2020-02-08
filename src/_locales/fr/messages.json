@@ -307,9 +307,6 @@
     "Filter": {
         "message": "Filtrer"
     },
-    "FilterWarning": {
-        "message": "Le filtre ne fonctionne que sur les collections"
-    },
     "Field": {
         "message": "Champ"
     },
@@ -322,10 +319,13 @@
     "Apply": {
         "message": "Appliquer"
     },
-    "Restore": {
-        "message": "Restaurer"
+    "Remove": {
+        "message": "Retirer"
     },
-    "RestoreFromCache": {
-        "message": "Restaurer à partir du cache (vos modifications ne seront pas perdues)"
+    "Filtering": {
+        "message": "Filtrage en cours"
+    },
+    "RemovingFilter": {
+        "message": "Suppression du filtre en cours"
     }
 }
