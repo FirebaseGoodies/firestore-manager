@@ -628,14 +628,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.collectionNodes = [...this.collectionNodes]; // refresh
       // Restore cache
       if (restoreCache) {
-        Object.keys(cacheBackup).forEach(collectionName => {
-          Object.keys(cacheBackup[collectionName]).forEach(documentName => {
-            if (! this.firestore.cache[collectionName]) {
-              this.firestore.cache[collectionName] = cacheBackup[collectionName];
-            }
-            this.firestore.cache[collectionName][documentName] = cacheBackup[collectionName][documentName];
-          });
-        });
+        this.restoreCache(cacheBackup);
       }
       // Restore selected collection/document
       if (this.selectedCollection) {
@@ -652,6 +645,25 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       Object.keys(this.filters).forEach((collectionName: string) => {
         this.filters[collectionName].isApplied = false;
       });
+    });
+  }
+
+  private restoreCache(cacheBackup: any) {
+    Object.keys(cacheBackup).forEach(collectionName => {
+      Object.keys(cacheBackup[collectionName]).forEach(documentName => {
+        if (! this.firestore.cache[collectionName]) {
+          this.firestore.cache[collectionName] = cacheBackup[collectionName];
+        }
+        this.firestore.cache[collectionName][documentName] = cacheBackup[collectionName][documentName];
+      });
+    });
+  }
+
+  private restoreCollectionCache(cacheBackup: any, collection: NzTreeNode) {
+    Object.keys(this.firestore.cache[collection.title]).forEach(documentName => {
+      if (cacheBackup[collection.title] && cacheBackup[collection.title][documentName]) {
+        this.firestore.cache[collection.title][documentName] = cacheBackup[collection.title][documentName];
+      }
     });
   }
 
@@ -830,6 +842,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   private filterCollection(collection: NzTreeNode, removal: boolean = false): Promise<void> {
+    // Get cache backup
+    const cacheBackup = {...this.firestore.cache}; // get/assign a copy
+    // Filter collection
     return this.firestore.filterCollection(collection.title, removal ? undefined : ref => ref.where(this.filters[collection.title].field, this.filters[collection.title].operator, this.filters[collection.title].value)).then((documents) => {
       // console.log('Filter collection: ' + collection.title);
       collection.children = [];
@@ -838,8 +853,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         children.push({ title: documentId, key: collection.key + '.' + documentId, isLeaf: true });
       });
       collection.addChildren(children);
+      this.restoreCollectionCache(cacheBackup, collection);
       if (this.selectedCollection && this.selectedCollection.key == collection.key) {
-        this.updateEditor(documents);
+        this.updateEditor(this.firestore.cache[collection.title]);
       }
     }).catch((error) => {
       this.displayError(error);
