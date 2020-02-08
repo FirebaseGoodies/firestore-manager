@@ -75,9 +75,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   formatterDuplicateTimes = (value: number) => `x ${value}`;
   parserDuplicateTimes = (value: string) => value.replace('x ', '');
   collectionListLoadingTip: string = 'Loading';
-  filter: Filter = new Filter();
-  showFilter: boolean = false;
-  isFilterApplied: boolean = false;
+  filters: Filter[] = [];
   app: AppService;
 
   constructor(
@@ -411,9 +409,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   private selectNode(node: any) {
-    this.isFilterApplied = false;
     if (node.level > 0) {
-      this.showFilter = false;
       this.firestore.getDocument(node.parentNode.title, node.title).then((document) => {
         this.updateEditor(document);
         this.selectedCollection = node.parentNode;
@@ -487,13 +483,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     if (!event.target && this.selectedCollection !== null) {
       // Save to cache
       if (this.selectedDocument === null) {
-        if (this.isFilterApplied) {
-          Object.keys(event).forEach((documentId: string) => {
-            this.firestore.cache[this.selectedCollection.title][documentId] = event[documentId];
-          });
-        } else {
-          this.firestore.cache[this.selectedCollection.title] = event;
-        }
+        this.firestore.cache[this.selectedCollection.title] = event;
         this.unsavedChanges = true;
       } else {
         this.firestore.cache[this.selectedCollection.title][this.selectedDocument.title] = event;
@@ -805,26 +795,51 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
-  applyFilter() {
-    // console.log(this.filter);
-    if (this.selectedCollection) {
-      this.firestore.filterCollection(this.selectedCollection.title, ref => ref.where(this.filter.field, this.filter.operator, this.filter.value)).then((documents) => {
-        this.updateEditor(documents);
-        this.isFilterApplied = true;
-      }).catch((error) => {
-        this.displayError(error);
+  initFilter(event: Event, collection: NzTreeNode) {
+    event.stopPropagation();
+    if (!this.filters[collection.title]) {
+      this.filters[collection.title] = new Filter();
+    }
+  }
+
+  applyFilter(collection: NzTreeNode) {
+    // console.log(this.filters[collection.title]);
+    if (collection) {
+      this.collectionListLoadingTip = 'Filtering';
+      this.isCollectionListLoading = true;
+      this.filterCollection(collection).finally(() => {
+        this.filters[collection.title].isApplied = true;
+        this.isCollectionListLoading = false;
       });
     }
   }
 
-  restoreFromCache() {
-    if (this.selectedCollection) {
-      if (this.selectedDocument) {
-        this.updateEditor(this.firestore.cache[this.selectedCollection.title][this.selectedDocument.title]);
-      } else {
-        this.updateEditor(this.firestore.cache[this.selectedCollection.title]);
-      }
+  removeFilter(collection: NzTreeNode) {
+    if (collection && this.filters[collection.title].isApplied) {
+      this.collectionListLoadingTip = 'RemovingFilter';
+      this.isCollectionListLoading = true;
+      this.filterCollection(collection, true).finally(() => {
+        this.filters[collection.title].isApplied = false;
+        this.isCollectionListLoading = false;
+      });
     }
+  }
+
+  private filterCollection(collection: NzTreeNode, removal: boolean = false): Promise<void> {
+    return this.firestore.filterCollection(collection.title, removal ? undefined : ref => ref.where(this.filters[collection.title].field, this.filters[collection.title].operator, this.filters[collection.title].value)).then((documents) => {
+      // console.log('Filter collection: ' + collection.title);
+      collection.children = [];
+      const children = [];
+      Object.keys(documents).forEach((documentId: string) => {
+        children.push({ title: documentId, key: collection.key + '.' + documentId, isLeaf: true });
+      });
+      collection.addChildren(children);
+      if (this.selectedCollection && this.selectedCollection.key == collection.key) {
+        this.updateEditor(documents);
+      }
+    }).catch((error) => {
+      this.displayError(error);
+    });
   }
 
 }
