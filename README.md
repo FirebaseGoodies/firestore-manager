@@ -55,6 +55,7 @@ npm run build:github && npm run deploy:github
 - [x] Translations
 - [x] Add collections filter (field - operator - value)
 - [ ] Handle sub-collections
+- [ ] Add unit tests
 
 ## License
 
