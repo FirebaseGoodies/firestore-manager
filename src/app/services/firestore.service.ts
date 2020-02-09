@@ -86,9 +86,9 @@ export class FirestoreService {
       });
     }
 
-    filterCollection(name: string, ref: any): Promise<any> {
+    filterCollection(name: string, queryFunction?: any): Promise<any> {
       return new Promise((resolve, reject) => {
-        this.db.collection(name, ref).get().toPromise().then((snapshot) => {
+        this.db.collection(name, queryFunction).get().toPromise().then((snapshot) => {
           // console.log(snapshot);
           let docs = {};
           snapshot.forEach(doc => {
@@ -96,6 +96,8 @@ export class FirestoreService {
             docs[doc.id] = doc.data();
           });
           // console.log(docs);
+          this.cache[name] = docs;
+          this.unchangedCache[name] = {...docs}; // assign a copy
           resolve(docs);
         }).catch((error) => {
           reject(error);

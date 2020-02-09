@@ -259,6 +259,9 @@
     "DisplayCollectionsCount": {
         "message": "Afficher le nombre de collections:"
     },
+    "DisplayDocumentsCount": {
+        "message": "Afficher le nombre de documents dans chaque collection:"
+    },
     "DatabasesSuccessfullyImported": {
         "message": "Bases de données importées avec succès!"
     },
@@ -302,10 +305,7 @@
         "message": "Essayer l'extension web"
     },
     "Filter": {
-        "message": "Filtrer"
-    },
-    "FilterWarning": {
-        "message": "Le filtre ne fonctionne que sur les collections"
+        "message": "Filtre"
     },
     "Field": {
         "message": "Champ"
@@ -319,10 +319,13 @@
     "Apply": {
         "message": "Appliquer"
     },
-    "Restore": {
-        "message": "Restaurer"
+    "Remove": {
+        "message": "Retirer"
     },
-    "RestoreFromCache": {
-        "message": "Restaurer à partir du cache (vos modifications ne seront pas perdues)"
+    "Filtering": {
+        "message": "Filtrage en cours"
+    },
+    "RemovingFilter": {
+        "message": "Suppression du filtre en cours"
     }
 }

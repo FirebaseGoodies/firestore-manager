@@ -68,6 +68,18 @@ textarea.tab-size {
   -o-tab-size:  4;
   -webkit-tab-size: 4;
 }
+.custom-node {
+  cursor: pointer;
+  line-height: 24px;
+  border-radius: 2px;
+  padding: 0 5px;
+}
+.custom-node:hover {
+  background-color: #e6f7ff;
+}
+.custom-node.active {
+  background-color: #bae7ff;
+}
 :host ::ng-deep json-editor,
 :host ::ng-deep json-editor .jsoneditor,
 :host ::ng-deep json-editor > div,

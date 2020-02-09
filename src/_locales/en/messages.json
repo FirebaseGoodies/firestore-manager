@@ -259,6 +259,9 @@
     "DisplayCollectionsCount": {
         "message": "Display collections count:"
     },
+    "DisplayDocumentsCount": {
+        "message": "Display documents count of each collection:"
+    },
     "DatabasesSuccessfullyImported": {
         "message": "Databases successfully imported!"
     },
@@ -304,9 +307,6 @@
     "Filter": {
         "message": "Filter"
     },
-    "FilterWarning": {
-        "message": "Filter only works on collections"
-    },
     "Field": {
         "message": "Field"
     },
@@ -319,10 +319,13 @@
     "Apply": {
         "message": "Apply"
     },
-    "Restore": {
-        "message": "Restore"
+    "Remove": {
+        "message": "Remove"
     },
-    "RestoreFromCache": {
-        "message": "Restore from cache (unsaved changes will not be lost)"
+    "Filtering": {
+        "message": "Filtering"
+    },
+    "RemovingFilter": {
+        "message": "Removing filter"
     }
 }

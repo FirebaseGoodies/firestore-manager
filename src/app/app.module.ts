@@ -29,6 +29,7 @@ import { TranslateService } from './services/translate.service';
 import { TranslateDirective } from './directives/translate.directive';
 import { TranslatePipe } from './pipes/translate.pipe';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { NgxDiff2htmlModule } from 'ngx-diff2html';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
     AngularFireModule,
     AngularFirestoreModule,
     AngularFireAuthModule,
-    NgJsonEditorModule
+    NgJsonEditorModule,
+    NgxDiff2htmlModule
   ],
   providers: [
     Guard,

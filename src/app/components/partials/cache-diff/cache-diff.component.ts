@@ -1,8 +1,7 @@
 import { Component, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/core';
-import { diff_match_patch } from 'diff-match-patch';
-import { Diff2Html } from 'diff2html';
+import { DiffStyle, DiffFormat } from 'ngx-diff2html';
 
 @Component({
   selector: 'fm-cache-diff',
@@ -11,16 +10,16 @@ import { Diff2Html } from 'diff2html';
 })
 export class CacheDiffComponent implements AfterViewInit {
 
-  @Input() diffStyle: 'word' | 'char' = 'word';
-  @Input() outputFormat: 'side-by-side' | 'line-by-line' = 'line-by-line';
+  @Input() diffStyle: DiffStyle = 'word';
+  @Input() outputFormat: DiffFormat = 'line-by-line';
   @Input() enableSaveButton: boolean = false;
   @Output() enableSaveButtonChange:EventEmitter<boolean> = new EventEmitter<boolean>();
   collectionNodes: any[] = [];
-  diff: string = null;
-  diffOutput: string = null;
   newNodes: string[] = [];
   removedNodes: string[] = []; // Not used
   isLoading: boolean = true;
+  diff: string = null;
+  diffContent: any = null;
 
   constructor(private firestore: FirestoreService) { }
 
@@ -30,7 +29,11 @@ export class CacheDiffComponent implements AfterViewInit {
       if (this.collectionNodes.length) {
         const node = this.collectionNodes[0];
         node.selected = true;
-        this.diffOutput = this.getDiffOutput(node.oldContent, node.newContent, node.title);
+        this.diffContent = {
+          left: node.oldContent,
+          right: node.newContent,
+          filename: node.title
+        };
         this.collectionNodes = [...this.collectionNodes]; // refresh
         this.enableSaveButton = false;
       } else {
@@ -75,54 +78,16 @@ export class CacheDiffComponent implements AfterViewInit {
     });
   }
 
-  private getDiffOutput(text1: string, text2: string, filename: string = 'compare') {
-    // Get diff
-    const dmp = new diff_match_patch();
-    const chars = dmp.diff_linesToChars_(text1, text2);
-    const lineText1 = chars.chars1;
-    const lineText2 = chars.chars2;
-    const lineArray = chars.lineArray;
-    const diffs = dmp.diff_main(lineText1, lineText2, false);
-    dmp.diff_charsToLines_(diffs, lineArray);
-    const patchMake = dmp.patch_make(text1, diffs);
-    const patchToText = dmp.patch_toText(patchMake);
-    // console.info(patchToText);
-
-    // Make it look more like a unified diff style
-    // ToDo: find a non tricky way to do that
-    let lines = patchToText.split("\n");
-    lines.forEach((line: string, index: number) => {
-      if (line.startsWith('-')) {
-        lines[index] = line.replace(/%0A(.)/g, "%0A-$1");
-      } else if (line.startsWith('+')) {
-        lines[index] = line.replace(/%0A(.)/g, "%0A+$1");
-      }
-    });
-    const diff = lines.join("\n");
-    // console.info(diff);
-
-    const strInput = "--- " + filename + "\n+++ " + filename + "\n" + diff;
-    this.diff = decodeURIComponent(strInput); // save diff to use it on reload
-    // console.info(this.diff);
-
-    // Return diff in HTML format
-    return this.diffToHTML(this.diff);
-  }
-
-  private diffToHTML(diff: string) {
-    return Diff2Html.getPrettyHtml(diff, {inputFormat: 'diff', matching: 'lines', outputFormat: this.outputFormat, diffStyle: this.diffStyle});
-  }
-
-  reloadDiff() {
-    this.diffOutput = this.diffToHTML(this.diff);
-  }
-
   onCollectionNodeClick(event: Required<NzFormatEmitEvent>) {
     // console.log(event);
     const node: any = event.node;
     node.isSelected = true;
     node.isExpanded = true; //!node.isExpanded;
-    this.diffOutput = this.getDiffOutput(node.origin.oldContent, node.origin.newContent, node.title);
+    this.diffContent = {
+      left: node.origin.oldContent,
+      right: node.origin.newContent,
+      filename: node.title
+    };
   }
 
   isNewNode(node: NzTreeNode): boolean {
