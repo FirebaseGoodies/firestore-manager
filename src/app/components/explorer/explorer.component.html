@@ -223,7 +223,7 @@
             <ng-template #filterTpl>
               <nz-input-group nzCompact>
                 <input type="text" nz-input placeholder="{{ 'Field' | translate }}" style="width: 30%" [(ngModel)]="filters[node.title].field" />
-                <nz-select nzPlaceHolder="{{ 'Operator' | translate }}" style="width: 25%" [(ngModel)]="filters[node.title].operator">
+                <nz-select nzPlaceHolder="{{ 'Operator' | translate }}" style="width: 20%" [(ngModel)]="filters[node.title].operator">
                   <nz-option nzLabel="==" nzValue="=="></nz-option>
                   <nz-option nzLabel=">" nzValue=">"></nz-option>
                   <nz-option nzLabel=">=" nzValue=">="></nz-option>
@@ -231,7 +231,7 @@
                   <nz-option nzLabel="<=" nzValue="<="></nz-option>
                 </nz-select>
                 <input type="text" nz-input placeholder="{{ 'Value' | translate }}" style="width: 30%" [(ngModel)]="filters[node.title].value" />
-                <nz-button-group style="width: 15%">
+                <nz-button-group style="width: 20%">
                     <button nz-button nzType="default" 
                     [disabled]="!filters[node.title].field || !filters[node.title].operator || !filters[node.title].value"
                     [ngStyle]="{ 'vertical-align': 'middle', width: '75%' }"
