@@ -7,13 +7,15 @@ import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/core';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzFormatBeforeDropEvent } from 'ng-zorro-antd/core';
 import { CacheDiffComponent } from '../partials/cache-diff/cache-diff.component';
 import { Router } from '@angular/router';
 import { NotificationService } from 'src/app/services/notification.service';
 import { ComponentCanDeactivate } from 'src/app/services/can-deactivate-guard.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NzSelectComponent } from 'ng-zorro-antd/select';
+import { NzTreeComponent } from 'ng-zorro-antd/tree';
 import { Options } from 'src/app/models/options.model';
 import { AppService } from 'src/app/services/app.service';
 import { TranslateService } from 'src/app/services/translate.service';
@@ -65,6 +67,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   documentContentExample: string = `{\n\t"field": "value",\n\t...\n}`;
   editorOptions: JsonEditorOptions;
   @ViewChild('collectionSearch', { static: false }) private collectionSearch: NzSelectComponent;
+  @ViewChild('collectionTree', { static: false }) private collectionTree: NzTreeComponent;
   @ViewChild('collectionSider', { static: false, read: ElementRef }) private collectionSider: ElementRef;
   @ViewChild('reloadModalTpl', { static: false }) private reloadModalTpl: TemplateRef<any>;
   @ViewChild(JsonEditorComponent, { static: false }) private editor: JsonEditorComponent;
@@ -866,6 +869,28 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       }
     }).catch((error) => {
       this.displayError(error);
+    });
+  }
+
+  beforeCollectionNodeDrop(arg: NzFormatBeforeDropEvent): Observable<boolean> {
+    //console.log(arg);
+    if (!arg.dragNode.isLeaf && !arg.node.isLeaf && arg.pos != 0) {
+      return of(true);
+    } else {
+      return of(false);
+    }
+  }
+
+  onCollectionNodeDrop(event: NzFormatEmitEvent) {
+    //console.log(event);
+    // Update storage
+    this.storage.get('databases').then((databases: Database[]) => {
+      if (databases) {
+        const collections = this.collectionTree.getTreeNodes().filter((node: NzTreeNode) => node.level === 0).map((node: NzTreeNode) => node.title);
+        //console.log(collections);
+        databases[this.database.index].collections = collections;
+        this.storage.save('databases', databases);
+      }
     });
   }
 

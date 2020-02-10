@@ -176,6 +176,8 @@
           [nzData]="collectionNodes"
           nzAsyncData
           nzShowLine
+          nzDraggable
+          nzBlockNode
           [nzSearchValue]="searchValue"
           [nzCheckable]="enableCollectionDeleteMode"
           [nzCheckedKeys]="collectionNodesCheckedKeys"
@@ -186,6 +188,8 @@
           (nzClick)="onCollectionNodeClick($event)"
           (nzCheckBoxChange)="onCollectionNodeCheck($event)"
           (nzExpandChange)="onCollectionNodeExpand($event)"
+          (nzOnDrop)="onCollectionNodeDrop($event)"
+          [nzBeforeDrop]="beforeCollectionNodeDrop"
           #collectionTree
         >
           <ng-template #expandedIconTpl let-node>
@@ -193,10 +197,16 @@
             <i *ngIf="node.origin.isLeaf" nz-icon nzType="file" class="ant-tree-switcher-line-icon"></i>
           </ng-template>
           <ng-template #treeTpl let-node>
-            <span class="custom-node" [class.active]="node.isSelected">
-              <span *ngIf="!node.isLeaf">{{ node.title }}</span>
-              <span *ngIf="node.isLeaf">{{ node.title }}</span>
-            </span>
+            <ng-container *ngIf="!node.isLeaf else leafTpl">
+              <span class="custom-node draggable" draggable="true" aria-grabbed="true" [class.active]="node.isSelected">
+                <span class="ant-tree-title">{{ node.title }}</span>
+              </span>
+            </ng-container>
+            <ng-template #leafTpl>
+              <span class="custom-node" [class.active]="node.isSelected">
+                <span class="ant-tree-title">{{ node.title }}</span>
+              </span>
+            </ng-template>
             <nz-badge
               *ngIf="!node.isLeaf"
               [nzCount]="options.displayDocumentsCount ? node.children?.length : 0"
@@ -426,7 +436,7 @@
   (nzOnClose)="onSettingsDrawerClose()"
 >
   <nz-spin nzTip="{{ 'Loading' | translate }}..." [nzSpinning]="!isSettingsDrawerLoaded">
-    <iframe src="./options" width="100%" frameBorder="0" (load)="isSettingsDrawerLoaded = true" [ngStyle]="{ 'min-height': '300px', border: 0 }"></iframe>
+    <iframe src="./options" width="100%" frameBorder="0" (load)="isSettingsDrawerLoaded = true" [ngStyle]="{ 'min-height': '80vh', border: 0 }"></iframe>
   </nz-spin>
 </nz-drawer>
 <ng-template #reloadModalTpl>
