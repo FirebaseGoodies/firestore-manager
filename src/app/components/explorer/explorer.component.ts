@@ -374,6 +374,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           this.enableCollectionDeleteMode = false;
         }
       });
+    }).catch((error) => {
+      this.displayError(error);
     }).finally(() => {
       this.isCollectionListLoading = false;
     });
@@ -562,6 +564,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       } else {
         done();
       }
+    }).catch((error) => {
+      this.displayError(error);
+      this.isSaveButtonLoading = false;
     });
   }
 
@@ -639,6 +644,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       Object.keys(this.filters).forEach((collectionName: string) => {
         this.filters[collectionName].isApplied = false;
       });
+    }).catch((error) => {
+      this.displayError(error);
     });
   }
 
