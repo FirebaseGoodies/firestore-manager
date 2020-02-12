@@ -417,6 +417,7 @@
     [outputFormat]="options.diffOutputFormat"
     [enableSaveButton]="isSaveButtonDisabled"
     (enableSaveButtonChange)="onSaveButtonStatusChange($event)"
+    (emptyDiff)="unsavedChanges = false"
   ></fm-cache-diff>
   <nz-alert
     *ngIf="!isSaveButtonDisabled"
