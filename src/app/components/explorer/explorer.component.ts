@@ -46,7 +46,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   collectionNodesSelectedKeys: any[] = [];
   collectionNodesCheckedKeys: any[] = [];
   collectionNodesExpandedKeys: any[] = [];
-  enableCollectionDeleteMode: boolean = false;
+  isCollectionDeleteModeEnabled: boolean = false;
   permanentlyDeleteDocuments: boolean = false;
   unsavedChanges: boolean = false;
   discardUnsavedChanges: boolean = false;
@@ -336,7 +336,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.collectionNodesSelectedKeys = [];
       this.collectionNodesExpandedKeys = [];
       this.permanentlyDeleteDocuments = false;
-      this.enableCollectionDeleteMode = true;
+      this.isCollectionDeleteModeEnabled = true;
     }
   }
 
@@ -373,7 +373,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           this.storage.save('databases', databases);
           // Set nodes
           this.setCollectionNodes(collectionsToKeep);
-          this.enableCollectionDeleteMode = false;
+          this.isCollectionDeleteModeEnabled = false;
         }
       });
     }).catch((error) => {
@@ -908,7 +908,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   createContextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
-    if (! this.enableCollectionDeleteMode) {
+    if (! this.isCollectionDeleteModeEnabled) {
       this.contextMenu.create($event, menu);
     }
   }
