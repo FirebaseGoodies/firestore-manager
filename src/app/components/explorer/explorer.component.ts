@@ -8,6 +8,7 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzFormatBeforeDropEvent } from 'ng-zorro-antd/core';
+import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 import { CacheDiffComponent } from '../partials/cache-diff/cache-diff.component';
 import { Router } from '@angular/router';
 import { NotificationService } from 'src/app/services/notification.service';
@@ -90,6 +91,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     private auth: AuthService,
     private message: NzMessageService,
     private modal: NzModalService,
+    private contextMenu: NzContextMenuService,
     private cdr: ChangeDetectorRef,
     private router: Router,
     app: AppService
@@ -903,6 +905,15 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         this.storage.save('databases', databases);
       }
     });
+  }
+
+  createContextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
+    this.contextMenu.create($event, menu);
+  }
+
+  deleteDocument(node: NzTreeNode) {
+    this.onDeleteCollectionClick();
+    this.collectionNodesCheckedKeys = [node.key];
   }
 
 }

@@ -146,7 +146,7 @@
               <button nz-button nzType="default" nzBlock (click)="enableCollectionDeleteMode = false"><span translate>Cancel</span></button>
             </div>
             <div nz-col nzSpan="10">
-              <nz-badge [nzCount]="collectionTree.getCheckedNodeList().length" [nzOverflowCount]="999">
+              <nz-badge [nzCount]="collectionTree.getCheckedNodeList().length" [nzOverflowCount]="999" [ngStyle]="{ width: '100%' }">
                 <button nz-button
                   nzType="danger"
                   nzBlock
@@ -203,9 +203,14 @@
               </span>
             </ng-container>
             <ng-template #leafTpl>
-              <span class="custom-node" [class.active]="node.isSelected">
+              <span class="custom-node" [class.active]="node.isSelected" (contextmenu)="createContextMenu($event, leafMenu)">
                 <span class="ant-tree-title">{{ node.title }}</span>
               </span>
+              <nz-dropdown-menu #leafMenu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item (click)="deleteDocument(node)" translate>Delete</li>
+                </ul>
+              </nz-dropdown-menu>
             </ng-template>
             <nz-badge
               *ngIf="!node.isLeaf"
