@@ -908,7 +908,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   createContextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
-    this.contextMenu.create($event, menu);
+    if (! this.enableCollectionDeleteMode) {
+      this.contextMenu.create($event, menu);
+    }
   }
 
   deleteDocument(node: NzTreeNode) {
