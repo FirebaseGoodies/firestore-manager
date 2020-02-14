@@ -567,7 +567,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         done();
       }
       // Reset selected collection filter
-      if (this.filters[this.selectedCollection.title].isApplied) {
+      if (this.filters[this.selectedCollection.title]) {
         this.filters[this.selectedCollection.title].isApplied = false;
       }
     }).catch((error) => {
