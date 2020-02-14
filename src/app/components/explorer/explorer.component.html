@@ -198,12 +198,12 @@
           </ng-template>
           <ng-template #treeTpl let-node>
             <ng-container *ngIf="!node.isLeaf else leafTpl">
-              <span class="custom-node draggable" draggable="true" aria-grabbed="true" [class.active]="node.isSelected">
+              <span class="custom-node draggable" draggable="true" aria-grabbed="true" [class.active]="node.isSelected" [title]="node.title">
                 <span class="ant-tree-title">{{ node.title }}</span>
               </span>
             </ng-container>
             <ng-template #leafTpl>
-              <span class="custom-node" [class.active]="node.isSelected" (contextmenu)="createContextMenu($event, leafMenu)">
+              <span class="custom-node" [class.active]="node.isSelected" [title]="node.title" (contextmenu)="createContextMenu($event, leafMenu)">
                 <span class="ant-tree-title">{{ node.title }}</span>
               </span>
               <nz-dropdown-menu #leafMenu="nzDropdownMenu">
