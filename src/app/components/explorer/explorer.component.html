@@ -40,7 +40,7 @@
   </nz-header>
   <nz-layout>
     <nz-sider nzTheme="light" nzWidth="300px" #collectionSider>
-      <nz-spin nzTip="{{ collectionListLoadingTip | translate }}..." [nzSpinning]="isCollectionListLoading">
+      <nz-spin nzTip="{{ collectionListLoadingMessage | translate }}..." [nzSpinning]="isCollectionListLoading">
         <nz-alert
           *ngIf="unsavedChanges && !isCollectionListLoading"
           nzBanner

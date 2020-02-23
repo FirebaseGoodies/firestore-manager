@@ -78,7 +78,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   options: Options = new Options();
   formatterDuplicateTimes = (value: number) => `x ${value}`;
   parserDuplicateTimes = (value: string) => value.replace('x ', '');
-  collectionListLoadingTip: string = 'Loading';
+  collectionListLoadingMessage: string = 'Loading';
   filters: Filter[] = [];
   app: AppService;
 
@@ -117,14 +117,13 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     });
     // Sign in if authentication enabled
     if (this.database.authentication && this.database.authentication.enabled) {
-      this.collectionListLoadingTip = 'Authentication';
-      this.isCollectionListLoading = true;
+      this.startLoading('Authentication');
       this.auth.signIn(this.database.authentication).catch(() => {
         if (this.auth.lastError) {
           this.displayError(this.auth.lastError);
         }
       }).finally(() => {
-        this.isCollectionListLoading = false;
+        this.stopLoading();
       });
     }
     // Init forms
@@ -154,6 +153,15 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
+  private startLoading(message: string = 'Loading') {
+    this.collectionListLoadingMessage = message;
+    this.isCollectionListLoading = true;
+  }
+
+  private stopLoading() {
+    this.isCollectionListLoading = false;
+  }
+
   private getOptions(finallyCallback: Function) {
     this.storage.get('options').then((options: Options) => {
       if (options) {
@@ -177,15 +185,14 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.isSearchCollectionLoading = true;
       this.firestore.isCollection(value).then((isCollection: boolean) => {
         if (isCollection && this.collectionList.indexOf(value) === -1) {
-          this.collectionListLoadingTip = 'Loading';
-          this.isCollectionListLoading = true;
+          this.startLoading();
           this.saveCollection(value).then((saved: boolean) => {
             if (saved) {
               this.collectionSearch.nzOpen = false;
               this.collectionSearch.blur();
             }
           }).finally(() => {
-            this.isCollectionListLoading = false;
+            this.stopLoading();
           });
         }
       }).catch((error) => {
@@ -276,10 +283,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           this.firestore.addCollection(name, content).then((results) => {
             // console.log(results);
             // Save collection
-            this.collectionListLoadingTip = 'Updating';
-            this.isCollectionListLoading = true;
+            this.startLoading('Updating');
             this.saveCollection(name).finally(() => {
-              this.isCollectionListLoading = false;
+              this.stopLoading();
             });
             this.isAddCollectionDrawerVisible = false;
           }).catch(error => {
@@ -309,13 +315,12 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       Promise.all(promises).then((results) => {
         // console.log(results);
         // Reload collections
-        this.collectionListLoadingTip = 'Updating';
-        this.isCollectionListLoading = true;
+        this.startLoading('Updating');
         setTimeout(() => { // Set timeout used to wait for data to be updated (fixes issue when only 1 document is returned)
           this.reloadCollections().catch((error) => {
             this.displayError(error);
           }).finally(() => {
-            this.isCollectionListLoading = false;
+            this.stopLoading();
           });
         }, 1000);
         this.isAddDocumentDrawerVisible = false;
@@ -338,8 +343,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   onCollectionDeleteConfirm() {
-    this.collectionListLoadingTip = 'Deleting';
-    this.isCollectionListLoading = true;
+    this.startLoading('Deleting');
     let collectionsToKeep = [];
     let promises: Promise<any>[] = [];
     this.collectionNodes.forEach(node => {
@@ -376,7 +380,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }).catch((error) => {
       this.displayError(error);
     }).finally(() => {
-      this.isCollectionListLoading = false;
+      this.stopLoading();
     });
   }
 
@@ -608,15 +612,14 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   private reload(): void {
-    this.collectionListLoadingTip = 'Reloading';
-    this.isCollectionListLoading = true;
+    this.startLoading('Reloading');
     this.reloadCollections(!this.discardUnsavedChanges).catch((error) => {
       this.displayError(error);
     }).finally(() => {
       if (this.discardUnsavedChanges) {
         this.unsavedChanges = false;
       }
-      this.isCollectionListLoading = false;
+      this.stopLoading();
     });
   }
 
@@ -705,8 +708,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   onExportJsonClick() {
     if (this.collectionNodes.length) {
-      this.collectionListLoadingTip = 'Exporting';
-      this.isCollectionListLoading = true;
+      this.startLoading('Exporting');
       this.reloadCollections().then(() => {
         const c = JSON.stringify(this.firestore.cache, null, 4);
         const file = new Blob([c], {type: 'text/json'});
@@ -714,15 +716,14 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       }).catch((error) => {
         this.displayError(error);
       }).finally(() => {
-        this.isCollectionListLoading = false;
+        this.stopLoading();
       });
     }
   }
 
   onImportFileChanged(event: any) {
     const selectedFile = event.target.files[0];
-    this.collectionListLoadingTip = 'Importing';
-    this.isCollectionListLoading = true;
+    this.startLoading('Importing');
     this.importFile(selectedFile).then(() => {
       // Display success message
       this.displayMessage('DataSuccessfullyImported');
@@ -730,7 +731,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }).catch((error) => {
       this.displayError(error);
     }).finally(() => {
-      this.isCollectionListLoading = false;
+      this.stopLoading();
     });
   }
 
@@ -793,8 +794,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   expandAllCollectionNodes() {
-    this.collectionListLoadingTip = 'Expanding';
-    this.isCollectionListLoading = true;
+    this.startLoading('Expanding');
     let promises: Promise<any>[] = [];
     this.collectionNodes.forEach(node => {
       if (! this.collectionNodesExpandedKeys[node.key]) {
@@ -809,7 +809,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }).catch((error) => {
       this.displayError(error);
     }).finally(() => {
-      this.isCollectionListLoading = false;
+      this.stopLoading();
     });
   }
 
@@ -838,22 +838,20 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   applyFilter(collection: NzTreeNode) {
     // console.log(this.filters[collection.title]);
     if (collection) {
-      this.collectionListLoadingTip = 'Filtering';
-      this.isCollectionListLoading = true;
+      this.startLoading('Filtering');
       this.filterCollection(collection).finally(() => {
         this.filters[collection.title].isApplied = true;
-        this.isCollectionListLoading = false;
+        this.stopLoading();
       });
     }
   }
 
   removeFilter(collection: NzTreeNode) {
     if (collection && this.filters[collection.title].isApplied) {
-      this.collectionListLoadingTip = 'RemovingFilter';
-      this.isCollectionListLoading = true;
+      this.startLoading('RemovingFilter');
       this.filterCollection(collection, true).finally(() => {
         this.filters[collection.title].isApplied = false;
-        this.isCollectionListLoading = false;
+        this.stopLoading();
       });
     }
   }
