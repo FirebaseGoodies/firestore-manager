@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Authentication, AuthenticationType } from '../models/auth.model';
+import { auth } from 'firebase/app';
 
 @Injectable()
 export class AuthService {
@@ -45,11 +46,15 @@ export class AuthService {
         }
         // Sign in
         if (signInFunction !== null) {
-          signInFunction().then(() => {
-            resolve();
+          this.afa.auth.setPersistence(auth.Auth.Persistence.NONE).then(() => {
+            signInFunction().then(() => {
+              resolve();
+            }).catch((error: firebase.FirebaseError) => {
+              this.setLastError(error);
+              reject();
+            });
           }).catch((error: firebase.FirebaseError) => {
-            this.lastError = error;
-            console.error(`[${error.code}] ${error.message}`);
+            this.setLastError(error);
             reject();
           });
         } else {
@@ -63,10 +68,14 @@ export class AuthService {
     // console.log('sign out', this.isSignedIn());
     if (force || this.isSignedIn()) {
       this.afa.auth.signOut().catch((error: firebase.FirebaseError) => {
-        this.lastError = error;
-        console.error(`[${error.code}] ${error.message}`);
+        this.setLastError(error);
       });
     }
+  }
+
+  private setLastError(error: firebase.FirebaseError) {
+    this.lastError = error;
+    console.error(`[${error.code}] ${error.message}`);
   }
 
 }
