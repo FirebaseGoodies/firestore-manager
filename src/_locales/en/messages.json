@@ -330,5 +330,11 @@
     },
     "RemovingFilter": {
         "message": "Removing filter"
+    },
+    "Check": {
+        "message": "Check"
+    },
+    "Uncheck": {
+        "message": "Uncheck"
     }
 }

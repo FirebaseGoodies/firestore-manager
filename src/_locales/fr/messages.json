@@ -330,5 +330,11 @@
     },
     "RemovingFilter": {
         "message": "Suppression du filtre en cours"
+    },
+    "Check": {
+        "message": "Cocher"
+    },
+    "Uncheck": {
+        "message": "Décocher"
     }
 }

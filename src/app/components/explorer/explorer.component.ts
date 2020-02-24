@@ -900,14 +900,44 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   createContextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
-    if (! this.isCollectionDeleteModeEnabled) {
-      this.contextMenu.create($event, menu);
-    }
+    this.contextMenu.create($event, menu);
   }
 
   deleteDocument(node: NzTreeNode) {
     this.onDeleteCollectionClick();
     this.collectionNodesCheckedKeys = [node.key];
+  }
+
+  checkNode(node: NzTreeNode) {
+    // Check node
+    node.setChecked(true);
+    this.collectionNodesCheckedKeys.push(node.key);
+    // Check its childs too
+    node.children.forEach((child: NzTreeNode) => {
+      if (! child.isChecked) {
+        child.setChecked(true);
+        this.collectionNodesCheckedKeys.push(child.key);
+      }
+    });
+  }
+
+  uncheckNode(node: NzTreeNode) {
+    // Uncheck node
+    node.setChecked(false);
+    const index = this.collectionNodesCheckedKeys.indexOf(node.key);
+    if (index >= 0) {
+      this.collectionNodesCheckedKeys.splice(index, 1);
+    }
+    // If any child is checked add it to checked keys list
+    node.children.forEach((child: NzTreeNode) => {
+      if (child.isChecked && this.collectionNodesCheckedKeys.indexOf(child.key) === -1) {
+        this.collectionNodesCheckedKeys.push(child.key);
+      }
+    });
+    // Uncheck parent node
+    if (node.parentNode && node.parentNode.isChecked) {
+      this.uncheckNode(node.parentNode);
+    }
   }
 
 }
