@@ -567,10 +567,6 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       } else {
         done();
       }
-      // Reset selected collection filter
-      if (this.filters[this.selectedCollection.title]) {
-        this.filters[this.selectedCollection.title].isApplied = false;
-      }
     }).catch((error) => {
       this.displayError(error);
       this.isSaveButtonLoading = false;
@@ -646,10 +642,6 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       }
       // Restore selected collection/document
       this.restoreSelection();
-      // Reset filters
-      Object.keys(this.filters).forEach((collectionName: string) => {
-        this.filters[collectionName].isApplied = false;
-      });
     }).catch((error) => {
       this.displayError(error);
     });
@@ -701,6 +693,11 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           resolve();
         }).catch((error) => {
           reject(error);
+        }).finally(() => {
+          // Reset collection filter
+          if (this.filters[node.title]) {
+            this.filters[node.title].isApplied = false;
+          }
         });
       }
     });
