@@ -105,7 +105,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
           //console.log(validJson);
           const config: DatabaseConfig = JSON.parse(validJson);
           //console.log(config);
-          if (config.apiKey && config.authDomain && config.databaseURL && config.projectId && config.storageBucket && config.messagingSenderId && config.appId) {
+          if (this.isDatabaseConfigValid(config)) {
             // Add
             if (this.databaseModalOkButtonText === this.addButtonTranslation) {
               this.databases.unshift({config: config});
@@ -128,6 +128,10 @@ export class ManagerComponent implements OnInit, OnDestroy {
         resolve();
       }, 300);
     });
+  }
+
+  private isDatabaseConfigValid(config: DatabaseConfig): boolean {
+    return !!(config.apiKey && config.authDomain && config.databaseURL && config.projectId && config.storageBucket && config.messagingSenderId && config.appId);
   }
 
   onDatabaseModalCancel() {
@@ -239,11 +243,22 @@ export class ManagerComponent implements OnInit, OnDestroy {
       try {
         const databases = JSON.parse(fileReader.result);
         if (databases) {
-          // ToDo: check if databases config is valid
-          this.databases = [...databases];
-          this.storage.save('databases', this.databases);
-          // Display success message
-          this.message.create('success', this.translation.get('DatabasesSuccessfullyImported'));
+          // Check if databases config is valid
+          let isValid = true;
+          databases.forEach((database: Database) => {
+            if (! database.config || ! this.isDatabaseConfigValid(database.config)) {
+              isValid = false;
+            }
+          });
+          if (isValid) {
+            this.databases = [...databases];
+            this.storage.save('databases', this.databases);
+            // Display success message
+            this.message.create('success', this.translation.get('DatabasesSuccessfullyImported'));
+          } else {
+            // Display error message
+            this.message.create('error', this.translation.get('InvalidDatabasesConfig'));
+          }
         }
       }
       catch(error) {

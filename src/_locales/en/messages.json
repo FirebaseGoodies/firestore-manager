@@ -265,6 +265,9 @@
     "DatabasesSuccessfullyImported": {
         "message": "Databases successfully imported!"
     },
+    "InvalidDatabasesConfig": {
+        "message": "Invalid databases config, retry with a valid json file."
+    },
     "Authentication": {
         "message": "Authentication"
     },
