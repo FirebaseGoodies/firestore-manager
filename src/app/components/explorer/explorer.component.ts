@@ -453,12 +453,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       // Check if node doesn't have childrens
       if (!node.isLeaf && node.getChildren().length === 0) {
         node.isLoading = true;
-        // Add node childrens
-        this.firestore.getCollection(node.title).then((documents) => {
-          Object.keys(documents).forEach((documentId: string) => {
-            node.addChildren([{ title: documentId, key: node.key + '.' + documentId, isLeaf: true }]);
-          });
-        }).catch((error) => {
+        // Load collection
+        this.loadCollection(node, true, false).catch((error) => {
           this.displayError(error);
         }).finally(() => {
           node.isLoading = false;
@@ -679,23 +675,27 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     });
   }
 
-  private loadCollection(node: any, force: boolean = false): Promise<void> {
+  private loadCollection(node: NzTreeNode|any, force: boolean = false, resetFilter: boolean = true): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!force && node.children && node.children.length) {
         resolve();
       } else {
         this.firestore.getCollection(node.title).then((documents) => {
-          // console.log('Reload collection: ' + node.title);
+          // console.log('Loading collection:', node.title, 'forced:', force);
           node.children = [];
           Object.keys(documents).forEach((documentId: string) => {
-            node.children.push({ title: documentId, key: node.key + '.' + documentId, isLeaf: true });
+            if (node instanceof NzTreeNode) {
+              node.addChildren([{ title: documentId, key: node.key + '.' + documentId, isLeaf: true }]);
+            } else {
+              node.children.push({ title: documentId, key: node.key + '.' + documentId, isLeaf: true });
+            }
           });
           resolve();
         }).catch((error) => {
           reject(error);
         }).finally(() => {
           // Reset collection filter
-          if (this.filters[node.title]) {
+          if (resetFilter && this.filters[node.title]) {
             this.filters[node.title].isApplied = false;
           }
         });
@@ -858,7 +858,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     const cacheBackup = {...this.firestore.cache}; // get/assign a copy
     // Filter collection
     return this.firestore.filterCollection(collection.title, removal ? undefined : ref => ref.where(this.filters[collection.title].field, this.filters[collection.title].operator, this.filters[collection.title].value)).then((documents) => {
-      // console.log('Filter collection: ' + collection.title);
+      // console.log('Filter collection:', collection.title);
       collection.children = [];
       const children = [];
       Object.keys(documents).forEach((documentId: string) => {
