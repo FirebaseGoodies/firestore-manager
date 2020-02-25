@@ -205,6 +205,7 @@
                 [class.active]="node.isSelected"
                 [title]="node.title"
                 (contextmenu)="createContextMenu($event, isCollectionDeleteModeEnabled ? deleteModeMenu : parentNodeMenu)"
+                (click)="closeContextMenu()"
               >
                 <span class="ant-tree-title">{{ node.title }}</span>
               </span>
@@ -220,6 +221,7 @@
                 [class.active]="node.isSelected"
                 [title]="node.title"
                 (contextmenu)="createContextMenu($event, isCollectionDeleteModeEnabled ? deleteModeMenu : leafMenu)"
+                (click)="closeContextMenu()"
               >
                 <span class="ant-tree-title">{{ node.title }}</span>
               </span>

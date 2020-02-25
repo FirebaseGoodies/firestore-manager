@@ -903,6 +903,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     this.contextMenu.create($event, menu);
   }
 
+  closeContextMenu(): void {
+    this.contextMenu.close();
+  }
+
   deleteDocument(node: NzTreeNode) {
     this.onDeleteCollectionClick();
     this.collectionNodesCheckedKeys = [node.key];
