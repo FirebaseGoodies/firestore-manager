@@ -5,5 +5,6 @@ export interface Database {
   index?: number,
   config: DatabaseConfig,
   collections: string[],
-  authentication?: Authentication
+  authentication?: Authentication,
+  tags?: string[]
 }

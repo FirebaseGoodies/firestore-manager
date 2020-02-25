@@ -336,5 +336,11 @@
     },
     "Uncheck": {
         "message": "Uncheck"
+    },
+    "Tag": {
+        "message": "Tag"
+    },
+    "Tags": {
+        "message": "Tags"
     }
 }
