@@ -40,8 +40,10 @@ export class FirestoreService {
     unsubscribe(subscriptionName?: string) {
       if (subscriptionName) {
         // Remove solo subscription
-        this.subscriptions[subscriptionName].unsubscribe();
-        delete this.subscriptions[subscriptionName];
+        if (this.subscriptions[subscriptionName]) {
+          this.subscriptions[subscriptionName].unsubscribe();
+          delete this.subscriptions[subscriptionName];
+        }
       } else {
         // Remove all subscriptions
         Object.keys(this.subscriptions).forEach(subscriptionName => {
