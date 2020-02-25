@@ -80,7 +80,6 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   parserDuplicateTimes = (value: string) => value.replace('x ', '');
   collectionListLoadingMessage: string = 'Loading';
   filters: Filter[] = [];
-  app: AppService;
 
   constructor(
     private fb: FormBuilder,
@@ -94,10 +93,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     private contextMenu: NzContextMenuService,
     private cdr: ChangeDetectorRef,
     private router: Router,
-    app: AppService
-  ) {
-    this.app = app;
-  }
+    public app: AppService
+  ) { }
 
   // @HostListener allows us to also guard against browser refresh, close, etc.
   @HostListener('window:beforeunload')

@@ -40,8 +40,6 @@ export class ManagerComponent implements OnInit, OnDestroy {
   private explorerUrl: string = '';
   private isPopup: boolean = false;
   @ViewChild('importFileInput', { static: false, read: ElementRef }) private importFileInput: ElementRef;
-  app: AppService;
-  translation: TranslateService;
   tags: string[] = [];
   readonly defaultTags: string[] = ['development', 'production', 'staging'];
 
@@ -49,12 +47,9 @@ export class ManagerComponent implements OnInit, OnDestroy {
     private storage: StorageService,
     private message: NzMessageService,
     private modalService: NzModalService,
-    translation: TranslateService,
-    app: AppService
-  ) {
-    this.app = app;
-    this.translation = translation;
-  }
+    public translation: TranslateService,
+    public app: AppService
+  ) { }
 
   ngOnInit() {
     if (this.app.isWebExtension) {
