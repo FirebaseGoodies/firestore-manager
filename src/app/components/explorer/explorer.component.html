@@ -235,6 +235,7 @@
               [nzCount]="options.displayDocumentsCount ? node.children?.length : 0"
               [nzStyle]="{ top: '-1px', left: '5px', backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset' }"
               [nzOverflowCount]="999"
+              [nzShowZero]="filters[node.title]?.isApplied ? true : false"
             ></nz-badge>
             <button
               *ngIf="!node.isLeaf"
