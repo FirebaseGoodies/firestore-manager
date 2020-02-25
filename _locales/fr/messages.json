@@ -336,5 +336,11 @@
     },
     "Uncheck": {
         "message": "Décocher"
+    },
+    "Tag": {
+        "message": "Taguer"
+    },
+    "Tags": {
+        "message": "Étiquettes"
     }
 }
