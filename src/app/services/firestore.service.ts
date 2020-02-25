@@ -4,7 +4,9 @@ import { Subscription } from 'rxjs';
 import { Database } from '../models/database.model';
 import { StorageService } from './storage.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class FirestoreService {
 
     db: AngularFirestore;

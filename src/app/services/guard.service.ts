@@ -3,7 +3,9 @@ import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from
 import { StorageService } from './storage.service';
 import { Database } from '../models/database.model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class Guard implements CanActivate {
 
   constructor(private router: Router, private storage: StorageService) {}
