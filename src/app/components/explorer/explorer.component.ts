@@ -940,4 +940,23 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
+  reloadCollection(node: NzTreeNode) {
+    // Take cache backup
+    const cacheBackup = {};
+    if (this.firestore.cache[node.title]) {
+      cacheBackup[node.title] = this.firestore.cache[node.title];
+    }
+    // Clear cache
+    this.firestore.clearCache(node.title);
+    // Reload collection
+    node.isLoading = true;
+    node.children = [];
+    this.loadCollection(node, true).catch((error) => {
+      this.displayError(error);
+    }).finally(() => {
+      this.restoreCache(cacheBackup);
+      node.isLoading = false;
+    });
+  }
+
 }

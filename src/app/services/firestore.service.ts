@@ -26,14 +26,19 @@ export class FirestoreService {
       return this.unchangedCache;
     }
 
-    clearCache() {
-      this.cache = {};
-      this.unchangedCache = {};
-      this.unsubscribe();
+    clearCache(collectionName?: string) {
+      if (collectionName) {
+        this.cache[collectionName] && delete this.cache[collectionName];
+        this.unchangedCache[collectionName] && delete this.unchangedCache[collectionName];
+      } else {
+        this.cache = {};
+        this.unchangedCache = {};
+      }
+      this.unsubscribe(collectionName);
     }
 
-    unsubscribe(subscriptionName: string = null) {
-      if (subscriptionName !== null) {
+    unsubscribe(subscriptionName?: string) {
+      if (subscriptionName) {
         // Remove solo subscription
         this.subscriptions[subscriptionName].unsubscribe();
         delete this.subscriptions[subscriptionName];

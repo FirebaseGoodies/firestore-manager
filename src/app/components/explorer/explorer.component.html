@@ -204,10 +204,15 @@
                 aria-grabbed="true"
                 [class.active]="node.isSelected"
                 [title]="node.title"
-                (contextmenu)="isCollectionDeleteModeEnabled && createContextMenu($event, deleteModeMenu)"
+                (contextmenu)="createContextMenu($event, isCollectionDeleteModeEnabled ? deleteModeMenu : parentNodeMenu)"
               >
                 <span class="ant-tree-title">{{ node.title }}</span>
               </span>
+              <nz-dropdown-menu #parentNodeMenu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li *ngIf="node.children?.length" nz-menu-item (click)="reloadCollection(node)" translate>Reload</li>
+                </ul>
+              </nz-dropdown-menu>
             </ng-container>
             <ng-template #leafTpl>
               <span
