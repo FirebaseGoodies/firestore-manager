@@ -142,8 +142,8 @@
     "Name": {
         "message": "Nom"
     },
-    "MyCollection": {
-        "message": "ma collection"
+    "CollectionName": {
+        "message": "Nom de la collection"
     },
     "CollectionAlreadyExists": {
         "message": "Une collection du même nom existe déjà!"

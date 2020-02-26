@@ -142,14 +142,14 @@
     "Name": {
         "message": "Name"
     },
-    "MyCollection": {
-        "message": "my collection"
+    "CollectionName": {
+        "message": "Collection name"
     },
     "CollectionAlreadyExists": {
         "message": "A collection with the same name already exists!"
     },
     "EnterCollectionName": {
-        "message": "please enter collection name"
+        "message": "Please enter collection name"
     },
     "Content": {
         "message": "Content"
@@ -158,7 +158,7 @@
         "message": "Content of the first document in json"
     },
     "EnterValidJsonContent": {
-        "message": "please enter a valid json content"
+        "message": "Please enter a valid json content"
     },
     "UnsavedChanges": {
         "message": "Unsaved Changes"
@@ -203,13 +203,13 @@
         "message": "Select a collection"
     },
     "PleaseSelectCollection": {
-        "message": "please select a collection"
+        "message": "Please select a collection"
     },
     "DuplicateDocument": {
         "message": "Duplicate document?"
     },
     "EnterValidNumericValue": {
-        "message": "please enter a valid numeric value"
+        "message": "Please enter a valid numeric value"
     },
     "Import": {
         "message": "Import"
