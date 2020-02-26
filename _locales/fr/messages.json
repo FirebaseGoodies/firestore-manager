@@ -142,8 +142,8 @@
     "Name": {
         "message": "Nom"
     },
-    "MyCollection": {
-        "message": "ma collection"
+    "CollectionName": {
+        "message": "Nom de la collection"
     },
     "CollectionAlreadyExists": {
         "message": "Une collection du même nom existe déjà!"
@@ -342,5 +342,23 @@
     },
     "Tags": {
         "message": "Étiquettes"
+    },
+    "AddDocument": {
+        "message": "Ajouter un document"
+    },
+    "Clone": {
+        "message": "Cloner"
+    },
+    "DocumentAlreadyExists": {
+        "message": "Un document du même nom existe déjà!"
+    },
+    "OnlyAlphanumericCharsAllowed": {
+        "message": "Seuls les caractères alphanumériques sont autorisés"
+    },
+    "DocumentName": {
+        "message": "Nom du document"
+    },
+    "DocumentNameTip": {
+        "message": "Ne s'applique pas aux doublons. À laisser vide pour en générer un par défaut"
     }
 }
