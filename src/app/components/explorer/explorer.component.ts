@@ -960,4 +960,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     });
   }
 
+  addDocument(collection: NzTreeNode) {
+    this.addDocumentForm.get('collection').setValue(collection.key);
+    this.isAddDocumentDrawerVisible = true;
+  }
+
 }

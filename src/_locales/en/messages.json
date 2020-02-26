@@ -342,5 +342,8 @@
     },
     "Tags": {
         "message": "Tags"
+    },
+    "AddDocument": {
+        "message": "Add Document"
     }
 }
