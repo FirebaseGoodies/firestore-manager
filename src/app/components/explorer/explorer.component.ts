@@ -431,6 +431,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     } else {
       node.isExpanded = false;
     }
+    this.closeContextMenu();
   }
 
   private selectNode(node: any) {
