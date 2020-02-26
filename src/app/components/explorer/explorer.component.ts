@@ -129,7 +129,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       content: [null, [Validators.required, jsonValidator]]
     });
     this.addDocumentForm = this.fb.group({
-      name: [null, []],
+      name: [null, [Validators.pattern("^[a-zA-Z0-9 _-]+$")]],
       collection: [null, [Validators.required]],
       content: [null, [Validators.required, jsonValidator]],
       duplicate: [false, [Validators.required]],

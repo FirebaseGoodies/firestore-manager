@@ -352,6 +352,9 @@
     "DocumentAlreadyExists": {
         "message": "Un document du même nom existe déjà!"
     },
+    "OnlyAlphanumericCharsAllowed": {
+        "message": "Seuls les caractères alphanumériques sont autorisés"
+    },
     "DocumentName": {
         "message": "Nom du document"
     },
