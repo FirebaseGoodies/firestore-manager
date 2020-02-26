@@ -345,5 +345,17 @@
     },
     "AddDocument": {
         "message": "Add Document"
+    },
+    "Clone": {
+        "message": "Clone"
+    },
+    "DocumentAlreadyExists": {
+        "message": "A document with the same name already exists!"
+    },
+    "DocumentName": {
+        "message": "Document name"
+    },
+    "DocumentNameTip": {
+        "message": "Will not apply on duplicates. Leave it blank to generate a default one"
     }
 }

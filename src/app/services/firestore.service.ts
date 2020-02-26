@@ -66,6 +66,17 @@ export class FirestoreService {
       });
     }
 
+    isDocument(collectionName: string, documentName: string): Promise<boolean> {
+      return new Promise((resolve, reject) => {
+        this.db.collection(collectionName).doc(documentName).get().toPromise().then((docSnapshot) => {
+          // console.log(documentName, docSnapshot.exists);
+          resolve(docSnapshot.exists);
+        }).catch((error) => {
+          reject(error);
+        });
+      });
+    }
+
     getCollection(name: string): Promise<any> {
       return new Promise((resolve, reject) => {
         if (this.cache[name]) {
@@ -155,8 +166,12 @@ export class FirestoreService {
       });
     }
 
-    addDocument(collectionName: string, content: any): Promise<any> {
-      return this.addCollection(collectionName, content);
+    addDocument(collectionName: string, content: any, documentName?: string): Promise<any> {
+      if (documentName && documentName.length) {
+        return this.setDocument(collectionName, documentName, content);
+      } else {
+        return this.addCollection(collectionName, content);
+      }
     }
 
     deleteDocument(collectionName: string, documentName: string, permanently: boolean = true): Promise<void> {

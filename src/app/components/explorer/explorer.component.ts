@@ -129,6 +129,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       content: [null, [Validators.required, jsonValidator]]
     });
     this.addDocumentForm = this.fb.group({
+      name: [null, []],
       collection: [null, [Validators.required]],
       content: [null, [Validators.required, jsonValidator]],
       duplicate: [false, [Validators.required]],
@@ -273,7 +274,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       // Check if collection already exists
       this.firestore.isCollection(name).then((exists: boolean) => {
         if (exists) {
-          this.addCollectionForm.controls.name.setErrors({ notUnique: true });
+          this.addCollectionForm.controls.name.setErrors({ alreadyExists: true });
         } else {
           // Add collection
           const content = JSON.parse(this.addCollectionForm.controls.content.value);
@@ -300,32 +301,51 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   onAddDocumentClick() {
     if (this.addDocumentForm.valid) {
       this.isAddDocumentButtonLoading = true;
-      const collection = this.addDocumentForm.controls.collection.value;
+      const documentName = this.addDocumentForm.controls.name.value;
+      const collectionName = this.addDocumentForm.controls.collection.value;
       const content = JSON.parse(this.addDocumentForm.controls.content.value);
       const duplicate = this.addDocumentForm.controls.duplicate.value;
       const duplicateTimes = duplicate ? this.addDocumentForm.controls.duplicateTimes.value : 1;
-      let promises: Promise<any>[] = [];
-      for (let doc = 0; doc < duplicateTimes; doc++) {
-        // Add document
-        promises.push(this.firestore.addDocument(collection, content));
+      const addDocument: Function = () => {
+        let promises: Promise<any>[] = [];
+        for (let doc = 0; doc < duplicateTimes; doc++) {
+          // Add document
+          promises.push(this.firestore.addDocument(collectionName, content, doc === 0 ? documentName : null));
+        }
+        Promise.all(promises).then((results) => {
+          // console.log(results);
+          // Reload collections
+          this.startLoading('Updating');
+          setTimeout(() => { // Set timeout used to wait for data to be updated (fixes issue when only 1 document is returned)
+            this.reloadCollections().catch((error) => {
+              this.displayError(error);
+            }).finally(() => {
+              this.stopLoading();
+            });
+          }, 1000);
+          this.isAddDocumentDrawerVisible = false;
+        }).catch(error => {
+          this.displayError(error);
+        }).finally(() => {
+          this.isAddDocumentButtonLoading = false;
+        });
+      };
+      // Check if document already exists
+      if (documentName && documentName.length) {
+        this.firestore.isDocument(collectionName, documentName).then((exists: boolean) => {
+          if (exists) {
+            this.addDocumentForm.controls.name.setErrors({ alreadyExists: true });
+            this.isAddDocumentButtonLoading = false;
+          } else {
+            addDocument();
+          }
+        }).catch(error => {
+          this.displayError(error);
+          this.isAddDocumentButtonLoading = false;
+        });
+      } else {
+        addDocument();
       }
-      Promise.all(promises).then((results) => {
-        // console.log(results);
-        // Reload collections
-        this.startLoading('Updating');
-        setTimeout(() => { // Set timeout used to wait for data to be updated (fixes issue when only 1 document is returned)
-          this.reloadCollections().catch((error) => {
-            this.displayError(error);
-          }).finally(() => {
-            this.stopLoading();
-          });
-        }, 1000);
-        this.isAddDocumentDrawerVisible = false;
-      }).catch(error => {
-        this.displayError(error);
-      }).finally(() => {
-        this.isAddDocumentButtonLoading = false;
-      });
     }
   }
 
@@ -961,7 +981,15 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   addDocument(collection: NzTreeNode) {
-    this.addDocumentForm.get('collection').setValue(collection.key);
+    this.addDocumentForm.controls.collection.setValue(collection.key);
+    this.isAddDocumentDrawerVisible = true;
+  }
+
+  cloneDocument(document: NzTreeNode) {
+    const collection = document.parentNode.key;
+    const content = this.firestore.cache[collection][document.title];
+    this.addDocumentForm.controls.collection.setValue(collection);
+    this.addDocumentForm.controls.content.setValue(JSON.stringify(content, null, 4));
     this.isAddDocumentDrawerVisible = true;
   }
 

@@ -228,6 +228,7 @@
               </span>
               <nz-dropdown-menu #leafMenu="nzDropdownMenu">
                 <ul nz-menu>
+                  <li nz-menu-item (click)="cloneDocument(node)" translate>Clone</li>
                   <li nz-menu-item (click)="deleteDocument(node)" translate>Delete</li>
                 </ul>
               </nz-dropdown-menu>
@@ -339,7 +340,7 @@
       <div nz-col nzSpan="24">
         <nz-form-item>
           <nz-form-label nzRequired><span translate>Name</span></nz-form-label>
-          <nz-form-control nzErrorTip="{{ (addCollectionForm.controls.name.errors?.notUnique ? 'CollectionAlreadyExists' : 'EnterCollectionName') | translate }}">
+          <nz-form-control nzErrorTip="{{ (addCollectionForm.controls.name.errors?.alreadyExists ? 'CollectionAlreadyExists' : 'EnterCollectionName') | translate }}">
             <input nz-input formControlName="name" placeholder="{{ 'MyCollection' | translate }}" />
           </nz-form-control>
         </nz-form-item>
@@ -377,6 +378,20 @@
   (nzOnClose)="isAddDocumentDrawerVisible = false"
 >
   <form nz-form [formGroup]="addDocumentForm" (ngSubmit)="submitForm(addDocumentForm)">
+    <div nz-row>
+      <div nz-col nzSpan="24">
+        <nz-form-item>
+          <nz-form-label>
+            <span>
+              <span translate>Name</span>&nbsp;<i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="{{ 'DocumentNameTip' | translate }}" nzType="question-circle" nzTheme="outline"></i>
+            </span>
+          </nz-form-label>
+          <nz-form-control nzErrorTip="{{ 'DocumentAlreadyExists' | translate }}">
+            <input nz-input formControlName="name" placeholder="{{ 'DocumentName' | translate }}" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
     <div nz-row>
       <div nz-col nzSpan="24">
         <nz-form-item>
