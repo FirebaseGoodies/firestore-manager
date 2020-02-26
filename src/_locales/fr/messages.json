@@ -359,6 +359,6 @@
         "message": "Nom du document"
     },
     "DocumentNameTip": {
-        "message": "Ne s'applique pas aux doublons. À laisser vide pour en générer un par défaut"
+        "message": "Ne s'applique pas aux doublons. Si vous laissez vide un nom aléatoire sera utilisé"
     }
 }

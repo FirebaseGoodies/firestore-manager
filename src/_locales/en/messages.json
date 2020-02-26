@@ -359,6 +359,6 @@
         "message": "Document name"
     },
     "DocumentNameTip": {
-        "message": "Will not apply on duplicates. Leave it blank to generate a default one"
+        "message": "Will not apply on duplicates. Leave it blank to generate a random name"
     }
 }
