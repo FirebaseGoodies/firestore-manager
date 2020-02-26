@@ -981,13 +981,16 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   addDocument(collection: NzTreeNode) {
+    this.addDocumentForm.controls.name.setValue(null);
     this.addDocumentForm.controls.collection.setValue(collection.key);
+    this.addDocumentForm.controls.content.setValue(null);
     this.isAddDocumentDrawerVisible = true;
   }
 
   cloneDocument(document: NzTreeNode) {
     const collection = document.parentNode.key;
     const content = this.firestore.cache[collection][document.title];
+    this.addDocumentForm.controls.name.setValue(null);
     this.addDocumentForm.controls.collection.setValue(collection);
     this.addDocumentForm.controls.content.setValue(JSON.stringify(content, null, 4));
     this.isAddDocumentDrawerVisible = true;
