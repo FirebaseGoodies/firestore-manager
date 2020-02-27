@@ -211,7 +211,11 @@
               </span>
               <nz-dropdown-menu #parentNodeMenu="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item (click)="addDocument(node)" translate>AddDocument</li>
+                  <li nz-submenu nzTitle="{{ 'Add' | translate }}">
+                    <ul>
+                      <li nz-menu-item (click)="addDocument(node)" translate>Document</li>
+                    </ul>
+                  </li>
                   <li *ngIf="node.children?.length" nz-menu-item (click)="reloadCollection(node)" translate>Reload</li>
                 </ul>
               </nz-dropdown-menu>
