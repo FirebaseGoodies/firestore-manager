@@ -352,6 +352,9 @@
     "DocumentAlreadyExists": {
         "message": "Un document du même nom existe déjà!"
     },
+    "EnterDocumentName": {
+        "message": "Veuillez entrer le nom du document"
+    },
     "OnlyAlphanumericCharsAllowed": {
         "message": "Seuls les caractères alphanumériques sont autorisés"
     },
@@ -359,6 +362,6 @@
         "message": "Nom du document"
     },
     "DocumentNameTip": {
-        "message": "Ne s'applique pas aux doublons. Si vous laissez vide un nom aléatoire sera utilisé"
+        "message": "Ne s'appliquera pas aux doublons"
     }
 }

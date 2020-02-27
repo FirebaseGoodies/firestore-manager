@@ -381,14 +381,15 @@
     <div nz-row>
       <div nz-col nzSpan="24">
         <nz-form-item>
-          <nz-form-label>
+          <nz-form-label nzRequired>
             <span>
               <span translate>Name</span>&nbsp;<i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="{{ 'DocumentNameTip' | translate }}" nzType="question-circle" nzTheme="outline"></i>
             </span>
           </nz-form-label>
-          <nz-form-control nzErrorTip="{{ (addDocumentForm.controls.name.errors?.alreadyExists ? 'DocumentAlreadyExists' : 'OnlyAlphanumericCharsAllowed') | translate }}">
+          <nz-form-control nzErrorTip="{{ (addDocumentForm.controls.name.errors?.alreadyExists ? 'DocumentAlreadyExists' : (addDocumentForm.controls.name.errors?.required ? 'EnterDocumentName' : 'OnlyAlphanumericCharsAllowed')) | translate }}">
             <input nz-input formControlName="name" placeholder="{{ 'DocumentName' | translate }}" />
           </nz-form-control>
+          <label nz-checkbox formControlName="useRandomName" (ngModelChange)="onUseRandomNameChange($event)">Random</label>
         </nz-form-item>
       </div>
     </div>

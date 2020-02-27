@@ -129,7 +129,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       content: [null, [Validators.required, jsonValidator]]
     });
     this.addDocumentForm = this.fb.group({
-      name: [null, [Validators.pattern("^[a-zA-Z0-9 _-]+$")]],
+      name: [null, [Validators.required, Validators.pattern("^[a-zA-Z0-9 _-]+$")]],
+      useRandomName: [false, []],
       collection: [null, [Validators.required]],
       content: [null, [Validators.required, jsonValidator]],
       duplicate: [false, [Validators.required]],
@@ -302,6 +303,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     if (this.addDocumentForm.valid) {
       this.isAddDocumentButtonLoading = true;
       const documentName = this.addDocumentForm.controls.name.value;
+      const useRandomName = this.addDocumentForm.controls.useRandomName.value;
       const collectionName = this.addDocumentForm.controls.collection.value;
       const content = JSON.parse(this.addDocumentForm.controls.content.value);
       const duplicate = this.addDocumentForm.controls.duplicate.value;
@@ -309,7 +311,6 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       const addDocument: Function = () => {
         let promises: Promise<any>[] = [];
         for (let doc = 0; doc < duplicateTimes; doc++) {
-          // Add document
           promises.push(this.firestore.addDocument(collectionName, content, doc === 0 ? documentName : null));
         }
         Promise.all(promises).then((results) => {
@@ -330,8 +331,11 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           this.isAddDocumentButtonLoading = false;
         });
       };
-      // Check if document already exists
-      if (documentName && documentName.length) {
+      // Add document
+      if (useRandomName) {
+        addDocument();
+      } else {
+        // Check if document already exists
         this.firestore.isDocument(collectionName, documentName).then((exists: boolean) => {
           if (exists) {
             this.addDocumentForm.controls.name.setErrors({ alreadyExists: true });
@@ -343,8 +347,6 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           this.displayError(error);
           this.isAddDocumentButtonLoading = false;
         });
-      } else {
-        addDocument();
       }
     }
   }
@@ -983,6 +985,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   addDocument(collection: NzTreeNode) {
     this.addDocumentForm.controls.name.setValue(null);
+    this.addDocumentForm.controls.useRandomName.setValue(false);
     this.addDocumentForm.controls.collection.setValue(collection.key);
     this.addDocumentForm.controls.content.setValue(null);
     this.isAddDocumentDrawerVisible = true;
@@ -992,9 +995,19 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     const collection = document.parentNode.key;
     const content = this.firestore.cache[collection][document.title];
     this.addDocumentForm.controls.name.setValue(null);
+    this.addDocumentForm.controls.useRandomName.setValue(false);
     this.addDocumentForm.controls.collection.setValue(collection);
     this.addDocumentForm.controls.content.setValue(JSON.stringify(content, null, 4));
     this.isAddDocumentDrawerVisible = true;
+  }
+
+  onUseRandomNameChange(isChecked: boolean) {
+    if (isChecked) {
+      this.addDocumentForm.controls.name.disable();
+    } else {
+      this.addDocumentForm.controls.name.enable();
+      this.addDocumentForm.controls.name.reset();
+    }
   }
 
 }
