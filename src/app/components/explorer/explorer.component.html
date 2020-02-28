@@ -207,7 +207,20 @@
                 (contextmenu)="createContextMenu($event, isCollectionDeleteModeEnabled ? deleteModeMenu : parentNodeMenu)"
                 (click)="closeContextMenu()"
               >
-                <span class="ant-tree-title">{{ node.title }}</span>
+                <ng-container *ngIf="node.isRenameModeEnabled; else collectionNameTpl">
+                  <nz-input-group nzCompact nzSize="small" (click)="$event.stopPropagation()" (clickOutside)="disableRenameMode($event, node)" [ngStyle]="{ display: 'inline-block', width: 'auto' }">
+                    <input nz-input placeholder="{{ 'Name' | translate }}" [value]="node.title" style="width: 100px" #collectionName />
+                    <button nz-button nzType="default" nzSize="small" title="{{ 'Cancel' | translate }}" (click)="disableRenameMode($event, node)">
+                      <i nz-icon nzType="close" style="font-size: 10px; vertical-align: middle;"></i>
+                    </button>
+                    <button nz-button nzType="default" nzSize="small" title="{{ 'Rename' | translate }}" [disabled]="!collectionName.value || node.isRenameButtonLoading" (click)="renameCollection(node, collectionName.value)">
+                      <i nz-icon [nzType]="node.isRenameButtonLoading ? 'loading' : 'edit'"></i>
+                    </button>
+                  </nz-input-group>
+                </ng-container>
+                <ng-template #collectionNameTpl>
+                  <span class="ant-tree-title">{{ node.title }}</span>
+                </ng-template>
               </span>
               <nz-dropdown-menu #parentNodeMenu="nzDropdownMenu">
                 <ul nz-menu>
@@ -216,6 +229,7 @@
                       <li nz-menu-item (click)="addDocument(node)" translate>Document</li>
                     </ul>
                   </li>
+                  <li *ngIf="node.children?.length" nz-menu-item translate (click)="enableRenameMode($event, node)">Rename</li>
                   <li *ngIf="node.children?.length" nz-menu-item (click)="reloadCollection(node)" translate>Reload</li>
                 </ul>
               </nz-dropdown-menu>
@@ -228,10 +242,24 @@
                 (contextmenu)="createContextMenu($event, isCollectionDeleteModeEnabled ? deleteModeMenu : leafMenu)"
                 (click)="closeContextMenu()"
               >
-                <span class="ant-tree-title">{{ node.title }}</span>
+                <ng-container *ngIf="node.isRenameModeEnabled; else documentNameTpl">
+                  <nz-input-group nzCompact nzSize="small" (click)="$event.stopPropagation()" (clickOutside)="disableRenameMode($event, node)" [ngStyle]="{ display: 'inline-block', width: 'auto' }">
+                    <input nz-input placeholder="{{ 'Name' | translate }}" [value]="node.title" style="width: 150px" #documentName />
+                    <button nz-button nzType="default" nzSize="small" title="{{ 'Cancel' | translate }}" (click)="disableRenameMode($event, node)">
+                      <i nz-icon nzType="close" style="font-size: 10px; vertical-align: middle;"></i>
+                    </button>
+                    <button nz-button nzType="default" nzSize="small" title="{{ 'Rename' | translate }}" [disabled]="!documentName.value || node.isRenameButtonLoading" (click)="renameDocument(node, documentName.value)">
+                      <i nz-icon [nzType]="node.isRenameButtonLoading ? 'loading' : 'edit'"></i>
+                    </button>
+                  </nz-input-group>
+                </ng-container>
+                <ng-template #documentNameTpl>
+                  <span class="ant-tree-title">{{ node.title }}</span>
+                </ng-template>
               </span>
               <nz-dropdown-menu #leafMenu="nzDropdownMenu">
                 <ul nz-menu>
+                  <li nz-menu-item (click)="enableRenameMode($event, node)" translate>Rename</li>
                   <li nz-menu-item (click)="cloneDocument(node)" translate>Clone</li>
                   <li nz-menu-item (click)="deleteDocument(node)" translate>Delete</li>
                 </ul>
@@ -279,7 +307,7 @@
                 </nz-select>
                 <input type="text" nz-input placeholder="{{ 'Value' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].value" />
                 <nz-button-group>
-                    <button nz-button nzType="default" 
+                  <button nz-button nzType="default" 
                     [disabled]="!filters[node.title].field || !filters[node.title].operator || !filters[node.title].value"
                     [ngStyle]="{ 'vertical-align': 'middle' }"
                     (click)="applyFilter(node)"

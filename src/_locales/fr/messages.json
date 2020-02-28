@@ -360,5 +360,11 @@
     },
     "DocumentNameTip": {
         "message": "Ne s'appliquera pas aux doublons"
+    },
+    "Rename": {
+        "message": "Renommer"
+    },
+    "Renaming": {
+        "message": "Renommage en cours"
     }
 }

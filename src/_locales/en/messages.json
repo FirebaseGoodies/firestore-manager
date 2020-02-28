@@ -360,5 +360,11 @@
     },
     "DocumentNameTip": {
         "message": "Will not apply on duplicates"
+    },
+    "Rename": {
+        "message": "Rename"
+    },
+    "Renaming": {
+        "message": "Renaming"
     }
 }

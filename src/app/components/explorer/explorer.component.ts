@@ -797,7 +797,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
               reject(error);
             });
           } else {
-            reject({message: this.translation.get('FileIsEmpty')});
+            reject({ message: this.translation.get('FileIsEmpty') });
           }
         }
         catch(error) {
@@ -1008,6 +1008,121 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.addDocumentForm.controls.name.enable();
       this.addDocumentForm.controls.name.reset();
     }
+  }
+
+  renameCollection(collection: NzTreeNode|any, name: string) {
+    if (name && name.length) {
+      collection.isRenameButtonLoading = true;
+      // Check if collection already exists
+      this.firestore.isCollection(name).then((exists: boolean) => {
+        if (exists) {
+          this.displayError({ message: this.translation.get('CollectionAlreadyExists') });
+        } else {
+          this.startLoading('Renaming');
+          // Rename collection
+          const content = {...this.firestore.cache[collection.title]}; // get/assign a copy
+          let promises: Promise<any>[] = [];
+          Object.keys(content).forEach(documentName => {
+            // Move documents from the old collection to the new one
+            promises.push(this.firestore.addDocument(name, content[documentName], documentName));
+            promises.push(this.firestore.deleteDocument(collection.title, documentName, true));
+          });
+          Promise.all(promises).then(() => {
+            // Delete old collection (from cache)
+            this.firestore.deleteCollection(collection.title);
+            // Replace collection
+            this.replaceCollection(collection.title, name).then(() => {
+              collection.title = name;
+              collection.key = name;
+              collection.children = [];
+              collection.isExpanded = false;
+              collection.isSelected = false;
+              this.disableRenameMode(null, collection);
+            });
+          }).catch(error => {
+            this.displayError(error);
+          }).finally(() => {
+            this.stopLoading();
+          });
+        }
+      }).catch((error) => {
+        this.displayError(error);
+      }).finally(() => {
+        collection.isRenameButtonLoading = false;
+      });
+    }
+  }
+
+  renameDocument(document: NzTreeNode|any, name: string) {
+    if (name && name.length) {
+      document.isRenameButtonLoading = true;
+      // Check if document already exists
+      const collectionName = document.parentNode.title;
+      this.firestore.isDocument(collectionName, name).then((exists: boolean) => {
+        if (exists) {
+          this.displayError({ message: this.translation.get('DocumentAlreadyExists') });
+        } else {
+          this.startLoading('Renaming');
+          // Rename document
+          const content = this.firestore.cache[collectionName][document.title];
+          this.firestore.addDocument(collectionName, content, name).then((results) => {
+            // console.log(results);
+            // Delete old document
+            this.firestore.deleteDocument(collectionName, document.title, true).catch(error => {
+              this.displayError(error);
+            }).finally(() => {
+              // Replace document
+              document.title = name;
+              document.key = collectionName + '.' + name;
+              this.disableRenameMode(null, document);
+              this.stopLoading();
+            });
+          }).catch(error => {
+            this.displayError(error);
+            this.stopLoading();
+          });
+        }
+      }).catch((error) => {
+        this.displayError(error);
+      }).finally(() => {
+        document.isRenameButtonLoading = false;
+      });
+    }
+  }
+
+  enableRenameMode(event: Event, node: NzTreeNode|any) {
+    event.stopPropagation();
+    node.isRenameModeEnabled = true;
+  }
+
+  disableRenameMode(event: Event, node: NzTreeNode|any) {
+    event && event.stopPropagation();
+    node.isRenameModeEnabled = false;
+  }
+
+  private replaceCollection(name: string, newName: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      // Replace in list
+      const index = this.collectionList.indexOf(name);
+      if (index !== -1) {
+        this.collectionList.splice(index, 1, newName);
+      }
+      // Replace in storage
+      this.storage.get('databases').then((databases: Database[]) => {
+        if (databases && (!databases[this.database.index].collections || databases[this.database.index].collections.indexOf(name) !== -1)) {
+          databases[this.database.index].collections = databases[this.database.index].collections || [];
+          if (databases[this.database.index].collections.length > 0) {
+            databases[this.database.index].collections.splice(databases[this.database.index].collections.indexOf(name), 1, newName);
+          } else {
+            databases[this.database.index].collections.push(newName);
+          }
+          this.storage.save('databases', databases);
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      });
+    });
   }
 
 }
