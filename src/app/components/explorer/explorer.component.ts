@@ -1107,6 +1107,13 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       if (index !== -1) {
         this.collectionList.splice(index, 1, newName);
       }
+      // Replace in collection nodes array
+      this.collectionNodes.forEach((node: NzTreeNode|any) => {
+        if (node.title === name) {
+          node.title = newName;
+          node.key = newName;
+        }
+      });
       // Replace in storage
       this.storage.get('databases').then((databases: Database[]) => {
         if (databases && (!databases[this.database.index].collections || databases[this.database.index].collections.indexOf(name) !== -1)) {
