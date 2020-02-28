@@ -1038,10 +1038,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
               collection.isExpanded = false;
               collection.isSelected = false;
               this.disableRenameMode(null, collection);
+              this.stopLoading();
             });
           }).catch(error => {
             this.displayError(error);
-          }).finally(() => {
             this.stopLoading();
           });
         }
