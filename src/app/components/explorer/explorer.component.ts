@@ -43,9 +43,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   database: Database;
   collectionNodes: any[] = [];
-  collectionNodesSelectedKeys: any[] = [];
-  collectionNodesCheckedKeys: any[] = [];
-  collectionNodesExpandedKeys: any[] = [];
+  collectionNodesSelectedKeys: string[] = [];
+  collectionNodesCheckedKeys: string[] = [];
+  collectionNodesExpandedKeys: string[] = [];
   isCollectionDeleteModeEnabled: boolean = false;
   permanentlyDeleteDocuments: boolean = false;
   unsavedChanges: boolean = false;
@@ -214,7 +214,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           this.storage.save('databases', databases);
           // Add to nodes
           if (addToNodes) {
-            const node: any = { title: name, key: name };
+            const node: NzTreeNode|any = { title: name, key: name };
             this.addNode(node).then(() => {
               node.level = 0;
               this.collectionNodesExpandedKeys = [node.key];
@@ -232,7 +232,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     });
   }
 
-  private addNode(node: any): Promise<void> {
+  private addNode(node: NzTreeNode|any): Promise<void> {
     return new Promise((resolve, reject) => {
       this.firestore.getCollection(node.title).then((documents) => {
         const keys = Object.keys(documents);
@@ -421,7 +421,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       }\n}`);
   }
 
-  private randomString(length: number, chars: any[] = Chars.AlphaNumeric) {
+  private randomString(length: number, chars: string[] = Chars.AlphaNumeric) {
     return [...Array(length)].map(i => chars[Math.random()*chars.length|0]).join('');
   }
 
@@ -436,7 +436,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     this.closeContextMenu();
   }
 
-  private selectNode(node: any) {
+  private selectNode(node: NzTreeNode|any) {
     if (node.level > 0) {
       this.firestore.getDocument(node.parentNode.title, node.title).then((document) => {
         this.updateEditor(document);
@@ -452,7 +452,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
-  private updateEditor(json: any) {
+  private updateEditor(json: JSON) {
     this.editor.set(json);
     if (['tree', 'form'].indexOf(this.editor.getMode()) !== -1) {
       this.editor.expandAll();

@@ -56,7 +56,7 @@ export class CacheDiffComponent implements AfterViewInit {
           const newCache = JSON.stringify(cache[collectionName], null, 4);
           const oldCache = JSON.stringify(unchangedCache[collectionName], null, 4);
           if (newCache !== oldCache) {
-            const node: any = { title: collectionName, key: collectionName, expanded: true, children: [], oldContent: oldCache, newContent: newCache };
+            const node: NzTreeNode|any = { title: collectionName, key: collectionName, expanded: true, children: [], oldContent: oldCache, newContent: newCache };
             // Check documents diff
             Object.keys(cache[collectionName]).forEach((documentName: string) => {
               const newCache = JSON.stringify(cache[collectionName][documentName], null, 4);
@@ -82,7 +82,7 @@ export class CacheDiffComponent implements AfterViewInit {
 
   onCollectionNodeClick(event: Required<NzFormatEmitEvent>) {
     // console.log(event);
-    const node: any = event.node;
+    const node: NzTreeNode|any = event.node;
     node.isSelected = true;
     node.isExpanded = true; //!node.isExpanded;
     this.diffContent = {
