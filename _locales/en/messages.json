@@ -149,7 +149,7 @@
         "message": "A collection with the same name already exists!"
     },
     "EnterCollectionName": {
-        "message": "Please enter collection name"
+        "message": "Please enter a collection name"
     },
     "Content": {
         "message": "Content"
@@ -343,14 +343,14 @@
     "Tags": {
         "message": "Tags"
     },
-    "AddDocument": {
-        "message": "Add Document"
-    },
     "Clone": {
         "message": "Clone"
     },
     "DocumentAlreadyExists": {
         "message": "A document with the same name already exists!"
+    },
+    "EnterDocumentName": {
+        "message": "Please enter a document name"
     },
     "OnlyAlphanumericCharsAllowed": {
         "message": "Only alphanumeric characters are allowed"
@@ -359,6 +359,12 @@
         "message": "Document name"
     },
     "DocumentNameTip": {
-        "message": "Will not apply on duplicates. Leave it blank to generate a default one"
+        "message": "Will not apply on duplicates"
+    },
+    "Rename": {
+        "message": "Rename"
+    },
+    "Renaming": {
+        "message": "Renaming"
     }
 }
