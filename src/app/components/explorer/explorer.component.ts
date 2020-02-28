@@ -1114,6 +1114,12 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           node.key = newName;
         }
       });
+      // Replace filter
+      if (this.filters[name]) {
+        this.filters[newName] = this.filters[name];
+        this.filters[newName].isApplied = false;
+        delete this.filters[name];
+      }
       // Replace in storage
       this.storage.get('databases').then((databases: Database[]) => {
         if (databases && (!databases[this.database.index].collections || databases[this.database.index].collections.indexOf(name) !== -1)) {
