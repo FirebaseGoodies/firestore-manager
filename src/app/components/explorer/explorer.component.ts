@@ -637,7 +637,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   private reloadCollections(restoreCache: boolean = true): Promise<void> {
     // console.log(this.firestore.cache);
-    const cacheBackup = {...this.firestore.cache}; // get/assign a copy
+    const cacheBackup = this.firestore.getCacheBackup();
     let promises: Promise<any>[] = [];
     // Clear cache
     this.firestore.clearCache();
@@ -875,7 +875,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   private filterCollection(collection: NzTreeNode, removal: boolean = false): Promise<void> {
     // Get cache backup
-    const cacheBackup = {...this.firestore.cache}; // get/assign a copy
+    const cacheBackup = this.firestore.getCacheBackup();
     // Filter collection
     return this.firestore.filterCollection(collection.title, removal ? undefined : ref => ref.where(this.filters[collection.title].field, this.filters[collection.title].operator, this.filters[collection.title].value)).then((documents) => {
       // console.log('Filter collection:', collection.title);
@@ -968,7 +968,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     // Take cache backup
     const cacheBackup = {};
     if (this.firestore.cache[node.title]) {
-      cacheBackup[node.title] = this.firestore.cache[node.title];
+      cacheBackup[node.title] = this.firestore.getCacheBackup(node.title);
     }
     // Clear cache
     this.firestore.clearCache(node.title);
@@ -1021,7 +1021,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           // Rename collection
           this.startLoading('Renaming');
           // Take cache backup & clear cache
-          const cacheBackup = {...this.firestore.cache[collection.title]}; // get/assign a copy
+          const cacheBackup = {};
+          if (this.firestore.cache[collection.title]) {
+            cacheBackup[name] = this.firestore.getCacheBackup(collection.title);
+          }
           this.firestore.clearCache(collection.title);
           // Get collection
           this.firestore.getCollection(collection.title).then((documents) => {
@@ -1035,9 +1038,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
               // Fetch new collection (to fill cache)
               this.firestore.getCollection(name).then((documents) => {
                 // Retore new collection cache
-                const cache = {};
-                cache[name] = cacheBackup;
-                this.restoreCache(cache);
+                this.restoreCache(cacheBackup);
                 // Delete old collection
                 this.firestore.deleteCollection(collection.title);
                 // Replace collection
@@ -1083,7 +1084,11 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           // Rename document
           this.startLoading('Renaming');
           // Take cache backup & clear cache
-          const cacheBackup = {...this.firestore.cache[collectionName][document.title]};
+          const cacheBackup = {};
+          if (this.firestore.cache[collectionName] && this.firestore.cache[collectionName][document.title]) {
+            cacheBackup[collectionName] = {};
+            cacheBackup[collectionName][name] = this.firestore.getCacheBackup(collectionName, document.title);
+          }
           this.firestore.clearCache(collectionName, document.title);
           // Get document
           this.firestore.getDocument(collectionName, document.title).then((content) => {
@@ -1093,10 +1098,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
               // Fetch new document (to fill cache)
               this.firestore.getDocument(collectionName, name).then((content) => {
                 // Retore new document cache
-                const cache = {};
-                cache[collectionName] = {};
-                cache[collectionName][name] = cacheBackup;
-                this.restoreCache(cache);
+                this.restoreCache(cacheBackup);
                 // Delete old document
                 this.firestore.deleteDocument(collectionName, document.title, true).catch(error => {
                   this.displayError(error);

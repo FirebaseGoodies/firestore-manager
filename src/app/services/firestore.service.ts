@@ -28,15 +28,35 @@ export class FirestoreService {
       return this.unchangedCache;
     }
 
-    clearCache(collectionName?: string) {
+    getCacheBackup(collectionName?: string, documentName?: string) {
       if (collectionName) {
-        this.cache[collectionName] && delete this.cache[collectionName];
-        this.unchangedCache[collectionName] && delete this.unchangedCache[collectionName];
+        if (documentName) {
+          return {...this.cache[collectionName][documentName]};
+        } else {
+          return {...this.cache[collectionName]};
+        }
+      } else {
+        return {...this.cache}; // get/assign a copy
+      }
+    }
+
+    clearCache(collectionName?: string, documentName?: string) {
+      if (collectionName) {
+        if (documentName) {
+          this.cache[collectionName][documentName] && delete this.cache[collectionName][documentName];
+          this.unchangedCache[collectionName][documentName] && delete this.unchangedCache[collectionName][documentName];
+          const subscriptionName = collectionName + '.' + documentName;
+          this.unsubscribe(subscriptionName);
+        } else {
+          this.cache[collectionName] && delete this.cache[collectionName];
+          this.unchangedCache[collectionName] && delete this.unchangedCache[collectionName];
+          this.unsubscribe(collectionName);
+        }
       } else {
         this.cache = {};
         this.unchangedCache = {};
+        this.unsubscribe();
       }
-      this.unsubscribe(collectionName);
     }
 
     unsubscribe(subscriptionName?: string) {
@@ -130,13 +150,7 @@ export class FirestoreService {
 
     deleteCollection(collectionName: string): boolean {
       if (this.cache[collectionName]) {
-        delete this.cache[collectionName];
-        if (this.unchangedCache[collectionName]) {
-          delete this.unchangedCache[collectionName];
-        }
-        if (this.subscriptions[collectionName]) {
-          this.unsubscribe(collectionName);
-        }
+        this.clearCache(collectionName);
         console.log(collectionName + ' deleted!')
         return true;
       }
@@ -176,16 +190,7 @@ export class FirestoreService {
 
     deleteDocument(collectionName: string, documentName: string, permanently: boolean = true): Promise<void> {
       return new Promise((resolve, reject) => {
-        if (this.cache[collectionName][documentName]) {
-          delete this.cache[collectionName][documentName];
-          if (this.unchangedCache[collectionName][documentName]) {
-            delete this.unchangedCache[collectionName][documentName];
-          }
-          const subscriptionName = collectionName + '.' + documentName;
-          if (this.subscriptions[subscriptionName]) {
-            this.unsubscribe(subscriptionName);
-          }
-        }
+        this.clearCache(collectionName, documentName);
         if (permanently) {
           this.db.collection(collectionName).doc(documentName).delete().then(() => {
             console.log(collectionName + ' > ' + documentName + ' permanently deleted!');
