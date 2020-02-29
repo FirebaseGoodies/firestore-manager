@@ -1132,12 +1132,20 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   enableRenameMode(event: Event, node: NzTreeNode|any) {
     event.stopPropagation();
+    if (node.isSelected) {
+      node.wasSelected = true;
+      node.isSelected = false;
+    }
     node.isRenameModeEnabled = true;
   }
 
   disableRenameMode(event: Event, node: NzTreeNode|any) {
     event && event.stopPropagation();
     node.isRenameModeEnabled = false;
+    if (node.wasSelected) {
+      node.isSelected = true;
+      node.wasSelected = false;
+    }
   }
 
   private replaceCollection(name: string, newName: string): Promise<boolean> {
