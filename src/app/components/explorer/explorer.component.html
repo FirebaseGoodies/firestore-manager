@@ -40,7 +40,7 @@
   </nz-header>
   <nz-layout>
     <nz-sider nzTheme="light" nzWidth="300px" #collectionSider>
-      <nz-spin nzTip="{{ collectionListLoadingTip | translate }}..." [nzSpinning]="isCollectionListLoading">
+      <nz-spin nzTip="{{ collectionListLoadingMessage | translate }}..." [nzSpinning]="isCollectionListLoading">
         <nz-alert
           *ngIf="unsavedChanges && !isCollectionListLoading"
           nzBanner
@@ -58,7 +58,7 @@
             </div>
           </ng-template>
         </nz-alert>
-        <div *ngIf="!enableCollectionDeleteMode" [ngStyle]="{ 'margin-bottom': '10px' }">
+        <div *ngIf="!isCollectionDeleteModeEnabled" [ngStyle]="{ 'margin-bottom': '10px' }">
           <div nz-row nzGutter="8">
             <div nz-col nzSpan="21">
                 <nz-badge [nzCount]="options.displayCollectionsCount ? collectionNodes.length : 0" [ngStyle]="{ width: '100%' }">
@@ -129,7 +129,7 @@
             nzCloseable
           ></nz-alert>
         </div>
-        <div *ngIf="enableCollectionDeleteMode" [ngStyle]="{ 'margin-bottom': '10px' }">
+        <div *ngIf="isCollectionDeleteModeEnabled" [ngStyle]="{ 'margin-bottom': '10px' }">
           <div nz-row nzGutter="8" [ngStyle]="{ 'margin-bottom': '10px' }">
             <div nz-col nzSpan="4">
               <button
@@ -143,10 +143,10 @@
                 (click)="onSelectAllClick()"><i nz-icon nzType="check-square" nzTheme="outline"></i></button>
             </div>
             <div nz-col nzSpan="10">
-              <button nz-button nzType="default" nzBlock (click)="enableCollectionDeleteMode = false"><span translate>Cancel</span></button>
+              <button nz-button nzType="default" nzBlock (click)="isCollectionDeleteModeEnabled = false"><span translate>Cancel</span></button>
             </div>
             <div nz-col nzSpan="10">
-              <nz-badge [nzCount]="collectionTree.getCheckedNodeList().length" [nzOverflowCount]="999">
+              <nz-badge [nzCount]="collectionTree.getCheckedNodeList().length" [nzOverflowCount]="999" [ngStyle]="{ width: '100%' }">
                 <button nz-button
                   nzType="danger"
                   nzBlock
@@ -176,8 +176,10 @@
           [nzData]="collectionNodes"
           nzAsyncData
           nzShowLine
+          nzDraggable
+          nzBlockNode
           [nzSearchValue]="searchValue"
-          [nzCheckable]="enableCollectionDeleteMode"
+          [nzCheckable]="isCollectionDeleteModeEnabled"
           [nzCheckedKeys]="collectionNodesCheckedKeys"
           [nzSelectedKeys]="collectionNodesSelectedKeys"
           [nzExpandedKeys]="collectionNodesExpandedKeys"
@@ -186,6 +188,8 @@
           (nzClick)="onCollectionNodeClick($event)"
           (nzCheckBoxChange)="onCollectionNodeCheck($event)"
           (nzExpandChange)="onCollectionNodeExpand($event)"
+          (nzOnDrop)="onCollectionNodeDrop($event)"
+          [nzBeforeDrop]="beforeCollectionNodeDrop"
           #collectionTree
         >
           <ng-template #expandedIconTpl let-node>
@@ -193,15 +197,86 @@
             <i *ngIf="node.origin.isLeaf" nz-icon nzType="file" class="ant-tree-switcher-line-icon"></i>
           </ng-template>
           <ng-template #treeTpl let-node>
-            <span class="custom-node" [class.active]="node.isSelected">
-              <span *ngIf="!node.isLeaf">{{ node.title }}</span>
-              <span *ngIf="node.isLeaf">{{ node.title }}</span>
-            </span>
+            <ng-container *ngIf="!node.isLeaf else leafTpl">
+              <span
+                class="custom-node draggable"
+                draggable="true"
+                aria-grabbed="true"
+                [class.active]="node.isSelected"
+                [title]="node.title"
+                (contextmenu)="createContextMenu($event, isCollectionDeleteModeEnabled ? deleteModeMenu : parentNodeMenu)"
+                (click)="closeContextMenu()"
+              >
+                <ng-container *ngIf="node.isRenameModeEnabled; else collectionNameTpl">
+                  <nz-input-group nzCompact nzSize="small" (click)="$event.stopPropagation()" (clickOutside)="disableRenameMode($event, node)" [ngStyle]="{ display: 'inline-block', width: 'auto' }">
+                    <input nz-input placeholder="{{ 'Name' | translate }}" [value]="node.title" style="width: 100px" #collectionName />
+                    <button nz-button nzType="default" nzSize="small" title="{{ 'Cancel' | translate }}" (click)="disableRenameMode($event, node)">
+                      <i nz-icon nzType="close" style="font-size: 10px; vertical-align: middle;"></i>
+                    </button>
+                    <button nz-button nzType="default" nzSize="small" title="{{ 'Rename' | translate }}" [disabled]="!collectionName.value || node.isRenameButtonLoading" (click)="renameCollection(node, collectionName.value)">
+                      <i nz-icon [nzType]="node.isRenameButtonLoading ? 'loading' : 'edit'"></i>
+                    </button>
+                  </nz-input-group>
+                </ng-container>
+                <ng-template #collectionNameTpl>
+                  <span class="ant-tree-title">{{ node.title }}</span>
+                </ng-template>
+              </span>
+              <nz-dropdown-menu #parentNodeMenu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-submenu nzTitle="{{ 'Add' | translate }}">
+                    <ul>
+                      <li nz-menu-item (click)="addDocument(node)" translate>Document</li>
+                    </ul>
+                  </li>
+                  <li nz-menu-item translate (click)="enableRenameMode($event, node)">Rename</li>
+                  <li *ngIf="node.children?.length" nz-menu-item (click)="reloadCollection(node)" translate>Reload</li>
+                </ul>
+              </nz-dropdown-menu>
+            </ng-container>
+            <ng-template #leafTpl>
+              <span
+                class="custom-node"
+                [class.active]="node.isSelected"
+                [title]="node.title"
+                (contextmenu)="createContextMenu($event, isCollectionDeleteModeEnabled ? deleteModeMenu : leafMenu)"
+                (click)="closeContextMenu()"
+              >
+                <ng-container *ngIf="node.isRenameModeEnabled; else documentNameTpl">
+                  <nz-input-group nzCompact nzSize="small" (click)="$event.stopPropagation()" (clickOutside)="disableRenameMode($event, node)" [ngStyle]="{ display: 'inline-block', width: 'auto' }">
+                    <input nz-input placeholder="{{ 'Name' | translate }}" [value]="node.title" style="width: 150px" #documentName />
+                    <button nz-button nzType="default" nzSize="small" title="{{ 'Cancel' | translate }}" (click)="disableRenameMode($event, node)">
+                      <i nz-icon nzType="close" style="font-size: 10px; vertical-align: middle;"></i>
+                    </button>
+                    <button nz-button nzType="default" nzSize="small" title="{{ 'Rename' | translate }}" [disabled]="!documentName.value || node.isRenameButtonLoading" (click)="renameDocument(node, documentName.value)">
+                      <i nz-icon [nzType]="node.isRenameButtonLoading ? 'loading' : 'edit'"></i>
+                    </button>
+                  </nz-input-group>
+                </ng-container>
+                <ng-template #documentNameTpl>
+                  <span class="ant-tree-title">{{ node.title }}</span>
+                </ng-template>
+              </span>
+              <nz-dropdown-menu #leafMenu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item (click)="enableRenameMode($event, node)" translate>Rename</li>
+                  <li nz-menu-item (click)="cloneDocument(node)" translate>Clone</li>
+                  <li nz-menu-item (click)="deleteDocument(node)" translate>Delete</li>
+                </ul>
+              </nz-dropdown-menu>
+            </ng-template>
+            <nz-dropdown-menu #deleteModeMenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li *ngIf="!node.isChecked" nz-menu-item (click)="checkNode(node)" translate>Check</li>
+                <li *ngIf="node.isChecked" nz-menu-item (click)="uncheckNode(node)" translate>Uncheck</li>
+              </ul>
+            </nz-dropdown-menu>
             <nz-badge
               *ngIf="!node.isLeaf"
               [nzCount]="options.displayDocumentsCount ? node.children?.length : 0"
               [nzStyle]="{ top: '-1px', left: '5px', backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset' }"
               [nzOverflowCount]="999"
+              [nzShowZero]="filters[node.title]?.isApplied ? true : false"
             ></nz-badge>
             <button
               *ngIf="!node.isLeaf"
@@ -222,19 +297,19 @@
             ><i nz-icon nzType="filter"></i></button>
             <ng-template #filterTpl>
               <nz-input-group nzCompact>
-                <input type="text" nz-input placeholder="{{ 'Field' | translate }}" style="width: 30%" [(ngModel)]="filters[node.title].field" />
-                <nz-select nzPlaceHolder="{{ 'Operator' | translate }}" style="width: 20%" [(ngModel)]="filters[node.title].operator">
+                <input type="text" nz-input placeholder="{{ 'Field' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].field" />
+                <nz-select nzPlaceHolder="{{ 'Operator' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].operator">
                   <nz-option nzLabel="==" nzValue="=="></nz-option>
                   <nz-option nzLabel=">" nzValue=">"></nz-option>
                   <nz-option nzLabel=">=" nzValue=">="></nz-option>
                   <nz-option nzLabel="<" nzValue="<"></nz-option>
                   <nz-option nzLabel="<=" nzValue="<="></nz-option>
                 </nz-select>
-                <input type="text" nz-input placeholder="{{ 'Value' | translate }}" style="width: 30%" [(ngModel)]="filters[node.title].value" />
-                <nz-button-group style="width: 20%">
-                    <button nz-button nzType="default" 
+                <input type="text" nz-input placeholder="{{ 'Value' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].value" />
+                <nz-button-group>
+                  <button nz-button nzType="default" 
                     [disabled]="!filters[node.title].field || !filters[node.title].operator || !filters[node.title].value"
-                    [ngStyle]="{ 'vertical-align': 'middle', width: '75%' }"
+                    [ngStyle]="{ 'vertical-align': 'middle' }"
                     (click)="applyFilter(node)"
                   >
                     <span translate>Apply</span>
@@ -297,8 +372,8 @@
       <div nz-col nzSpan="24">
         <nz-form-item>
           <nz-form-label nzRequired><span translate>Name</span></nz-form-label>
-          <nz-form-control nzErrorTip="{{ (addCollectionForm.controls.name.errors?.notUnique ? 'CollectionAlreadyExists' : 'EnterCollectionName') | translate }}">
-            <input nz-input formControlName="name" placeholder="{{ 'MyCollection' | translate }}" />
+          <nz-form-control nzErrorTip="{{ (addCollectionForm.controls.name.errors?.alreadyExists ? 'CollectionAlreadyExists' : 'EnterCollectionName') | translate }}">
+            <input nz-input formControlName="name" placeholder="{{ 'CollectionName' | translate }}" />
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -335,6 +410,21 @@
   (nzOnClose)="isAddDocumentDrawerVisible = false"
 >
   <form nz-form [formGroup]="addDocumentForm" (ngSubmit)="submitForm(addDocumentForm)">
+    <div nz-row>
+      <div nz-col nzSpan="24">
+        <nz-form-item>
+          <nz-form-label nzRequired>
+            <span>
+              <span translate>Name</span>&nbsp;<i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="{{ 'DocumentNameTip' | translate }}" nzType="question-circle" nzTheme="outline"></i>
+            </span>
+          </nz-form-label>
+          <nz-form-control nzErrorTip="{{ (addDocumentForm.controls.name.errors?.alreadyExists ? 'DocumentAlreadyExists' : (addDocumentForm.controls.name.errors?.required ? 'EnterDocumentName' : 'OnlyAlphanumericCharsAllowed')) | translate }}">
+            <input nz-input formControlName="name" placeholder="{{ 'DocumentName' | translate }}" />
+          </nz-form-control>
+          <label nz-checkbox formControlName="useRandomName" (ngModelChange)="onUseRandomNameChange($event)">Random</label>
+        </nz-form-item>
+      </div>
+    </div>
     <div nz-row>
       <div nz-col nzSpan="24">
         <nz-form-item>
@@ -407,6 +497,7 @@
     [outputFormat]="options.diffOutputFormat"
     [enableSaveButton]="isSaveButtonDisabled"
     (enableSaveButtonChange)="onSaveButtonStatusChange($event)"
+    (emptyDiff)="unsavedChanges = false"
   ></fm-cache-diff>
   <nz-alert
     *ngIf="!isSaveButtonDisabled"
@@ -426,7 +517,7 @@
   (nzOnClose)="onSettingsDrawerClose()"
 >
   <nz-spin nzTip="{{ 'Loading' | translate }}..." [nzSpinning]="!isSettingsDrawerLoaded">
-    <iframe src="./options" width="100%" frameBorder="0" (load)="isSettingsDrawerLoaded = true" [ngStyle]="{ 'min-height': '300px', border: 0 }"></iframe>
+    <iframe src="./options" width="100%" frameBorder="0" (load)="isSettingsDrawerLoaded = true" [ngStyle]="{ 'min-height': '80vh', border: 0 }"></iframe>
   </nz-spin>
 </nz-drawer>
 <ng-template #reloadModalTpl>

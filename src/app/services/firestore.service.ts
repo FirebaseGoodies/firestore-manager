@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { Database } from '../models/database.model';
 import { StorageService } from './storage.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class FirestoreService {
 
     db: AngularFirestore;
@@ -27,17 +28,44 @@ export class FirestoreService {
       return this.unchangedCache;
     }
 
-    clearCache() {
-      this.cache = {};
-      this.unchangedCache = {};
-      this.unsubscribe();
+    getCacheBackup(collectionName?: string, documentName?: string) {
+      if (collectionName) {
+        if (documentName) {
+          return {...this.cache[collectionName][documentName]};
+        } else {
+          return {...this.cache[collectionName]};
+        }
+      } else {
+        return {...this.cache}; // get/assign a copy
+      }
     }
 
-    unsubscribe(subscriptionName: string = null) {
-      if (subscriptionName !== null) {
+    clearCache(collectionName?: string, documentName?: string) {
+      if (collectionName) {
+        if (documentName) {
+          this.cache[collectionName][documentName] && delete this.cache[collectionName][documentName];
+          this.unchangedCache[collectionName][documentName] && delete this.unchangedCache[collectionName][documentName];
+          const subscriptionName = collectionName + '.' + documentName;
+          this.unsubscribe(subscriptionName);
+        } else {
+          this.cache[collectionName] && delete this.cache[collectionName];
+          this.unchangedCache[collectionName] && delete this.unchangedCache[collectionName];
+          this.unsubscribe(collectionName);
+        }
+      } else {
+        this.cache = {};
+        this.unchangedCache = {};
+        this.unsubscribe();
+      }
+    }
+
+    unsubscribe(subscriptionName?: string) {
+      if (subscriptionName) {
         // Remove solo subscription
-        this.subscriptions[subscriptionName].unsubscribe();
-        delete this.subscriptions[subscriptionName];
+        if (this.subscriptions[subscriptionName]) {
+          this.subscriptions[subscriptionName].unsubscribe();
+          delete this.subscriptions[subscriptionName];
+        }
       } else {
         // Remove all subscriptions
         Object.keys(this.subscriptions).forEach(subscriptionName => {
@@ -52,6 +80,17 @@ export class FirestoreService {
         this.db.collection(name).get().toPromise().then((query) => {
           // console.log(name, query.size);
           resolve(!!query.size);
+        }).catch((error) => {
+          reject(error);
+        });
+      });
+    }
+
+    isDocument(collectionName: string, documentName: string): Promise<boolean> {
+      return new Promise((resolve, reject) => {
+        this.db.collection(collectionName).doc(documentName).get().toPromise().then((docSnapshot) => {
+          // console.log(documentName, docSnapshot.exists);
+          resolve(docSnapshot.exists);
         }).catch((error) => {
           reject(error);
         });
@@ -111,13 +150,7 @@ export class FirestoreService {
 
     deleteCollection(collectionName: string): boolean {
       if (this.cache[collectionName]) {
-        delete this.cache[collectionName];
-        if (this.unchangedCache[collectionName]) {
-          delete this.unchangedCache[collectionName];
-        }
-        if (this.subscriptions[collectionName]) {
-          this.unsubscribe(collectionName);
-        }
+        this.clearCache(collectionName);
         console.log(collectionName + ' deleted!')
         return true;
       }
@@ -147,22 +180,17 @@ export class FirestoreService {
       });
     }
 
-    addDocument(collectionName: string, content: any): Promise<any> {
-      return this.addCollection(collectionName, content);
+    addDocument(collectionName: string, content: any, documentName?: string): Promise<any> {
+      if (documentName && documentName.length) {
+        return this.setDocument(collectionName, documentName, content);
+      } else {
+        return this.addCollection(collectionName, content);
+      }
     }
 
     deleteDocument(collectionName: string, documentName: string, permanently: boolean = true): Promise<void> {
       return new Promise((resolve, reject) => {
-        if (this.cache[collectionName][documentName]) {
-          delete this.cache[collectionName][documentName];
-          if (this.unchangedCache[collectionName][documentName]) {
-            delete this.unchangedCache[collectionName][documentName];
-          }
-          const subscriptionName = collectionName + '.' + documentName;
-          if (this.subscriptions[subscriptionName]) {
-            this.unsubscribe(subscriptionName);
-          }
-        }
+        this.clearCache(collectionName, documentName);
         if (permanently) {
           this.db.collection(collectionName).doc(documentName).delete().then(() => {
             console.log(collectionName + ' > ' + documentName + ' permanently deleted!');

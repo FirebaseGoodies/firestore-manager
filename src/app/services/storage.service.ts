@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AppService } from './app.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class StorageService {
   private static tmpStorage = [];
 

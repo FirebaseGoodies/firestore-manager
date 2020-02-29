@@ -80,14 +80,27 @@
         <ng-template #moreAction><a nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"><i nz-icon nzType="more" nzTheme="outline"></i></a></ng-template>
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu>
-            <li nz-menu-item (click)="onEditAction(database, index)" translate>Edit</li>
+            <li nz-menu-item (click)="onTagAction(database, index)" translate>Tag</li>
             <!-- <li nz-menu-divider></li> -->
+            <li nz-menu-item (click)="onEditAction(database, index)" translate>Edit</li>
             <li nz-menu-item (click)="onDeleteAction(database, index)" translate>Delete</li>
           </ul>
         </nz-dropdown-menu>
         <nz-list-item-meta [nzTitle]="nzTitle">
           <ng-template #nzTitle>
-            <a [href]="getDatabaseUrl(index)" target="_blank" (click)="onOpenAction($event, index)" (contextmenu)="$event.preventDefault()" nz-tooltip nzTooltipTitle="{{ 'Open' | translate }}" nzTooltipPlacement="bottom">{{ database.config.projectId }}</a>
+            <a
+              [href]="getDatabaseUrl(index)"
+              target="_blank"
+              class="mr-5"
+              (click)="onOpenAction($event, index)"
+              (contextmenu)="$event.preventDefault()"
+              nz-tooltip
+              nzTooltipTitle="{{ 'Open' | translate }}"
+              nzTooltipPlacement="bottom"
+            >
+              {{ database.config.projectId }}
+            </a>
+            <nz-tag *ngFor="let tag of database.tags" [nzColor]="getTagColor(tag)">{{ tag }}</nz-tag>
           </ng-template>
         </nz-list-item-meta>
       </nz-list-item>
@@ -96,16 +109,16 @@
 
   <!-- Database Modal -->
   <nz-modal
-      [nzStyle]="{ top: app.isWebExtension ? '20px' : '100px' }"
-      [(nzVisible)]="isDatabaseModalVisible"
-      nzTitle="{{ 'PasteConfigurationBelow' | translate }}"
-      nzCancelText="{{ 'Cancel' | translate }}"
-      (nzOnCancel)="onDatabaseModalCancel()"
-      (nzOnOk)="onDatabaseModalConfirm()"
-      [nzOkText]="databaseModalOkButtonText"
-      [nzOkLoading]="isDatabaseModalOkButtonLoading"
-      [nzOkDisabled]="!databaseConfig"
-    >
+    [nzStyle]="{ top: app.isWebExtension ? '20px' : '100px' }"
+    [(nzVisible)]="isDatabaseModalVisible"
+    nzTitle="{{ 'PasteConfigurationBelow' | translate }}"
+    nzCancelText="{{ 'Cancel' | translate }}"
+    (nzOnCancel)="isDatabaseModalVisible = false"
+    (nzOnOk)="onDatabaseModalConfirm()"
+    [nzOkText]="databaseModalOkButtonText"
+    [nzOkLoading]="isDatabaseModalOkButtonLoading"
+    [nzOkDisabled]="!databaseConfig"
+  >
     <textarea
       nz-input
       spellcheck="false"
@@ -118,14 +131,14 @@
 
   <!-- Authentication Modal -->
   <nz-modal
-      [nzStyle]="{ top: app.isWebExtension ? '20px' : '100px' }"
-      [(nzVisible)]="isAuthenticationModalVisible"
-      nzTitle="{{ 'Authentication' | translate }}"
-      nzCancelText="{{ 'Cancel' | translate }}"
-      (nzOnCancel)="onAuthenticationModalCancel()"
-      (nzOnOk)="onAuthenticationModalSave()"
-      nzOkText="{{ 'Save' | translate }}"
-    >
+    [nzStyle]="{ top: app.isWebExtension ? '20px' : '100px' }"
+    [(nzVisible)]="isAuthenticationModalVisible"
+    nzTitle="{{ 'Authentication' | translate }}"
+    nzCancelText="{{ 'Cancel' | translate }}"
+    (nzOnCancel)="isAuthenticationModalVisible = false"
+    (nzOnOk)="onAuthenticationModalSave()"
+    nzOkText="{{ 'Save' | translate }}"
+  >
     <nz-radio-group [(ngModel)]="authentication.type">
       <label nz-radio class="radio" [nzValue]="authenticationTypes.None">{{ 'NoAuthentication' | translate }}</label>
       <label nz-radio class="radio" [nzValue]="authenticationTypes.Anonymous">{{ 'Anonymous' | translate }}</label>
@@ -159,6 +172,21 @@
         </div>
       </label>
     </nz-radio-group>
+  </nz-modal>
+
+  <!-- Tag Modal -->
+  <nz-modal
+    [nzStyle]="{ top: app.isWebExtension ? '20px' : '100px' }"
+    [(nzVisible)]="isTagModalVisible"
+    nzTitle="{{ 'Tags' | translate }}"
+    nzCancelText="{{ 'Cancel' | translate }}"
+    (nzOnCancel)="isTagModalVisible = false"
+    (nzOnOk)="onTagModalSave()"
+    nzOkText="{{ 'Save' | translate }}"
+  >
+    <nz-select [(ngModel)]="tags" [ngStyle]="{ width: '100%' }" nzMode="tags" nzPlaceHolder="{{ 'Tags' | translate }}">
+      <nz-option *ngFor="let tag of deduplicateTags(tags.concat(defaultTags))" [nzLabel]="tag" [nzValue]="tag"></nz-option>
+    </nz-select>
   </nz-modal>
 
   <!-- Footer -->

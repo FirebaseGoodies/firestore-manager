@@ -124,3 +124,6 @@ svg#clouds {
 .radio ::ng-deep span.ant-radio + * {
   padding-right: 0 !important;
 }
+.mr-5 {
+  margin-right: 5px;
+}

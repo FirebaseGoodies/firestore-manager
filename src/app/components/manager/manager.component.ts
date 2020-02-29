@@ -21,6 +21,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   databases: any[] = [];
   isDatabaseModalVisible: boolean = false;
   isAuthenticationModalVisible: boolean = false;
+  isTagModalVisible: boolean = false;
   databaseModalOkButtonText: string = 'Add';
   isDatabaseModalOkButtonLoading: boolean = false;
   databaseConfigKeyUp: Subject<string> = new Subject<string>();
@@ -39,19 +40,16 @@ export class ManagerComponent implements OnInit, OnDestroy {
   private explorerUrl: string = '';
   private isPopup: boolean = false;
   @ViewChild('importFileInput', { static: false, read: ElementRef }) private importFileInput: ElementRef;
-  app: AppService;
-  translation: TranslateService;
+  tags: string[] = [];
+  readonly defaultTags: string[] = ['development', 'production', 'staging'];
 
   constructor(
     private storage: StorageService,
     private message: NzMessageService,
     private modalService: NzModalService,
-    translation: TranslateService,
-    app: AppService
-  ) {
-    this.app = app;
-    this.translation = translation;
-  }
+    public translation: TranslateService,
+    public app: AppService
+  ) { }
 
   ngOnInit() {
     if (this.app.isWebExtension) {
@@ -105,7 +103,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
           //console.log(validJson);
           const config: DatabaseConfig = JSON.parse(validJson);
           //console.log(config);
-          if (config.apiKey && config.authDomain && config.databaseURL && config.projectId && config.storageBucket && config.messagingSenderId && config.appId) {
+          if (this.isDatabaseConfigValid(config)) {
             // Add
             if (this.databaseModalOkButtonText === this.addButtonTranslation) {
               this.databases.unshift({config: config});
@@ -130,8 +128,8 @@ export class ManagerComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDatabaseModalCancel() {
-    this.isDatabaseModalVisible = false;
+  private isDatabaseConfigValid(config: DatabaseConfig): boolean {
+    return !!(config.apiKey && config.authDomain && config.databaseURL && config.projectId && config.storageBucket && config.messagingSenderId && config.appId);
   }
 
   onOpenAction(event, index) {
@@ -146,7 +144,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
     return `${this.explorerUrl}?index=${index}`;
   }
 
-  onSetAuthenticationAction(database, index) {
+  onSetAuthenticationAction(database: Database, index: number) {
     if (database.authentication && database.authentication.enabled) {
       this.authentication.type = database.authentication.type;
       this.authentication.data = database.authentication.data;
@@ -177,18 +175,26 @@ export class ManagerComponent implements OnInit, OnDestroy {
     this.isAuthenticationModalVisible = false;
   }
 
-  onAuthenticationModalCancel() {
-    this.isAuthenticationModalVisible = false;
+  onTagModalSave() {
+    this.databases[this.selectedDatabaseIndex].tags = this.tags;
+    this.saveDatabases();
+    this.isTagModalVisible = false;
   }
 
-  onEditAction(database, index) {
+  onTagAction(database: Database, index: number) {
+    this.tags = database.tags || [];
+    this.selectedDatabaseIndex = index;
+    this.isTagModalVisible = true;
+  }
+
+  onEditAction(database: Database, index: number) {
     this.databaseModalOkButtonText = this.saveButtonTranslation;
     this.databaseConfig = this.stringify(database.config);
     this.selectedDatabaseIndex = index;
     this.isDatabaseModalVisible = true;
   }
 
-  onDeleteAction(database, index) {
+  onDeleteAction(database: Database, index: number) {
     //this.selectedDatabaseIndex = index;
     this.modalService.confirm({
       nzTitle: this.translation.get('Delete'),
@@ -239,11 +245,22 @@ export class ManagerComponent implements OnInit, OnDestroy {
       try {
         const databases = JSON.parse(fileReader.result);
         if (databases) {
-          // ToDo: check if databases config is valid
-          this.databases = [...databases];
-          this.storage.save('databases', this.databases);
-          // Display success message
-          this.message.create('success', this.translation.get('DatabasesSuccessfullyImported'));
+          // Check if databases config is valid
+          let isValid = true;
+          databases.forEach((database: Database) => {
+            if (! database.config || ! this.isDatabaseConfigValid(database.config)) {
+              isValid = false;
+            }
+          });
+          if (isValid) {
+            this.databases = [...databases];
+            this.storage.save('databases', this.databases);
+            // Display success message
+            this.message.create('success', this.translation.get('DatabasesSuccessfullyImported'));
+          } else {
+            // Display error message
+            this.message.create('error', this.translation.get('InvalidDatabasesConfig'));
+          }
         }
       }
       catch(error) {
@@ -272,6 +289,23 @@ export class ManagerComponent implements OnInit, OnDestroy {
     this.storage.save('lang', lang).then(() => {
       window.location.reload();
     });
+  }
+
+  deduplicateTags(tags: string[]) {
+    return tags.filter((tag: string, index: number) => tags.indexOf(tag) === index);
+  }
+
+  getTagColor(tag: string): string {
+    switch(tag) {
+      case 'development':
+        return 'orange';
+      case 'production':
+        return 'green';
+      case 'staging':
+        return 'blue';
+      default:
+        return null;
+    }
   }
 
 }

@@ -142,8 +142,8 @@
     "Name": {
         "message": "Nom"
     },
-    "MyCollection": {
-        "message": "ma collection"
+    "CollectionName": {
+        "message": "Nom de la collection"
     },
     "CollectionAlreadyExists": {
         "message": "Une collection du même nom existe déjà!"
@@ -265,6 +265,9 @@
     "DatabasesSuccessfullyImported": {
         "message": "Bases de données importées avec succès!"
     },
+    "InvalidDatabasesConfig": {
+        "message": "Configuration des bases de données non valide, veuillez réessayer avec un fichier json valide."
+    },
     "Authentication": {
         "message": "Authentification"
     },
@@ -327,5 +330,41 @@
     },
     "RemovingFilter": {
         "message": "Suppression du filtre en cours"
+    },
+    "Check": {
+        "message": "Cocher"
+    },
+    "Uncheck": {
+        "message": "Décocher"
+    },
+    "Tag": {
+        "message": "Taguer"
+    },
+    "Tags": {
+        "message": "Étiquettes"
+    },
+    "Clone": {
+        "message": "Cloner"
+    },
+    "DocumentAlreadyExists": {
+        "message": "Un document du même nom existe déjà!"
+    },
+    "EnterDocumentName": {
+        "message": "Veuillez entrer le nom du document"
+    },
+    "OnlyAlphanumericCharsAllowed": {
+        "message": "Seuls les caractères alphanumériques sont autorisés"
+    },
+    "DocumentName": {
+        "message": "Nom du document"
+    },
+    "DocumentNameTip": {
+        "message": "Ne s'appliquera pas aux doublons"
+    },
+    "Rename": {
+        "message": "Renommer"
+    },
+    "Renaming": {
+        "message": "Renommage en cours"
     }
 }

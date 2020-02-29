@@ -14,7 +14,7 @@ export class Options {
     this.diffStyle = 'word';
     this.diffOutputFormat = 'line-by-line';
     this.displayCollectionsCount = false;
-    this.displayDocumentsCount = false;
+    this.displayDocumentsCount = true;
     this.enableNotifications = true;
   }
 }

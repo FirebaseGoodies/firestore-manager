@@ -11,8 +11,6 @@ import { AppComponent } from './app.component';
 import { OptionsComponent } from './components/options/options.component';
 import { ManagerComponent } from './components/manager/manager.component';
 import { ExplorerComponent } from './components/explorer/explorer.component';
-import { Guard } from './services/guard.service';
-import { StorageService } from './services/storage.service';
 import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
@@ -22,14 +20,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FirestoreService } from './services/firestore.service';
 import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { CacheDiffComponent } from './components/partials/cache-diff/cache-diff.component';
-import { NotificationService } from './services/notification.service';
-import { CanDeactivateGuard } from './services/can-deactivate-guard.service';
-import { AppService } from './services/app.service';
 import { TranslateService } from './services/translate.service';
 import { TranslateDirective } from './directives/translate.directive';
 import { TranslatePipe } from './pipes/translate.pipe';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { NgxDiff2htmlModule } from 'ngx-diff2html';
+import { ClickOutsideDirective } from './directives/click-outside.directive';
 
 @NgModule({
   declarations: [
@@ -39,7 +35,8 @@ import { NgxDiff2htmlModule } from 'ngx-diff2html';
     ExplorerComponent,
     CacheDiffComponent,
     TranslateDirective,
-    TranslatePipe
+    TranslatePipe,
+    ClickOutsideDirective
   ],
   imports: [
     BrowserModule,
@@ -56,13 +53,6 @@ import { NgxDiff2htmlModule } from 'ngx-diff2html';
     NgxDiff2htmlModule
   ],
   providers: [
-    Guard,
-    CanDeactivateGuard,
-    FirestoreService,
-    NotificationService,
-    TranslateService,
-    StorageService,
-    AppService,
     // Load translations (for web app only)
     { provide: APP_INITIALIZER, useFactory: TranslateService.init, deps: [TranslateService], multi: true },
     // Set database config (for AngularFireModule)

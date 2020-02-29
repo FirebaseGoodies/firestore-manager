@@ -11,10 +11,8 @@ import { AppService } from 'src/app/services/app.service';
 export class OptionsComponent implements OnInit {
 
   options: Options = new Options();
-  app: AppService;
 
-  constructor(private storage: StorageService, app: AppService) {
-    this.app = app;
+  constructor(private storage: StorageService, public app: AppService) {
     if (this.app.isWebExtension) {
       document.documentElement.style.height = 'auto';
       if (navigator.userAgent.indexOf('Chrome') != -1) {

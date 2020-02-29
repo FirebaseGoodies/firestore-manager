@@ -3,7 +3,9 @@ import { AppService } from './app.service';
 import { HttpClient } from '@angular/common/http';
 import { StorageService } from './storage.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class TranslateService {
 
   languages: { [key: string]: string } = {
