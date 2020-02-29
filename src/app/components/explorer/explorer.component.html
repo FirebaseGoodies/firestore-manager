@@ -229,7 +229,7 @@
                       <li nz-menu-item (click)="addDocument(node)" translate>Document</li>
                     </ul>
                   </li>
-                  <li *ngIf="node.children?.length" nz-menu-item translate (click)="enableRenameMode($event, node)">Rename</li>
+                  <li nz-menu-item translate (click)="enableRenameMode($event, node)">Rename</li>
                   <li *ngIf="node.children?.length" nz-menu-item (click)="reloadCollection(node)" translate>Reload</li>
                 </ul>
               </nz-dropdown-menu>

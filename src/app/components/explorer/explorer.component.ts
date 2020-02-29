@@ -1018,26 +1018,44 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         if (exists) {
           this.displayError({ message: this.translation.get('CollectionAlreadyExists') });
         } else {
-          this.startLoading('Renaming');
           // Rename collection
-          const content = {...this.firestore.cache[collection.title]}; // get/assign a copy
-          let promises: Promise<any>[] = [];
-          Object.keys(content).forEach(documentName => {
-            // Move documents from the old collection to the new one
-            promises.push(this.firestore.addDocument(name, content[documentName], documentName));
-            promises.push(this.firestore.deleteDocument(collection.title, documentName, true));
-          });
-          Promise.all(promises).then(() => {
-            // Delete old collection (from cache)
-            this.firestore.deleteCollection(collection.title);
-            // Replace collection
-            this.replaceCollection(collection.title, name).then(() => {
-              collection.title = name;
-              collection.key = name;
-              collection.children = [];
-              collection.isExpanded = false;
-              collection.isSelected = false;
-              this.disableRenameMode(null, collection);
+          this.startLoading('Renaming');
+          // Take cache backup & clear cache
+          const cacheBackup = {...this.firestore.cache[collection.title]}; // get/assign a copy
+          this.firestore.clearCache(collection.title);
+          // Get collection
+          this.firestore.getCollection(collection.title).then((documents) => {
+            let promises: Promise<any>[] = [];
+            Object.keys(documents).forEach(documentName => {
+              // Move documents from the old collection to the new one
+              promises.push(this.firestore.addDocument(name, documents[documentName], documentName));
+              promises.push(this.firestore.deleteDocument(collection.title, documentName, true));
+            });
+            Promise.all(promises).then(() => {
+              // Fetch new collection (to fill cache)
+              this.firestore.getCollection(name).then((documents) => {
+                // Retore new collection cache
+                const cache = {};
+                cache[name] = cacheBackup;
+                this.restoreCache(cache);
+                // Delete old collection
+                this.firestore.deleteCollection(collection.title);
+                // Replace collection
+                this.replaceCollection(collection.title, name).then(() => {
+                  collection.title = name;
+                  collection.key = name;
+                  collection.children = [];
+                  collection.isExpanded = false;
+                  collection.isSelected = false;
+                  this.disableRenameMode(null, collection);
+                  this.stopLoading();
+                });
+              }).catch(error => {
+                this.displayError(error);
+                this.stopLoading();
+              });
+            }).catch(error => {
+              this.displayError(error);
               this.stopLoading();
             });
           }).catch(error => {
@@ -1062,19 +1080,39 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         if (exists) {
           this.displayError({ message: this.translation.get('DocumentAlreadyExists') });
         } else {
-          this.startLoading('Renaming');
           // Rename document
-          const content = this.firestore.cache[collectionName][document.title];
-          this.firestore.addDocument(collectionName, content, name).then((results) => {
-            // console.log(results);
-            // Delete old document
-            this.firestore.deleteDocument(collectionName, document.title, true).catch(error => {
+          this.startLoading('Renaming');
+          // Take cache backup & clear cache
+          const cacheBackup = {...this.firestore.cache[collectionName][document.title]};
+          this.firestore.clearCache(collectionName, document.title);
+          // Get document
+          this.firestore.getDocument(collectionName, document.title).then((content) => {
+            // Add new document
+            this.firestore.addDocument(collectionName, content, name).then((results) => {
+              // console.log(results);
+              // Fetch new document (to fill cache)
+              this.firestore.getDocument(collectionName, name).then((content) => {
+                // Retore new document cache
+                const cache = {};
+                cache[collectionName] = {};
+                cache[collectionName][name] = cacheBackup;
+                this.restoreCache(cache);
+                // Delete old document
+                this.firestore.deleteDocument(collectionName, document.title, true).catch(error => {
+                  this.displayError(error);
+                }).finally(() => {
+                  // Replace document
+                  document.title = name;
+                  document.key = collectionName + '.' + name;
+                  this.disableRenameMode(null, document);
+                  this.stopLoading();
+                });
+              }).catch(error => {
+                this.displayError(error);
+                this.stopLoading();
+              });
+            }).catch(error => {
               this.displayError(error);
-            }).finally(() => {
-              // Replace document
-              document.title = name;
-              document.key = collectionName + '.' + name;
-              this.disableRenameMode(null, document);
               this.stopLoading();
             });
           }).catch(error => {
