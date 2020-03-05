@@ -24,7 +24,8 @@ import { download } from 'src/app/helpers/download.helper';
 import { Database } from 'src/app/models/database.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { Filter } from 'src/app/models/filter.model';
-import { slideInOut } from 'src/app/animations/slide-in-out.animation';
+import { booleanify } from 'src/app/helpers/parser.helper';
+//import { slideInOut } from 'src/app/animations/slide-in-out.animation';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -37,7 +38,7 @@ const Chars = {
   templateUrl: './explorer.component.html',
   styleUrls: ['./explorer.component.css'],
   providers: [AuthService],
-  animations: [slideInOut]
+  //animations: [slideInOut]
 })
 export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
 
@@ -877,7 +878,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     // Get cache backup
     const cacheBackup = this.firestore.getCacheBackup();
     // Filter collection
-    return this.firestore.filterCollection(collection.title, removal ? undefined : ref => ref.where(this.filters[collection.title].field, this.filters[collection.title].operator, this.filters[collection.title].value)).then((documents) => {
+    const filter: Filter = this.filters[collection.title];
+    return this.firestore.filterCollection(collection.title, removal ? undefined : ref => ref.where(filter.field, filter.operator, booleanify(filter.value))).then((documents) => {
       // console.log('Filter collection:', collection.title);
       collection.children = [];
       const children = [];
