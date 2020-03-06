@@ -853,10 +853,11 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
-  applyFilter(collection: NzTreeNode) {
+  applyFilter(collection: NzTreeNode|any) {
     // console.log(this.filters[collection.title]);
     if (collection) {
       this.startLoading('Filtering');
+      collection.filterIsVisible = false;
       this.filterCollection(collection).finally(() => {
         this.filters[collection.title].isApplied = true;
         this.stopLoading();
@@ -864,9 +865,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
-  removeFilter(collection: NzTreeNode) {
+  removeFilter(collection: NzTreeNode|any) {
     if (collection && this.filters[collection.title].isApplied) {
       this.startLoading('RemovingFilter');
+      collection.filterIsVisible = false;
       this.filterCollection(collection, true).finally(() => {
         this.filters[collection.title].isApplied = false;
         this.stopLoading();
