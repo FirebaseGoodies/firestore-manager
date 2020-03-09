@@ -366,5 +366,20 @@
     },
     "Renaming": {
         "message": "Renaming"
+    },
+    "ValueType": {
+        "message": "Value type"
+    },
+    "String": {
+        "message": "String"
+    },
+    "Number": {
+        "message": "Number"
+    },
+    "Boolean": {
+        "message": "Boolean"
+    },
+    "Object": {
+        "message": "Object"
     }
 }
