@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, QueryFn } from '@angular/fire/firestore';
 import { Subscription } from 'rxjs';
 import { Database } from '../models/database.model';
 import { StorageService } from './storage.service';
@@ -125,7 +125,7 @@ export class FirestoreService {
       });
     }
 
-    filterCollection(name: string, queryFunction?: any): Promise<any> {
+    filterCollection(name: string, queryFunction?: QueryFn): Promise<any> {
       return new Promise((resolve, reject) => {
         this.db.collection(name, queryFunction).get().toPromise().then((snapshot) => {
           // console.log(snapshot);

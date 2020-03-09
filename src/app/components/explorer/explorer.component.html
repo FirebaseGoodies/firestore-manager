@@ -304,6 +304,7 @@
                   <nz-option nzLabel=">=" nzValue=">="></nz-option>
                   <nz-option nzLabel="<" nzValue="<"></nz-option>
                   <nz-option nzLabel="<=" nzValue="<="></nz-option>
+                  <nz-option nzLabel="array-contains" nzValue="array-contains"></nz-option>
                 </nz-select>
                 <input type="text" nz-input placeholder="{{ 'Value' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].value" />
                 <nz-button-group>
@@ -317,6 +318,14 @@
                   <button nz-button nzType="default" [ngStyle]="{ 'vertical-align': 'middle' }" nz-dropdown [nzDropdownMenu]="filterMenu"><i nz-icon nzType="down" nzTheme="outline"></i></button>
                   <nz-dropdown-menu #filterMenu="nzDropdownMenu">
                     <ul nz-menu>
+                      <li nz-submenu nzTitle="{{ 'ValueType' | translate }}">
+                        <ul>
+                          <li nz-menu-item [nzSelected]="filters[node.title].valueType === 'string'" (click)="filters[node.title].valueType = 'string'" translate>String</li>
+                          <li nz-menu-item [nzSelected]="filters[node.title].valueType === 'number'" (click)="filters[node.title].valueType = 'number'" translate>Number</li>
+                          <li nz-menu-item [nzSelected]="filters[node.title].valueType === 'boolean'" (click)="filters[node.title].valueType = 'boolean'" translate>Boolean</li>
+                          <li nz-menu-item [nzSelected]="filters[node.title].valueType === 'object'" (click)="filters[node.title].valueType = 'object'" translate>Object</li>
+                        </ul>
+                      </li>
                       <li nz-menu-item [nzDisabled]="!filters[node.title].isApplied" (click)="removeFilter(node)" translate>Remove</li>
                     </ul>
                   </nz-dropdown-menu>

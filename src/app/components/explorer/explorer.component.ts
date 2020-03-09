@@ -24,7 +24,7 @@ import { download } from 'src/app/helpers/download.helper';
 import { Database } from 'src/app/models/database.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { Filter } from 'src/app/models/filter.model';
-import { booleanify } from 'src/app/helpers/parser.helper';
+import { booleanify, isNumber, jsonify } from 'src/app/helpers/parser.helper';
 //import { slideInOut } from 'src/app/animations/slide-in-out.animation';
 
 const Chars = {
@@ -876,12 +876,26 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
+  private getFilterValue(filter: Filter) {
+    switch(filter.valueType) {
+      case 'number':
+        return isNumber(filter.value) ? +filter.value : filter.value;
+      case 'boolean':
+        return booleanify(filter.value);
+      case 'object':
+        return jsonify(filter.value);
+      default:
+        return filter.value;
+    }
+  }
+
   private filterCollection(collection: NzTreeNode, removal: boolean = false): Promise<void> {
     // Get cache backup
     const cacheBackup = this.firestore.getCacheBackup();
     // Filter collection
     const filter: Filter = this.filters[collection.title];
-    return this.firestore.filterCollection(collection.title, removal ? undefined : ref => ref.where(filter.field, filter.operator, booleanify(filter.value))).then((documents) => {
+    const filterValue = this.getFilterValue(filter);
+    return this.firestore.filterCollection(collection.title, removal ? undefined : ref => ref.where(filter.field, filter.operator, filterValue)).then((documents) => {
       // console.log('Filter collection:', collection.title);
       collection.children = [];
       const children = [];
