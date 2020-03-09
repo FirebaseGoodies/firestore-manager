@@ -320,10 +320,13 @@
                     <ul nz-menu>
                       <li nz-submenu nzTitle="{{ 'ValueType' | translate }}">
                         <ul>
-                          <li nz-menu-item [nzSelected]="filters[node.title].valueType === 'string'" (click)="filters[node.title].valueType = 'string'" translate>String</li>
-                          <li nz-menu-item [nzSelected]="filters[node.title].valueType === 'number'" (click)="filters[node.title].valueType = 'number'" translate>Number</li>
-                          <li nz-menu-item [nzSelected]="filters[node.title].valueType === 'boolean'" (click)="filters[node.title].valueType = 'boolean'" translate>Boolean</li>
-                          <li nz-menu-item [nzSelected]="filters[node.title].valueType === 'object'" (click)="filters[node.title].valueType = 'object'" translate>Object</li>
+                          <li nz-menu-item
+                            *ngFor="let type of filterValueTypes"
+                            [nzSelected]="filters[node.title].valueType === type.value"
+                            (click)="filters[node.title].valueType = type.value"
+                          >
+                            {{ type.label | translate }}
+                          </li>
                         </ul>
                       </li>
                       <li nz-menu-item [nzDisabled]="!filters[node.title].isApplied" (click)="removeFilter(node)" translate>Remove</li>

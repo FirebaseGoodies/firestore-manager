@@ -3,12 +3,19 @@ export class Filter {
   field: string;
   operator: firebase.firestore.WhereFilterOp | null;
   value: string;
-  valueType: 'string' | 'number' | 'boolean' | 'object';
+  valueType: FilterValueType;
   isApplied: boolean;
 
   constructor() {
     this.field = this.operator = this.value = null;
-    this.valueType = 'string';
+    this.valueType = FilterValueType.String;
     this.isApplied = false;
   }
+}
+
+export enum FilterValueType {
+  String = 'string',
+  Number = 'number',
+  Boolean = 'boolean',
+  Object = 'object'
 }

@@ -23,7 +23,7 @@ import { TranslateService } from 'src/app/services/translate.service';
 import { download } from 'src/app/helpers/download.helper';
 import { Database } from 'src/app/models/database.model';
 import { AuthService } from 'src/app/services/auth.service';
-import { Filter } from 'src/app/models/filter.model';
+import { Filter, FilterValueType } from 'src/app/models/filter.model';
 import { booleanify, isNumber, jsonify } from 'src/app/helpers/parser.helper';
 //import { slideInOut } from 'src/app/animations/slide-in-out.animation';
 
@@ -81,6 +81,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   parserDuplicateTimes = (value: string) => value.replace('x ', '');
   collectionListLoadingMessage: string = 'Loading';
   filters: Filter[] = [];
+  filterValueTypes: { label: string, value: FilterValueType }[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -143,6 +144,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     if (this.translation.getLanguage() == 'fr') {
       this.editorOptions.language = 'fr-FR';
     }
+    // Set filter value types
+    this.filterValueTypes = Object.keys(FilterValueType).map((key: string) => {
+      return { label: key, value: FilterValueType[key] };
+    });
   }
 
   ngOnDestroy() {
