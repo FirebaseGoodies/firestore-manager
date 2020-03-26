@@ -16,4 +16,9 @@ export class AppService {
     }
   }
 
+  getUrl(path: string) {
+    const sanitizedPath = path.replace('/^[.|\/]+/', '');
+    return this.isWebExtension ? browser.extension.getURL('index.html?page=' + sanitizedPath) : './' + sanitizedPath;
+  }
+
 }

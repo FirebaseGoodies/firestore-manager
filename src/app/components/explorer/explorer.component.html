@@ -18,7 +18,6 @@
         <i nz-icon nzType="bug" nzTheme="outline"></i>
       </a>
       <span
-        *ngIf="!app.isWebExtension"
         class="toolbar-icon"
         nz-tooltip
         nzTooltipTitle="{{ 'Settings' | translate }}"
@@ -523,7 +522,7 @@
   ></nz-alert>
 </nz-modal>
 <nz-drawer
-  *ngIf="!app.isWebExtension && (isSettingsDrawerVisible || isSettingsDrawerLoaded)"
+  *ngIf="isSettingsDrawerVisible || isSettingsDrawerLoaded"
   [nzClosable]="false"
   [nzOffsetX]="0"
   [nzWidth]="500"
@@ -532,7 +531,7 @@
   (nzOnClose)="onSettingsDrawerClose()"
 >
   <nz-spin nzTip="{{ 'Loading' | translate }}..." [nzSpinning]="!isSettingsDrawerLoaded">
-    <iframe src="./options" width="100%" frameBorder="0" (load)="isSettingsDrawerLoaded = true" [ngStyle]="{ 'min-height': '80vh', border: 0 }"></iframe>
+    <iframe [src]="app.getUrl('options') | safe:'resourceUrl'" width="100%" frameBorder="0" (load)="isSettingsDrawerLoaded = true" [ngStyle]="{ 'min-height': '80vh', border: 0 }"></iframe>
   </nz-spin>
 </nz-drawer>
 <ng-template #reloadModalTpl>
