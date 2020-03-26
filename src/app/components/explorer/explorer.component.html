@@ -304,7 +304,10 @@
                   <nz-option nzLabel=">=" nzValue=">="></nz-option>
                   <nz-option nzLabel="<" nzValue="<"></nz-option>
                   <nz-option nzLabel="<=" nzValue="<="></nz-option>
+                  <nz-option nzLabel="in" nzValue="in"></nz-option>
+                  <nz-option nzLabel="start-with" nzValue="start-with"></nz-option>
                   <nz-option nzLabel="array-contains" nzValue="array-contains"></nz-option>
+                  <nz-option nzLabel="array-contains-any" nzValue="array-contains-any"></nz-option>
                 </nz-select>
                 <input type="text" nz-input placeholder="{{ 'Value' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].value" />
                 <nz-button-group>

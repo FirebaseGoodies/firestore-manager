@@ -25,6 +25,7 @@ import { Database } from 'src/app/models/database.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { Filter, FilterValueType } from 'src/app/models/filter.model';
 import { booleanify, isNumber, jsonify } from 'src/app/helpers/parser.helper';
+import { CollectionReference } from '@angular/fire/firestore';
 //import { slideInOut } from 'src/app/animations/slide-in-out.animation';
 
 const Chars = {
@@ -900,7 +901,14 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     // Filter collection
     const filter: Filter = this.filters[collection.title];
     const filterValue = this.getFilterValue(filter);
-    return this.firestore.filterCollection(collection.title, removal ? undefined : ref => ref.where(filter.field, filter.operator, filterValue)).then((documents) => {
+    const queryFunction = removal ? undefined : (ref: CollectionReference) => {
+      if (filter.operator === 'start-with') {
+        return ref.orderBy(filter.field).startAt(filterValue).endAt(filterValue + '\uf8ff');
+      } else {
+        return ref.where(filter.field, filter.operator as firebase.firestore.WhereFilterOp, filterValue);
+      }
+    };
+    return this.firestore.filterCollection(collection.title, queryFunction).then((documents) => {
       // console.log('Filter collection:', collection.title);
       collection.children = [];
       const children = [];

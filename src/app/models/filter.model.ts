@@ -1,7 +1,7 @@
 
 export class Filter {
   field: string;
-  operator: firebase.firestore.WhereFilterOp | null;
+  operator: firebase.firestore.WhereFilterOp | 'start-with' | null;
   value: string;
   valueType: FilterValueType;
   isApplied: boolean;
