@@ -83,6 +83,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   collectionListLoadingMessage: string = 'Loading';
   filters: Filter[] = [];
   filterValueTypes: { label: string, value: FilterValueType }[] = [];
+  readonly exportFormat = {
+    JSON: 'json'
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -747,10 +750,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.reloadCollections().catch((error) => {
         this.displayError(error);
       }).finally(() => {
-        const data = this.firestore.getUnchangedCache();
-        const c = JSON.stringify(data, null, 4);
-        const file = new Blob([c], {type: 'text/json'});
-        download(file, this.database.config.projectId + '.json');
+        const cache = this.firestore.getUnchangedCache();
+        const json = JSON.stringify(cache, null, 4);
+        const file = new Blob([json], {type: 'text/json'});
+        download(file, `${this.database.config.projectId}.json`);
         this.stopLoading();
       });
     }
@@ -1030,6 +1033,20 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.restoreCache(cacheBackup);
       node.isLoading = false;
     });
+  }
+
+  exportCollection(node: NzTreeNode, format: string) {
+    this.startLoading('Exporting');
+    const cache = this.firestore.getUnchangedCache();
+    const data = { [node.title]: cache[node.title] || {} };
+    switch(format) {
+      case this.exportFormat.JSON:
+        const json = JSON.stringify(data, null, 4);
+        const file = new Blob([json], {type: 'text/json'});
+        download(file, `${this.database.config.projectId}.${node.title}.json`);
+        break;
+    }
+    this.stopLoading();
   }
 
   addDocument(collection: NzTreeNode) {

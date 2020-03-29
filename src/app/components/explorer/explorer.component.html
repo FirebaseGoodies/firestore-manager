@@ -229,6 +229,11 @@
                   </li>
                   <li nz-menu-item translate (click)="enableRenameMode($event, node)">Rename</li>
                   <li *ngIf="node.children?.length" nz-menu-item (click)="reloadCollection(node)" translate>Reload</li>
+                  <li *ngIf="node.children?.length" nz-submenu nzTitle="{{ 'Export' | translate }}">
+                    <ul>
+                      <li nz-menu-item (click)="exportCollection(node, exportFormat.JSON)" translate>JSON</li>
+                    </ul>
+                  </li>
                 </ul>
               </nz-dropdown-menu>
             </ng-container>
