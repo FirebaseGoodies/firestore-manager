@@ -206,7 +206,17 @@ export class FirestoreService {
     }
 
     setDocument(collectionName: string, documentName: string, content: any): Promise<any> {
-      return this.db.collection(collectionName).doc(documentName).set(content);
+      return new Promise((resolve, reject) => {
+        try {
+          this.db.collection(collectionName).doc(documentName).set(content).then((doc) => {
+            resolve(doc);
+          }).catch((error) => {
+            reject(error);
+          });
+        } catch (error) {
+          reject(error);
+        }
+      });
     }
 
     saveDocument(collectionName: string, documentName: string): Promise<any> {

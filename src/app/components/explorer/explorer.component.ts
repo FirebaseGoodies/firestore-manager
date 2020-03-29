@@ -455,7 +455,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       });
     } else {
       this.firestore.getCollection(node.title).then((documents) => {
-        this.updateEditor(documents);
+        this.updateEditor(documents || {});
         this.selectedCollection = node;
         this.selectedDocument = null;
       });
@@ -539,11 +539,15 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   onSaveChangesClick() {
     this.isSaveButtonLoading = true;
     let promises: Promise<any>[] = [];
+    let lastError: Error = null;
     // Save changed documents
     this.cacheDiff.collectionNodes.forEach(node => {
       if (node.children) {
         node.children.forEach(child => {
-          promises.push(this.firestore.saveDocument(node.title, child.title));
+          promises.push(this.firestore.saveDocument(node.title, child.title).catch((error) => {
+            // this.displayError(error);
+            lastError = error;
+          }));
         });
       }
     });
@@ -563,9 +567,13 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         this.isSaveButtonLoading = false;
         this.isSaveModalVisible = false;
         this.unsavedChanges = false;
-        // Display success message
-        this.displayMessage('ChangesSuccessfullySaved');
-        this.displayNotification('SavingChangesCompleted');
+        if (lastError) {
+          this.displayError(lastError);
+        } else {
+          // Display success message
+          this.displayMessage('ChangesSuccessfullySaved');
+          this.displayNotification('SavingChangesCompleted');
+        }
       };
       // Reload selected collection/document
       const selectedNode = this.collectionNodes.find((node) => node.key === this.selectedCollection.key);
@@ -586,7 +594,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
             this.collectionNodesSelectedKeys = [this.selectedCollection.key];
           }
         }).catch((error) => {
-          this.displayError(error);
+          if (! lastError) {
+            this.displayError(error);
+          }
         }).finally(() => {
           done();
         });
