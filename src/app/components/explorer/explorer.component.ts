@@ -646,6 +646,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     // console.log(this.firestore.cache);
     const cacheBackup = this.firestore.getCacheBackup();
     let promises: Promise<any>[] = [];
+    let lastError: Error = null;
     // Clear cache
     this.firestore.clearCache();
     // this.selectedCollection = null;
@@ -654,19 +655,29 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     this.collectionNodesSelectedKeys = [];
     // Reload collections
     this.collectionNodes.forEach(node => {
-      promises.push(this.loadCollection(node, true));
+      promises.push(this.loadCollection(node, true).catch((error) => {
+        // this.displayError(error);
+        lastError = error;
+      }));
     });
-    return Promise.all(promises).then(() => {
-      // console.log('All collections reloaded');
-      this.collectionNodes = [...this.collectionNodes]; // refresh
-      // Restore cache
-      if (restoreCache) {
-        this.restoreCache(cacheBackup);
-      }
-      // Restore selected collection/document
-      this.restoreSelection();
-    }).catch((error) => {
-      this.displayError(error);
+    return new Promise((resolve, reject) => {
+      Promise.all(promises).then(() => {
+        // console.log('All collections reloaded');
+        this.collectionNodes = [...this.collectionNodes]; // refresh
+        // Restore cache
+        if (restoreCache) {
+          this.restoreCache(cacheBackup);
+        }
+        // Restore selected collection/document
+        this.restoreSelection();
+        if (lastError) {
+          reject(lastError);
+        } else {
+          resolve();
+        }
+      }).catch((error) => {
+        reject(error);
+      });
     });
   }
 
@@ -733,13 +744,13 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   onExportJsonClick() {
     if (this.collectionNodes.length) {
       this.startLoading('Exporting');
-      this.reloadCollections().then(() => {
-        const c = JSON.stringify(this.firestore.cache, null, 4);
-        const file = new Blob([c], {type: 'text/json'});
-        download(file, this.database.config.projectId + '.json');
-      }).catch((error) => {
+      this.reloadCollections().catch((error) => {
         this.displayError(error);
       }).finally(() => {
+        const data = this.firestore.getUnchangedCache();
+        const c = JSON.stringify(data, null, 4);
+        const file = new Blob([c], {type: 'text/json'});
+        download(file, this.database.config.projectId + '.json');
         this.stopLoading();
       });
     }
