@@ -7,12 +7,12 @@ import { TranslateService } from '../services/translate.service';
 export class TranslateDirective implements AfterViewInit {
 
   @Input() translate: string;
-  @Input() substitutions: string | string[]; // ToDo
+  @Input() substitutions: string | string[];
 
   constructor(private translateService: TranslateService, private element: ElementRef) { }
 
   ngAfterViewInit() {
     const key = this.translate.length ? this.translate : this.element.nativeElement.innerHTML.trim();
-    this.element.nativeElement.innerHTML = this.translateService.get(key);
+    this.element.nativeElement.innerHTML = this.translateService.get(key, this.substitutions);
   }
 }
