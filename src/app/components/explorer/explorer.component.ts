@@ -148,6 +148,14 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     if (this.translation.getLanguage() == 'fr') {
       this.editorOptions.language = 'fr-FR';
     }
+    this.editorOptions.onError = (error) => {
+      // console.error(error);
+    };
+    this.editorOptions.onChange = () => {
+      try { } catch (error) {
+        // console.error(error);
+      }
+    };
     // Set filter value types
     this.filterValueTypes = Object.keys(FilterValueType).map((key: string) => {
       return { label: key, value: FilterValueType[key] };
