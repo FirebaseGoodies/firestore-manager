@@ -855,7 +855,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     });
   }
 
-  private displayError(error) {
+  private displayError(error: Error) {
     console.log(error.message);
     this.message.create('error', error.message);
   }
@@ -1065,7 +1065,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       // Check if collection already exists
       this.firestore.isCollection(name).then((exists: boolean) => {
         if (exists) {
-          this.displayError({ message: this.translation.get('CollectionAlreadyExists') });
+          this.displayError(Error(this.translation.get('CollectionAlreadyExists')));
         } else {
           // Rename collection
           this.startLoading('Renaming');
@@ -1128,7 +1128,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       const collectionName = document.parentNode.title;
       this.firestore.isDocument(collectionName, name).then((exists: boolean) => {
         if (exists) {
-          this.displayError({ message: this.translation.get('DocumentAlreadyExists') });
+          this.displayError(Error(this.translation.get('DocumentAlreadyExists')));
         } else {
           // Rename document
           this.startLoading('Renaming');
