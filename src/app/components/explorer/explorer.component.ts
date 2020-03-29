@@ -831,9 +831,13 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   expandAllCollectionNodes() {
     this.startLoading('Expanding');
     let promises: Promise<any>[] = [];
+    let lastError: Error = null;
     this.collectionNodes.forEach(node => {
       if (! this.collectionNodesExpandedKeys[node.key]) {
-        promises.push(this.loadCollection(node));
+        promises.push(this.loadCollection(node).catch((error) => {
+          // this.displayError(error);
+          lastError = error;
+        }));
         this.collectionNodesExpandedKeys.push(node.key);
       }
     });
@@ -841,6 +845,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       // Refresh nodes
       this.collectionNodesExpandedKeys = [...this.collectionNodesExpandedKeys];
       this.collectionNodes = [...this.collectionNodes];
+      if (lastError) {
+        this.displayError(lastError);
+      }
     }).catch((error) => {
       this.displayError(error);
     }).finally(() => {
