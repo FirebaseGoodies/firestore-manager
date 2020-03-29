@@ -231,7 +231,7 @@
                   <li *ngIf="node.children?.length" nz-menu-item (click)="reloadCollection(node)" translate>Reload</li>
                   <li *ngIf="node.children?.length" nz-submenu nzTitle="{{ 'Export' | translate }}">
                     <ul>
-                      <li nz-menu-item (click)="exportCollection(node, exportFormat.JSON)" translate>JSON</li>
+                      <li nz-menu-item (click)="exportCollection(node, exportFormat.JSON)">JSON</li>
                     </ul>
                   </li>
                 </ul>
