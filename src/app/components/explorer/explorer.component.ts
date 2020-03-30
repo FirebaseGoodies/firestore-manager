@@ -23,8 +23,10 @@ import { TranslateService } from 'src/app/services/translate.service';
 import { download } from 'src/app/helpers/download.helper';
 import { Database } from 'src/app/models/database.model';
 import { AuthService } from 'src/app/services/auth.service';
-import { Filter } from 'src/app/models/filter.model';
-import { slideInOut } from 'src/app/animations/slide-in-out.animation';
+import { Filter, FilterValueType } from 'src/app/models/filter.model';
+import { booleanify, isNumber, jsonify } from 'src/app/helpers/parser.helper';
+import { CollectionReference } from '@angular/fire/firestore';
+//import { slideInOut } from 'src/app/animations/slide-in-out.animation';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -37,7 +39,7 @@ const Chars = {
   templateUrl: './explorer.component.html',
   styleUrls: ['./explorer.component.css'],
   providers: [AuthService],
-  animations: [slideInOut]
+  //animations: [slideInOut]
 })
 export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
 
@@ -80,6 +82,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   parserDuplicateTimes = (value: string) => value.replace('x ', '');
   collectionListLoadingMessage: string = 'Loading';
   filters: Filter[] = [];
+  filterValueTypes: { label: string, value: FilterValueType }[] = [];
+  readonly exportFormat = {
+    JSON: 'json'
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -142,6 +148,18 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     if (this.translation.getLanguage() == 'fr') {
       this.editorOptions.language = 'fr-FR';
     }
+    this.editorOptions.onError = (error) => {
+      // console.error(error);
+    };
+    this.editorOptions.onChange = () => {
+      try { } catch (error) {
+        // console.error(error);
+      }
+    };
+    // Set filter value types
+    this.filterValueTypes = Object.keys(FilterValueType).map((key: string) => {
+      return { label: key, value: FilterValueType[key] };
+    });
   }
 
   ngOnDestroy() {
@@ -445,7 +463,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       });
     } else {
       this.firestore.getCollection(node.title).then((documents) => {
-        this.updateEditor(documents);
+        this.updateEditor(documents || {});
         this.selectedCollection = node;
         this.selectedDocument = null;
       });
@@ -529,11 +547,15 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   onSaveChangesClick() {
     this.isSaveButtonLoading = true;
     let promises: Promise<any>[] = [];
+    let lastError: Error = null;
     // Save changed documents
     this.cacheDiff.collectionNodes.forEach(node => {
       if (node.children) {
         node.children.forEach(child => {
-          promises.push(this.firestore.saveDocument(node.title, child.title));
+          promises.push(this.firestore.saveDocument(node.title, child.title).catch((error) => {
+            // this.displayError(error);
+            lastError = error;
+          }));
         });
       }
     });
@@ -553,9 +575,13 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         this.isSaveButtonLoading = false;
         this.isSaveModalVisible = false;
         this.unsavedChanges = false;
-        // Display success message
-        this.displayMessage('ChangesSuccessfullySaved');
-        this.displayNotification('SavingChangesCompleted');
+        if (lastError) {
+          this.displayError(lastError);
+        } else {
+          // Display success message
+          this.displayMessage('ChangesSuccessfullySaved');
+          this.displayNotification('SavingChangesCompleted');
+        }
       };
       // Reload selected collection/document
       const selectedNode = this.collectionNodes.find((node) => node.key === this.selectedCollection.key);
@@ -576,7 +602,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
             this.collectionNodesSelectedKeys = [this.selectedCollection.key];
           }
         }).catch((error) => {
-          this.displayError(error);
+          if (! lastError) {
+            this.displayError(error);
+          }
         }).finally(() => {
           done();
         });
@@ -639,6 +667,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     // console.log(this.firestore.cache);
     const cacheBackup = this.firestore.getCacheBackup();
     let promises: Promise<any>[] = [];
+    let lastError: Error = null;
     // Clear cache
     this.firestore.clearCache();
     // this.selectedCollection = null;
@@ -647,19 +676,29 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     this.collectionNodesSelectedKeys = [];
     // Reload collections
     this.collectionNodes.forEach(node => {
-      promises.push(this.loadCollection(node, true));
+      promises.push(this.loadCollection(node, true).catch((error) => {
+        // this.displayError(error);
+        lastError = error;
+      }));
     });
-    return Promise.all(promises).then(() => {
-      // console.log('All collections reloaded');
-      this.collectionNodes = [...this.collectionNodes]; // refresh
-      // Restore cache
-      if (restoreCache) {
-        this.restoreCache(cacheBackup);
-      }
-      // Restore selected collection/document
-      this.restoreSelection();
-    }).catch((error) => {
-      this.displayError(error);
+    return new Promise((resolve, reject) => {
+      Promise.all(promises).then(() => {
+        // console.log('All collections reloaded');
+        this.collectionNodes = [...this.collectionNodes]; // refresh
+        // Restore cache
+        if (restoreCache) {
+          this.restoreCache(cacheBackup);
+        }
+        // Restore selected collection/document
+        this.restoreSelection();
+        if (lastError) {
+          reject(lastError);
+        } else {
+          resolve();
+        }
+      }).catch((error) => {
+        reject(error);
+      });
     });
   }
 
@@ -726,13 +765,13 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   onExportJsonClick() {
     if (this.collectionNodes.length) {
       this.startLoading('Exporting');
-      this.reloadCollections().then(() => {
-        const c = JSON.stringify(this.firestore.cache, null, 4);
-        const file = new Blob([c], {type: 'text/json'});
-        download(file, this.database.config.projectId + '.json');
-      }).catch((error) => {
+      this.reloadCollections().catch((error) => {
         this.displayError(error);
       }).finally(() => {
+        const cache = this.firestore.getUnchangedCache();
+        const json = JSON.stringify(cache, null, 4);
+        const file = new Blob([json], {type: 'text/json'});
+        download(file, `${this.database.config.projectId}.json`);
         this.stopLoading();
       });
     }
@@ -813,9 +852,13 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   expandAllCollectionNodes() {
     this.startLoading('Expanding');
     let promises: Promise<any>[] = [];
+    let lastError: Error = null;
     this.collectionNodes.forEach(node => {
       if (! this.collectionNodesExpandedKeys[node.key]) {
-        promises.push(this.loadCollection(node));
+        promises.push(this.loadCollection(node).catch((error) => {
+          // this.displayError(error);
+          lastError = error;
+        }));
         this.collectionNodesExpandedKeys.push(node.key);
       }
     });
@@ -823,6 +866,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       // Refresh nodes
       this.collectionNodesExpandedKeys = [...this.collectionNodesExpandedKeys];
       this.collectionNodes = [...this.collectionNodes];
+      if (lastError) {
+        this.displayError(lastError);
+      }
     }).catch((error) => {
       this.displayError(error);
     }).finally(() => {
@@ -830,7 +876,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     });
   }
 
-  private displayError(error) {
+  private displayError(error: Error) {
     console.log(error.message);
     this.message.create('error', error.message);
   }
@@ -852,10 +898,11 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
-  applyFilter(collection: NzTreeNode) {
+  applyFilter(collection: NzTreeNode|any) {
     // console.log(this.filters[collection.title]);
     if (collection) {
       this.startLoading('Filtering');
+      collection.filterIsVisible = false;
       this.filterCollection(collection).finally(() => {
         this.filters[collection.title].isApplied = true;
         this.stopLoading();
@@ -863,9 +910,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
-  removeFilter(collection: NzTreeNode) {
+  removeFilter(collection: NzTreeNode|any) {
     if (collection && this.filters[collection.title].isApplied) {
       this.startLoading('RemovingFilter');
+      collection.filterIsVisible = false;
       this.filterCollection(collection, true).finally(() => {
         this.filters[collection.title].isApplied = false;
         this.stopLoading();
@@ -873,11 +921,33 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
+  private getFilterValue(filter: Filter) {
+    switch(filter.valueType) {
+      case 'number':
+        return isNumber(filter.value) ? +filter.value : filter.value;
+      case 'boolean':
+        return booleanify(filter.value);
+      case 'object':
+        return jsonify(filter.value);
+      default:
+        return filter.value;
+    }
+  }
+
   private filterCollection(collection: NzTreeNode, removal: boolean = false): Promise<void> {
     // Get cache backup
     const cacheBackup = this.firestore.getCacheBackup();
     // Filter collection
-    return this.firestore.filterCollection(collection.title, removal ? undefined : ref => ref.where(this.filters[collection.title].field, this.filters[collection.title].operator, this.filters[collection.title].value)).then((documents) => {
+    const filter: Filter = this.filters[collection.title];
+    const filterValue = this.getFilterValue(filter);
+    const queryFunction = removal ? undefined : (ref: CollectionReference) => {
+      if (filter.operator === 'start-with') {
+        return ref.orderBy(filter.field).startAt(filterValue).endAt(filterValue + '\uf8ff');
+      } else {
+        return ref.where(filter.field, filter.operator as firebase.firestore.WhereFilterOp, filterValue);
+      }
+    };
+    return this.firestore.filterCollection(collection.title, queryFunction).then((documents) => {
       // console.log('Filter collection:', collection.title);
       collection.children = [];
       const children = [];
@@ -983,6 +1053,20 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     });
   }
 
+  exportCollection(node: NzTreeNode, format: string) {
+    this.startLoading('Exporting');
+    const cache = this.firestore.getUnchangedCache();
+    const data = { [node.title]: cache[node.title] || {} };
+    switch(format) {
+      case this.exportFormat.JSON:
+        const json = JSON.stringify(data, null, 4);
+        const file = new Blob([json], {type: 'text/json'});
+        download(file, `${this.database.config.projectId}.${node.title}.json`);
+        break;
+    }
+    this.stopLoading();
+  }
+
   addDocument(collection: NzTreeNode) {
     this.addDocumentForm.controls.name.setValue(null);
     this.addDocumentForm.controls.useRandomName.setValue(false);
@@ -1016,7 +1100,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       // Check if collection already exists
       this.firestore.isCollection(name).then((exists: boolean) => {
         if (exists) {
-          this.displayError({ message: this.translation.get('CollectionAlreadyExists') });
+          this.displayError(Error(this.translation.get('CollectionAlreadyExists')));
         } else {
           // Rename collection
           this.startLoading('Renaming');
@@ -1079,7 +1163,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       const collectionName = document.parentNode.title;
       this.firestore.isDocument(collectionName, name).then((exists: boolean) => {
         if (exists) {
-          this.displayError({ message: this.translation.get('DocumentAlreadyExists') });
+          this.displayError(Error(this.translation.get('DocumentAlreadyExists')));
         } else {
           // Rename document
           this.startLoading('Renaming');

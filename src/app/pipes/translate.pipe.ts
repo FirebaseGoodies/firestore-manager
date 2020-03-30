@@ -8,7 +8,7 @@ export class TranslatePipe implements PipeTransform {
   
   constructor(private translateService: TranslateService) { }
   
-  transform(key: string): string {
-    return this.translateService.get(key);
+  transform(key: string, substitutions?: string | string[]): string {
+    return this.translateService.get(key, substitutions);
   }
 }

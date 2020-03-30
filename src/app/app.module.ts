@@ -26,6 +26,7 @@ import { TranslatePipe } from './pipes/translate.pipe';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { NgxDiff2htmlModule } from 'ngx-diff2html';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
+import { SafePipe } from './pipes/safe.pipe';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { ClickOutsideDirective } from './directives/click-outside.directive';
     CacheDiffComponent,
     TranslateDirective,
     TranslatePipe,
-    ClickOutsideDirective
+    ClickOutsideDirective,
+    SafePipe
   ],
   imports: [
     BrowserModule,

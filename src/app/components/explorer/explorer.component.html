@@ -18,7 +18,6 @@
         <i nz-icon nzType="bug" nzTheme="outline"></i>
       </a>
       <span
-        *ngIf="!app.isWebExtension"
         class="toolbar-icon"
         nz-tooltip
         nzTooltipTitle="{{ 'Settings' | translate }}"
@@ -28,7 +27,6 @@
         <i nz-icon nzType="setting" nzTheme="outline"></i>
       </span>
       <span
-        *ngIf="!app.isWebExtension"
         class="toolbar-icon"
         nz-tooltip
         nzTooltipTitle="{{ 'GoBackToMainPage' | translate }}"
@@ -231,6 +229,11 @@
                   </li>
                   <li nz-menu-item translate (click)="enableRenameMode($event, node)">Rename</li>
                   <li *ngIf="node.children?.length" nz-menu-item (click)="reloadCollection(node)" translate>Reload</li>
+                  <li *ngIf="node.children?.length" nz-submenu nzTitle="{{ 'Export' | translate }}">
+                    <ul>
+                      <li nz-menu-item (click)="exportCollection(node, exportFormat.JSON)">JSON</li>
+                    </ul>
+                  </li>
                 </ul>
               </nz-dropdown-menu>
             </ng-container>
@@ -304,6 +307,10 @@
                   <nz-option nzLabel=">=" nzValue=">="></nz-option>
                   <nz-option nzLabel="<" nzValue="<"></nz-option>
                   <nz-option nzLabel="<=" nzValue="<="></nz-option>
+                  <nz-option nzLabel="in" nzValue="in"></nz-option>
+                  <nz-option nzLabel="start-with" nzValue="start-with"></nz-option>
+                  <nz-option nzLabel="array-contains" nzValue="array-contains"></nz-option>
+                  <nz-option nzLabel="array-contains-any" nzValue="array-contains-any"></nz-option>
                 </nz-select>
                 <input type="text" nz-input placeholder="{{ 'Value' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].value" />
                 <nz-button-group>
@@ -317,6 +324,17 @@
                   <button nz-button nzType="default" [ngStyle]="{ 'vertical-align': 'middle' }" nz-dropdown [nzDropdownMenu]="filterMenu"><i nz-icon nzType="down" nzTheme="outline"></i></button>
                   <nz-dropdown-menu #filterMenu="nzDropdownMenu">
                     <ul nz-menu>
+                      <li nz-submenu nzTitle="{{ 'ValueType' | translate }}">
+                        <ul>
+                          <li nz-menu-item
+                            *ngFor="let type of filterValueTypes"
+                            [nzSelected]="filters[node.title].valueType === type.value"
+                            (click)="filters[node.title].valueType = type.value"
+                          >
+                            {{ type.label | translate }}
+                          </li>
+                        </ul>
+                      </li>
                       <li nz-menu-item [nzDisabled]="!filters[node.title].isApplied" (click)="removeFilter(node)" translate>Remove</li>
                     </ul>
                   </nz-dropdown-menu>
@@ -508,7 +526,7 @@
   ></nz-alert>
 </nz-modal>
 <nz-drawer
-  *ngIf="!app.isWebExtension && (isSettingsDrawerVisible || isSettingsDrawerLoaded)"
+  *ngIf="isSettingsDrawerVisible || isSettingsDrawerLoaded"
   [nzClosable]="false"
   [nzOffsetX]="0"
   [nzWidth]="500"
@@ -517,7 +535,7 @@
   (nzOnClose)="onSettingsDrawerClose()"
 >
   <nz-spin nzTip="{{ 'Loading' | translate }}..." [nzSpinning]="!isSettingsDrawerLoaded">
-    <iframe src="./options" width="100%" frameBorder="0" (load)="isSettingsDrawerLoaded = true" [ngStyle]="{ 'min-height': '80vh', border: 0 }"></iframe>
+    <iframe [src]="app.getUrl('options') | safe:'resourceUrl'" width="100%" frameBorder="0" (load)="isSettingsDrawerLoaded = true" [ngStyle]="{ 'min-height': '80vh', border: 0 }"></iframe>
   </nz-spin>
 </nz-drawer>
 <ng-template #reloadModalTpl>

@@ -46,7 +46,12 @@ export class TranslateService {
   }
 
   get(key: string, substitutions?: string | string[]): string {
-    return this.app.isWebExtension ? browser.i18n.getMessage(key, substitutions) : this.translate(key, substitutions);
+    if (this.app.isWebExtension) {
+      const translation = browser.i18n.getMessage(key, substitutions);
+      return translation.length ? translation : key;
+    } else {
+      return this.translate(key, substitutions);
+    }
   }
 
   private translate(key: string, substitutions?: string | string[]): string {

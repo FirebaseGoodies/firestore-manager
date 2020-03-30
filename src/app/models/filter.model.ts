@@ -1,12 +1,21 @@
 
 export class Filter {
   field: string;
-  operator: '==' | '>' | '>=' | '<' | '<=' | null;
+  operator: firebase.firestore.WhereFilterOp | 'start-with' | null;
   value: string;
+  valueType: FilterValueType;
   isApplied: boolean;
 
   constructor() {
     this.field = this.operator = this.value = null;
+    this.valueType = FilterValueType.String;
     this.isApplied = false;
   }
+}
+
+export enum FilterValueType {
+  String = 'string',
+  Number = 'number',
+  Boolean = 'boolean',
+  Object = 'object'
 }
