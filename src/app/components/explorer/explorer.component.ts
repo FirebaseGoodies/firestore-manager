@@ -152,7 +152,11 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       // console.error(error);
     };
     this.editorOptions.onChange = () => {
-      try { } catch (error) {
+      try {
+        const data = this.editor.get();
+        JSON.stringify(data);
+        this.onEditorDataChange(data);
+      } catch (error) {
         // console.error(error);
       }
     };
