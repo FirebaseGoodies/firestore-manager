@@ -53,7 +53,7 @@
               <div nz-col nzSpan="8">
                 <nz-button-group class="pull-right">
                   <button nz-button nzType="primary" class="no-transition valign-middle" (click)="onViewUnsavedChangesClick()"><span translate>View</span></button>
-                  <button nz-button nzType="primary" class="no-transition valign-middle" nz-dropdown nzPlacement="bottomRight" [nzDropdownMenu]="unsavedChangesMenu"><i nz-icon nzType="down" nzTheme="outline"></i></button>
+                  <button nz-button nzType="primary" class="no-transition valign-middle" nz-dropdown nzPlacement="bottomRight" nzTrigger="click" [nzDropdownMenu]="unsavedChangesMenu"><i nz-icon nzType="down" nzTheme="outline"></i></button>
                   <nz-dropdown-menu #unsavedChangesMenu="nzDropdownMenu">
                     <ul nz-menu>
                       <li nz-menu-item (click)="unsavedChanges = false" translate>Dismiss</li>
