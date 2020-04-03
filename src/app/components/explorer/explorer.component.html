@@ -43,7 +43,7 @@
           *ngIf="unsavedChanges && !isCollectionListLoading"
           nzBanner
           [nzMessage]="unsavedChangesTpl"
-          [ngStyle]="{ 'position': 'sticky', 'top': '-20px', 'margin': '-20px -20px 10px', 'z-index': 100 }"
+          [ngStyle]="{ 'position': 'sticky', 'top': '-20px', 'margin': '-20px -20px 15px', 'z-index': 100, 'border-bottom': '1px solid #eee' }"
         >
           <ng-template #unsavedChangesTpl>
             <div nz-row nzGutter="8">
@@ -51,7 +51,15 @@
                 <span><span translate>YouHaveUnsavedChanges</span>&nbsp;<i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="{{ 'ClickToSeeAllModifications' | translate }}" nzType="question-circle" nzTheme="outline"></i></span>
               </div>
               <div nz-col nzSpan="8">
-                <button nz-button nzType="primary" (click)="onViewUnsavedChangesClick()" [ngStyle]="{ float: 'right' }"><span translate>View</span></button>
+                <nz-button-group class="pull-right">
+                  <button nz-button nzType="primary" class="no-transition valign-middle" (click)="onViewUnsavedChangesClick()"><span translate>View</span></button>
+                  <button nz-button nzType="primary" class="no-transition valign-middle" nz-dropdown nzPlacement="bottomRight" nzTrigger="click" [nzDropdownMenu]="unsavedChangesMenu"><i nz-icon nzType="down" nzTheme="outline"></i></button>
+                  <nz-dropdown-menu #unsavedChangesMenu="nzDropdownMenu">
+                    <ul nz-menu>
+                      <li nz-menu-item (click)="unsavedChanges = false" translate>Dismiss</li>
+                    </ul>
+                  </nz-dropdown-menu>
+                </nz-button-group>
               </div>
             </div>
           </ng-template>
@@ -288,7 +296,7 @@
               nzShape="circle"
               nzSize="small"
               title="{{ 'Filter' | translate }}"
-              [ngStyle]="{ float: 'right' }"
+              class="pull-right"
               nz-popover
               nzPopoverTitle="{{ 'Filter' | translate }}"
               [(nzVisible)]="node.filterIsVisible"

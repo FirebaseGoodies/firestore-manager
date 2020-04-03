@@ -107,3 +107,20 @@ textarea.tab-size {
 ::ng-deep .ant-select-selection > div {
   overflow: hidden;
 }
+.ant-dropdown-button.ant-btn-group > .ant-btn:last-child:not(:first-child) {
+  padding-right: 5px;
+  padding-left: 5px;
+}
+.ant-btn.no-transition {
+  transition: none;
+  -webkit-transition: none;
+}
+.valign-middle {
+  vertical-align: middle;
+}
+.pull-left {
+  float: left;
+}
+.pull-right {
+  float: right;
+}

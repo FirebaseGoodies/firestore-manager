@@ -381,5 +381,8 @@
     },
     "Object": {
         "message": "Objet"
+    },
+    "Dismiss": {
+        "message": "Rejeter"
     }
 }
