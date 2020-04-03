@@ -381,5 +381,8 @@
     },
     "Object": {
         "message": "Object"
+    },
+    "Dismiss": {
+        "message": "Dismiss"
     }
 }
