@@ -6,7 +6,7 @@ import { Database } from '../models/database.model';
 @Injectable({
   providedIn: 'root'
 })
-export class Guard implements CanActivate {
+export class ExplorerGuard implements CanActivate {
 
   constructor(private router: Router, private storage: StorageService) {}
 
