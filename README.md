@@ -9,7 +9,7 @@ A simple, fast and intuitive web-extension to manage firestore databases, made w
 
 ![screenshot](screenshots/popup.png)
 
-> **Warning:** This project is still work in progress & may not be suited for production use.
+:warning: This project is still work in progress & may not be suited for production use.
 
 ## Features
 
