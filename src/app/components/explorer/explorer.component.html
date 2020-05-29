@@ -329,7 +329,7 @@
                 <nz-button-group>
                   <button nz-button nzType="default" 
                     [disabled]="!filters[node.title].field || !filters[node.title].operator || !filters[node.title].value || !filters[node.title].valueType"
-                    [ngStyle]="{ 'vertical-align': 'middle' }"
+                    [ngStyle]="{ 'vertical-align': 'middle', 'border-radius': 0 }"
                     (click)="applyFilter(node)"
                   >
                     <span translate>Apply</span>
