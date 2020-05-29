@@ -308,7 +308,7 @@
             ><i nz-icon nzType="filter"></i></button>
             <ng-template #filterTpl>
               <nz-input-group nzCompact>
-                <input type="text" nz-input placeholder="{{ 'Field' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].field" />
+                <input type="text" nz-input placeholder="{{ 'Field' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].field" (keyup.enter)="applyFilter(node)" />
                 <nz-select nzPlaceHolder="{{ 'Operator' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].operator">
                   <nz-option nzLabel="==" nzValue="=="></nz-option>
                   <nz-option nzLabel=">" nzValue=">"></nz-option>
@@ -320,7 +320,7 @@
                   <nz-option nzLabel="array-contains" nzValue="array-contains"></nz-option>
                   <nz-option nzLabel="array-contains-any" nzValue="array-contains-any"></nz-option>
                 </nz-select>
-                <input type="text" nz-input placeholder="{{ 'Value' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].value" />
+                <input type="text" nz-input placeholder="{{ 'Value' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].value" (keyup.enter)="applyFilter(node)" />
                 <nz-button-group>
                   <button nz-button nzType="default" 
                     [disabled]="!filters[node.title].field || !filters[node.title].operator || !filters[node.title].value"
