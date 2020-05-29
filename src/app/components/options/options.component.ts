@@ -18,6 +18,7 @@ export class OptionsComponent implements OnInit {
       if (navigator.userAgent.indexOf('Chrome') != -1) {
         document.body.style.width = '500px';
         document.body.style.padding = '10px';
+        document.body.style.overflowX = 'hidden';
       }
     }
   }
