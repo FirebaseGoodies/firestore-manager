@@ -3,6 +3,7 @@ import { AngularFirestore, QueryFn } from '@angular/fire/firestore';
 import { Subscription } from 'rxjs';
 import { Database } from '../models/database.model';
 import { StorageService } from './storage.service';
+import { Observable, combineLatest } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -125,14 +126,24 @@ export class FirestoreService {
       });
     }
 
-    filterCollection(name: string, queryFunction?: QueryFn): Promise<any> {
+    filterCollection(name: string, ...queryFunctions: QueryFn[]): Promise<any> {
       return new Promise((resolve, reject) => {
-        this.db.collection(name, queryFunction).get().toPromise().then((snapshot) => {
-          // console.log(snapshot);
+        const observables: Observable<any>[] = [];
+        if (queryFunctions && queryFunctions.length) {
+          queryFunctions.forEach((queryFunction: QueryFn) => {
+            observables.push(this.db.collection(name, queryFunction).get());
+          });
+        } else {
+          observables.push(this.db.collection(name).get());
+        }
+        combineLatest(observables).toPromise().then((snapshots) => {
           let docs = {};
-          snapshot.forEach(doc => {
-            // console.log(doc);
-            docs[doc.id] = doc.data();
+          snapshots.forEach(snapshot => {
+            // console.log(snapshot);
+            snapshot.forEach(doc => {
+              // console.log(doc);
+              docs[doc.id] = doc.data();
+            });
           });
           // console.log(docs);
           this.cache[name] = docs;

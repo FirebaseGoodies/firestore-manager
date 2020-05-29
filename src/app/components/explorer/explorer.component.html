@@ -312,6 +312,7 @@
                 <input type="text" nz-input placeholder="{{ 'Field' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].field" (keyup.enter)="applyFilter(node)" />
                 <nz-select nzPlaceHolder="{{ 'Operator' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].operator">
                   <nz-option nzLabel="==" nzValue="=="></nz-option>
+                  <nz-option nzLabel="!=" nzValue="!="></nz-option>
                   <nz-option nzLabel=">" nzValue=">"></nz-option>
                   <nz-option nzLabel=">=" nzValue=">="></nz-option>
                   <nz-option nzLabel="<" nzValue="<"></nz-option>
