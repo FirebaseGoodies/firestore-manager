@@ -323,9 +323,12 @@
                   <nz-option nzLabel="array-contains-any" nzValue="array-contains-any"></nz-option>
                 </nz-select>
                 <input type="text" nz-input placeholder="{{ 'Value' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].value" (keyup.enter)="applyFilter(node)" />
+                <nz-select nzPlaceHolder="{{ 'ValueType' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].valueType">
+                  <nz-option *ngFor="let type of filterValueTypes" [nzLabel]="type.label" [nzValue]="type.value"></nz-option>
+                </nz-select>
                 <nz-button-group>
                   <button nz-button nzType="default" 
-                    [disabled]="!filters[node.title].field || !filters[node.title].operator || !filters[node.title].value"
+                    [disabled]="!filters[node.title].field || !filters[node.title].operator || !filters[node.title].value || !filters[node.title].valueType"
                     [ngStyle]="{ 'vertical-align': 'middle' }"
                     (click)="applyFilter(node)"
                   >
@@ -334,17 +337,6 @@
                   <button nz-button nzType="default" [ngStyle]="{ 'vertical-align': 'middle' }" nz-dropdown [nzDropdownMenu]="filterMenu"><i nz-icon nzType="down" nzTheme="outline"></i></button>
                   <nz-dropdown-menu #filterMenu="nzDropdownMenu">
                     <ul nz-menu>
-                      <li nz-submenu nzTitle="{{ 'ValueType' | translate }}">
-                        <ul>
-                          <li nz-menu-item
-                            *ngFor="let type of filterValueTypes"
-                            [nzSelected]="filters[node.title].valueType === type.value"
-                            (click)="filters[node.title].valueType = type.value"
-                          >
-                            {{ type.label | translate }}
-                          </li>
-                        </ul>
-                      </li>
                       <li nz-menu-item [nzDisabled]="!filters[node.title].isApplied" (click)="removeFilter(node)" translate>Remove</li>
                     </ul>
                   </nz-dropdown-menu>

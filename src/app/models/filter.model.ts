@@ -7,8 +7,7 @@ export class Filter {
   isApplied: boolean;
 
   constructor() {
-    this.field = this.operator = this.value = null;
-    this.valueType = FilterValueType.String;
+    this.field = this.operator = this.value = this.valueType = null;
     this.isApplied = false;
   }
 }

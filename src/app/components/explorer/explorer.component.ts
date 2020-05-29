@@ -901,7 +901,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   applyFilter(collection: NzTreeNode|any) {
     // console.log(this.filters[collection.title]);
-    if (collection && this.filters[collection.title].field && this.filters[collection.title].operator && this.filters[collection.title].value) {
+    if (collection && this.filters[collection.title].field && this.filters[collection.title].operator && this.filters[collection.title].value && this.filters[collection.title].valueType) {
       this.startLoading('Filtering');
       collection.filterIsVisible = false;
       this.filterCollection(collection).finally(() => {
