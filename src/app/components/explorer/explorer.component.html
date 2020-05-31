@@ -326,7 +326,7 @@
                 </nz-select>
                 <input type="text" nz-input placeholder="{{ 'Value' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].value" (keyup.enter)="applyFilter(node)" />
                 <nz-select nzPlaceHolder="{{ 'ValueType' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].valueType">
-                  <nz-option *ngFor="let type of filterValueTypes" [nzLabel]="type.label" [nzValue]="type.value"></nz-option>
+                  <nz-option *ngFor="let type of filterValueTypes" [nzLabel]="type.label | translate" [nzValue]="type.value"></nz-option>
                 </nz-select>
                 <nz-button-group>
                   <button nz-button nzType="default" 
