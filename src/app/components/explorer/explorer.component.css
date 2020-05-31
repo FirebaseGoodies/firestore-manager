@@ -24,9 +24,6 @@
   font-weight: 600;
   line-height: 60px;
 }
-.left-layout > nz-header img {
-  margin: 0 16px;
-}
 nz-sider {
   overflow: auto;
   height: 100%;
