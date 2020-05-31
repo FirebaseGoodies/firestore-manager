@@ -336,12 +336,9 @@
                   >
                     <span translate>Apply</span>
                   </button>
-                  <button nz-button nzType="default" [ngStyle]="{ 'vertical-align': 'middle' }" nz-dropdown [nzDropdownMenu]="filterMenu"><i nz-icon nzType="down" nzTheme="outline"></i></button>
-                  <nz-dropdown-menu #filterMenu="nzDropdownMenu">
-                    <ul nz-menu>
-                      <li nz-menu-item [nzDisabled]="!filters[node.title].isApplied" (click)="removeFilter(node)" translate>Remove</li>
-                    </ul>
-                  </nz-dropdown-menu>
+                  <button nz-button nzType="default" [ngStyle]="{ 'vertical-align': 'middle' }" nz-tooltip nzTooltipPlacement="right" nzTitle="{{ 'Remove' | translate }}" [disabled]="!filters[node.title].isApplied" (click)="removeFilter(node)">
+                    <i nz-icon nzType="minus-circle" nzTheme="outline"></i>
+                  </button>
                 </nz-button-group>
                 
               </nz-input-group>
