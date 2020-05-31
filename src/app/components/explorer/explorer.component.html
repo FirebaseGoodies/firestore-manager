@@ -209,6 +209,7 @@
                 draggable="true"
                 aria-grabbed="true"
                 [class.active]="node.isSelected"
+                [class.rename-mode]="node.isRenameModeEnabled"
                 [title]="node.title"
                 (contextmenu)="createContextMenu($event, isCollectionDeleteModeEnabled ? deleteModeMenu : parentNodeMenu)"
                 (click)="closeContextMenu()"
@@ -249,6 +250,7 @@
               <span
                 class="custom-node"
                 [class.active]="node.isSelected"
+                [class.rename-mode]="node.isRenameModeEnabled"
                 [title]="node.title"
                 (contextmenu)="createContextMenu($event, isCollectionDeleteModeEnabled ? deleteModeMenu : leafMenu)"
                 (click)="closeContextMenu()"
