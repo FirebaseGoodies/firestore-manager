@@ -24,9 +24,6 @@
   font-weight: 600;
   line-height: 60px;
 }
-.left-layout > nz-header img {
-  margin: 0 16px;
-}
 nz-sider {
   overflow: auto;
   height: 100%;
@@ -74,10 +71,10 @@ textarea.tab-size {
   border-radius: 2px;
   padding: 0 5px;
 }
-.custom-node:hover {
+.custom-node:hover:not(.rename-mode) {
   background-color: #e6f7ff;
 }
-.custom-node.active {
+.custom-node.active:not(.rename-mode) {
   background-color: #bae7ff;
 }
 :host ::ng-deep json-editor,
