@@ -156,6 +156,7 @@ export class FirestoreService {
     }
 
     addCollection(name: string, content: any): Promise<any> {
+      content = this.convertDates(content);
       return this.db.collection(name).add(content);
     }
 
@@ -219,6 +220,7 @@ export class FirestoreService {
     setDocument(collectionName: string, documentName: string, content: any): Promise<any> {
       return new Promise((resolve, reject) => {
         try {
+          content = this.convertDates(content);
           this.db.collection(collectionName).doc(documentName).set(content).then((doc) => {
             resolve(doc);
           }).catch((error) => {
@@ -232,5 +234,22 @@ export class FirestoreService {
 
     saveDocument(collectionName: string, documentName: string): Promise<any> {
       return this.setDocument(collectionName, documentName, this.cache[collectionName][documentName]);
+    }
+
+    private convertDates(content: any) {
+      if (!content || typeof content !== 'object') {
+        return content;
+      }
+      const keys = Object.keys(content);
+      if (keys.length === 2 && keys.indexOf('seconds') !== -1 && keys.indexOf('nanoseconds') !== -1) {
+        content = new Date(+content.seconds * 1000);
+      } else {
+        keys.forEach((key: string) => {
+          if (content[key] && typeof content[key] === 'object') {
+            content[key] = this.convertDates(content[key]);
+          }
+        });
+      }
+      return content;
     }
 }
