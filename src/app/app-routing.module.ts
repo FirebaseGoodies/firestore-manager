@@ -8,9 +8,20 @@ import { CanDeactivateGuard } from './services/can-deactivate-guard.service';
 
 
 const routes: Routes = [
-  { path: 'manager', component: ManagerComponent },
-  { path: 'options', component: OptionsComponent },
-  { path: '**', component: ExplorerComponent, canActivate: [ExplorerGuard], canDeactivate: [CanDeactivateGuard] }
+  {
+    path: 'manager',
+    component: ManagerComponent
+  },
+  {
+    path: 'options',
+    component: OptionsComponent
+  },
+  {
+    path: '**',
+    component: ExplorerComponent,
+    canActivate: [ExplorerGuard],
+    canDeactivate: [CanDeactivateGuard]
+  }
 ];
 
 @NgModule({
