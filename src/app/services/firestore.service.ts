@@ -245,16 +245,14 @@ export class FirestoreService {
       if (!data) {
         return data;
       }
-      if (key) { // if data has a key, convert it
-        if (data instanceof firestore.Timestamp) {
-          data = new Date(+data.seconds * 1000);
-        } else if (data instanceof firestore.DocumentReference) {
-          data = data.path;
-          if (this.referenceFields.indexOf(key) === -1) {
-            this.referenceFields.push(key);
-          }
+      if (data instanceof firestore.Timestamp) {
+        data = new Date(+data.seconds * 1000);
+      } else if (key && data instanceof firestore.DocumentReference) {
+        data = data.path;
+        if (this.referenceFields.indexOf(key) === -1) {
+          this.referenceFields.push(key);
         }
-      } else if (typeof data === 'object') { // else, loop over data keys
+      } else if (typeof data === 'object') {
         Object.keys(data).forEach((key: string) => {
           data[key] = this.convertDataForDisplay(data[key], key);
         });
@@ -266,12 +264,10 @@ export class FirestoreService {
       if (!data) {
         return data;
       }
-      if (key) {
-        if (isDate(data)) {
-          data = new Date(data);
-        } else if (this.referenceFields.indexOf(key) !== -1) {
-          data = this.db.doc(data).ref;
-        }
+      if (isDate(data)) {
+        data = new Date(data);
+      } else if (key && this.referenceFields.indexOf(key) !== -1) {
+        data = this.db.doc(data).ref;
       } else if (typeof data === 'object') {
         Object.keys(data).forEach((key: string) => {
           data[key] = this.convertDataForSave(data[key], key);
