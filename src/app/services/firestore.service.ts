@@ -4,7 +4,8 @@ import { Subscription } from 'rxjs';
 import { Database } from '../models/database.model';
 import { StorageService } from './storage.service';
 import { Observable, combineLatest } from 'rxjs';
-import { firestore } from 'firebase';
+import { firestore } from 'firebase/app';
+import { isDate } from '../helpers/parser.helper';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class FirestoreService {
     cache: any = {};
     private unchangedCache: any = {};
     private subscriptions: { [key: string]: Subscription } = {};
+    private referenceFields: string[] = [];
 
     constructor(afs: AngularFirestore) {
       this.db = afs;
@@ -57,6 +59,7 @@ export class FirestoreService {
       } else {
         this.cache = {};
         this.unchangedCache = {};
+        this.referenceFields = [];
         this.unsubscribe();
       }
     }
@@ -110,7 +113,7 @@ export class FirestoreService {
             let docs = {};
             snapshot.forEach(doc => {
               // console.log(doc);
-              docs[doc.id] = doc.data();
+              docs[doc.id] = this.convertDataForDisplay(doc.data());
             });
             // console.log(docs);
             if (! this.cache[name]) {
@@ -143,7 +146,7 @@ export class FirestoreService {
             // console.log(snapshot);
             snapshot.forEach(doc => {
               // console.log(doc);
-              docs[doc.id] = doc.data();
+              docs[doc.id] = this.convertDataForDisplay(doc.data());
             });
           });
           // console.log(docs);
@@ -157,7 +160,7 @@ export class FirestoreService {
     }
 
     addCollection(name: string, content: any): Promise<any> {
-      content = this.convertTimestamps(content);
+      content = this.convertDataForSave(content);
       return this.db.collection(name).add(content);
     }
 
@@ -179,6 +182,7 @@ export class FirestoreService {
         } else if (! this.subscriptions[subscriptionName]) {
           this.subscriptions[subscriptionName] = this.db.collection(collectionName).doc(documentName).valueChanges().subscribe((doc: any) => {
             // console.log(doc);
+            doc = this.convertDataForDisplay(doc);
             if (! this.cache[collectionName][documentName]) {
               this.cache[collectionName][documentName] = doc;
             }
@@ -221,7 +225,7 @@ export class FirestoreService {
     setDocument(collectionName: string, documentName: string, content: any): Promise<any> {
       return new Promise((resolve, reject) => {
         try {
-          content = this.convertTimestamps(content);
+          content = this.convertDataForSave(content);
           this.db.collection(collectionName).doc(documentName).set(content).then((doc) => {
             resolve(doc);
           }).catch((error) => {
@@ -237,17 +241,43 @@ export class FirestoreService {
       return this.setDocument(collectionName, documentName, this.cache[collectionName][documentName]);
     }
 
-    private convertTimestamps(content: any) {
-      if (!content) {
-        return content;
+    private convertDataForDisplay(data: any, key?: string) {
+      if (!data) {
+        return data;
       }
-      if (content instanceof firestore.Timestamp) {
-        content = new Date(+content.seconds * 1000);
-      } else {
-        Object.keys(content).forEach((key: string) => {
-          content[key] = this.convertTimestamps(content[key]);
+      if (key) { // if data has a key, convert it
+        if (data instanceof firestore.Timestamp) {
+          data = new Date(+data.seconds * 1000);
+        } else if (data instanceof firestore.DocumentReference) {
+          data = data.path;
+          if (this.referenceFields.indexOf(key) === -1) {
+            this.referenceFields.push(key);
+          }
+        }
+      } else if (typeof data === 'object') { // else, loop over data keys
+        Object.keys(data).forEach((key: string) => {
+          data[key] = this.convertDataForDisplay(data[key], key);
         });
       }
-      return content;
+      return data;
     }
+
+    private convertDataForSave(data: any, key?: string) {
+      if (!data) {
+        return data;
+      }
+      if (key) {
+        if (isDate(data)) {
+          data = new Date(data);
+        } else if (this.referenceFields.indexOf(key) !== -1) {
+          data = this.db.doc(data).ref;
+        }
+      } else if (typeof data === 'object') {
+        Object.keys(data).forEach((key: string) => {
+          data[key] = this.convertDataForSave(data[key], key);
+        });
+      }
+      return data;
+    }
+
 }
