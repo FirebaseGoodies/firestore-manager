@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { Database } from '../models/database.model';
 import { StorageService } from './storage.service';
 import { Observable, combineLatest } from 'rxjs';
+import { firestore } from 'firebase';
 
 @Injectable({
   providedIn: 'root'
@@ -156,7 +157,7 @@ export class FirestoreService {
     }
 
     addCollection(name: string, content: any): Promise<any> {
-      content = this.convertDates(content);
+      content = this.convertTimestamps(content);
       return this.db.collection(name).add(content);
     }
 
@@ -220,7 +221,7 @@ export class FirestoreService {
     setDocument(collectionName: string, documentName: string, content: any): Promise<any> {
       return new Promise((resolve, reject) => {
         try {
-          content = this.convertDates(content);
+          content = this.convertTimestamps(content);
           this.db.collection(collectionName).doc(documentName).set(content).then((doc) => {
             resolve(doc);
           }).catch((error) => {
@@ -236,18 +237,15 @@ export class FirestoreService {
       return this.setDocument(collectionName, documentName, this.cache[collectionName][documentName]);
     }
 
-    private convertDates(content: any) {
-      if (!content || typeof content !== 'object') {
+    private convertTimestamps(content: any) {
+      if (!content) {
         return content;
       }
-      const keys = Object.keys(content);
-      if (keys.length === 2 && keys.indexOf('seconds') !== -1 && keys.indexOf('nanoseconds') !== -1) {
+      if (content instanceof firestore.Timestamp) {
         content = new Date(+content.seconds * 1000);
       } else {
-        keys.forEach((key: string) => {
-          if (content[key] && typeof content[key] === 'object') {
-            content[key] = this.convertDates(content[key]);
-          }
+        Object.keys(content).forEach((key: string) => {
+          content[key] = this.convertTimestamps(content[key]);
         });
       }
       return content;
