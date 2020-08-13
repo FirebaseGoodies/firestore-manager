@@ -3,8 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { OptionsComponent } from './components/options/options.component';
 import { ManagerComponent } from './components/manager/manager.component';
 import { ExplorerComponent } from './components/explorer/explorer.component';
-import { ExplorerGuard } from './services/explorer-guard.service';
-import { CanDeactivateGuard } from './services/can-deactivate-guard.service';
+import { ExplorerGuard } from './services/guards/explorer-guard.service';
+import { CanDeactivateGuard } from './services/guards/can-deactivate-guard.service';
 
 
 const routes: Routes = [
