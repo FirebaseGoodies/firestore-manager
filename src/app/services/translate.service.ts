@@ -21,7 +21,7 @@ export class TranslateService {
     return () => new Promise(resolve => {
       if (! self.app.isWebExtension) {
         self.storage.get('lang').then((lang) => {
-          if (lang) {
+          if (lang && Object.values(self.languages).indexOf(lang) !== -1) {
             self.defaultLanguage = lang;
           }
         }).finally(() => {

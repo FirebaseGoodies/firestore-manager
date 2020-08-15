@@ -12,7 +12,7 @@ import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dro
 import { CacheDiffComponent } from '../partials/cache-diff/cache-diff.component';
 import { Router } from '@angular/router';
 import { NotificationService } from 'src/app/services/notification.service';
-import { ComponentCanDeactivate } from 'src/app/services/can-deactivate-guard.service';
+import { ComponentCanDeactivate } from 'src/app/services/guards/can-deactivate-guard.service';
 import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NzSelectComponent } from 'ng-zorro-antd/select';
