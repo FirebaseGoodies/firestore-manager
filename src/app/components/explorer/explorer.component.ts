@@ -929,6 +929,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       case 'boolean':
         return booleanify(filter.value);
       case 'object':
+      case 'array':
         return jsonify(filter.value);
       default:
         return filter.value;

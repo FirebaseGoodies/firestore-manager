@@ -382,6 +382,9 @@
     "Object": {
         "message": "Objet"
     },
+    "Array": {
+        "message": "Tableau"
+    },
     "Dismiss": {
         "message": "Rejeter"
     }
