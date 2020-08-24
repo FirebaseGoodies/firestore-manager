@@ -133,7 +133,7 @@ export class FirestoreService {
     filterCollection(name: string, ...queryFunctions: QueryFn[]): Promise<any> {
       return new Promise((resolve, reject) => {
         const observables: Observable<any>[] = [];
-        if (queryFunctions && queryFunctions.length) {
+        if (queryFunctions?.length) {
           queryFunctions.forEach((queryFunction: QueryFn) => {
             observables.push(this.db.collection(name, queryFunction).get());
           });
@@ -176,7 +176,7 @@ export class FirestoreService {
     getDocument(collectionName: string, documentName: string): Promise<any> {
       return new Promise((resolve, reject) => {
         const subscriptionName = collectionName + '.' + documentName;
-        if (this.cache[collectionName] && this.cache[collectionName][documentName]) {
+        if (this.cache[collectionName]?.[documentName]) {
           // console.log(collectionName + ' > ' + documentName + ' found in cache');
           resolve(this.cache[collectionName][documentName]);
         } else if (! this.subscriptions[subscriptionName]) {
@@ -198,7 +198,7 @@ export class FirestoreService {
     }
 
     addDocument(collectionName: string, content: any, documentName?: string): Promise<any> {
-      if (documentName && documentName.length) {
+      if (documentName?.length) {
         return this.setDocument(collectionName, documentName, content);
       } else {
         return this.addCollection(collectionName, content);

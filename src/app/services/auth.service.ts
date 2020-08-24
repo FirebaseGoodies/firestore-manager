@@ -34,12 +34,12 @@ export class AuthService {
             signInFunction = () => this.auth.signInAnonymously();
             break;
           case AuthenticationType.EmailAndPassword:
-            if (authentication.data.email && authentication.data.password && authentication.data.email.length && authentication.data.password.length) {
+            if (authentication.data.email?.length && authentication.data.password?.length) {
               signInFunction = () => this.auth.signInWithEmailAndPassword(authentication.data.email, authentication.data.password);
             }
             break;
           case AuthenticationType.Token:
-            if (authentication.data.token && authentication.data.token.length) {
+            if (authentication.data.token?.length) {
               signInFunction = () => this.auth.signInWithCustomToken(authentication.data.token);
             }
             break;
