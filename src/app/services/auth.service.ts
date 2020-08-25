@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Authentication, AuthenticationType } from '../models/auth.model';
-import { auth } from 'firebase/app';
+import * as firebase from 'firebase/app';
+import 'firebase/auth'; // required when importing firebase from 'firebase/app'
 
 @Injectable()
 export class AuthService {
@@ -46,7 +47,7 @@ export class AuthService {
         }
         // Sign in
         if (signInFunction !== null) {
-          this.auth.setPersistence(auth.Auth.Persistence.NONE).then(() => {
+          this.auth.setPersistence(firebase.auth.Auth.Persistence.NONE).then(() => {
             signInFunction().then(() => {
               resolve();
             }).catch((error: firebase.FirebaseError) => {
