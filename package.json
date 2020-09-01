@@ -24,7 +24,7 @@
     "@angular/platform-browser-dynamic": "^9.1.12",
     "@angular/router": "^9.1.12",
     "ang-jsoneditor": "^1.10.0",
-    "firebase": "^7.19.0",
+    "firebase": "7.13.1",
     "jsoneditor": "^9.0.4",
     "ng-zorro-antd": "^8.5.2",
     "ngx-diff2html": "^0.1.2",
