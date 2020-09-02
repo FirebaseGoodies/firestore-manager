@@ -169,8 +169,8 @@ export class FirestoreService {
     }
 
     addCollection(name: string, content: any): Promise<any> {
-      content = this.convertDataForSave(content);
-      return this.db.collection(name).add(content);
+      const data = this.convertDataForSave({...content});
+      return this.db.collection(name).add(data);
     }
 
     deleteCollection(collectionName: string): boolean {
@@ -234,8 +234,8 @@ export class FirestoreService {
     setDocument(collectionName: string, documentName: string, content: any): Promise<any> {
       return new Promise((resolve, reject) => {
         try {
-          content = this.convertDataForSave(content);
-          this.db.collection(collectionName).doc(documentName).set(content).then((doc) => {
+          const data = this.convertDataForSave({...content});
+          this.db.collection(collectionName).doc(documentName).set(data).then((doc) => {
             resolve(doc);
           }).catch((error) => {
             reject(error);
