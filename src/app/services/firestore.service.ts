@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, QueryFn } from '@angular/fire/firestore';
+import { AngularFirestore, QueryFn, DocumentReference } from '@angular/fire/firestore';
 import { Subscription } from 'rxjs';
 import { Database } from '../models/database.model';
 import { StorageService } from './storage.service';
 import { Observable, combineLatest } from 'rxjs';
 import { firestore } from 'firebase/app';
-import { isDate } from '../helpers/parser.helper';
+import { isDate, isDocumentReference } from '../helpers/parser.helper';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,6 @@ export class FirestoreService {
     cache: any = {};
     private unchangedCache: any = {};
     private subscriptions: { [key: string]: Subscription } = {};
-    private referenceFields: string[] = [];
 
     constructor(afs: AngularFirestore) {
       this.db = afs;
@@ -59,7 +58,6 @@ export class FirestoreService {
       } else {
         this.cache = {};
         this.unchangedCache = {};
-        this.referenceFields = [];
         this.unsubscribe();
       }
     }
@@ -94,6 +92,17 @@ export class FirestoreService {
     isDocument(collectionName: string, documentName: string): Promise<boolean> {
       return new Promise((resolve, reject) => {
         this.db.collection(collectionName).doc(documentName).get().toPromise().then((docSnapshot) => {
+          // console.log(documentName, docSnapshot.exists);
+          resolve(docSnapshot.exists);
+        }).catch((error) => {
+          reject(error);
+        });
+      });
+    }
+
+    isReference(ref: DocumentReference): Promise<boolean> {
+      return new Promise((resolve, reject) => {
+        this.db.doc(ref).get().toPromise().then((docSnapshot) => {
           // console.log(documentName, docSnapshot.exists);
           resolve(docSnapshot.exists);
         }).catch((error) => {
@@ -241,36 +250,40 @@ export class FirestoreService {
       return this.setDocument(collectionName, documentName, this.cache[collectionName][documentName]);
     }
 
-    private convertDataForDisplay(data: any, key?: string) {
+    private convertDataForDisplay(data: any) {
       if (!data) {
         return data;
       }
       if (data instanceof firestore.Timestamp) {
         data = new Date(+data.seconds * 1000);
-      } else if (key && data instanceof firestore.DocumentReference) {
+      } else if (data instanceof firestore.DocumentReference) {
         data = data.path;
-        if (this.referenceFields.indexOf(key) === -1) {
-          this.referenceFields.push(key);
-        }
       } else if (typeof data === 'object') {
         Object.keys(data).forEach((key: string) => {
-          data[key] = this.convertDataForDisplay(data[key], key);
+          data[key] = this.convertDataForDisplay(data[key]);
         });
       }
       return data;
     }
 
-    private convertDataForSave(data: any, key?: string) {
+    private convertDataForSave(data: any) {
       if (!data) {
         return data;
       }
       if (isDate(data)) {
         data = new Date(data);
-      } else if (key && this.referenceFields.indexOf(key) !== -1) {
-        data = this.db.doc(data).ref;
+      } else if (isDocumentReference(data)) {
+        let ref = null;
+        try {
+          ref = this.db.doc(data).ref;
+        } catch(e) {
+          // console.error(e);
+          ref = data;
+        }
+        data = ref;
       } else if (typeof data === 'object') {
         Object.keys(data).forEach((key: string) => {
-          data[key] = this.convertDataForSave(data[key], key);
+          data[key] = this.convertDataForSave(data[key]);
         });
       }
       return data;
