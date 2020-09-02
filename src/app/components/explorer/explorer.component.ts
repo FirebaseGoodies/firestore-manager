@@ -561,7 +561,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     });
     Promise.all(promises).then(() => {
       // Clear cache
-      this.firestore.clearCache();
+      //this.firestore.clearCache(); // no need to clear cache after save (it will be updated by snapshotChanges)
       // this.selectedCollection = null;
       // this.updateEditor({});
       this.collectionNodesExpandedKeys = [];
