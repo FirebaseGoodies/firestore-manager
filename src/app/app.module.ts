@@ -14,7 +14,7 @@ import { ExplorerComponent } from './components/explorer/explorer.component';
 import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-import { AngularFireModule, FirebaseOptionsToken } from '@angular/fire';
+import { AngularFireModule, FIREBASE_OPTIONS } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FirestoreService } from './services/firestore.service';
@@ -60,7 +60,7 @@ import { LogoComponent } from './components/partials/logo/logo.component';
     // Load translations (for web app only)
     { provide: APP_INITIALIZER, useFactory: TranslateService.init, deps: [TranslateService], multi: true },
     // Set database config (for AngularFireModule)
-    { provide: FirebaseOptionsToken, useFactory: FirestoreService.getDatabaseConfig },
+    { provide: FIREBASE_OPTIONS, useFactory: FirestoreService.getDatabaseConfig },
     // Config ng-zorro-antd i18n (language & date)
     { provide: NZ_I18N, useValue: en_US }
   ],

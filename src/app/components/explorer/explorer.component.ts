@@ -3,16 +3,15 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { jsonValidator } from 'src/app/validators/json.validator';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { StorageService } from 'src/app/services/storage.service';
-import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/core';
+import { NzTreeNode, NzFormatEmitEvent, NzFormatBeforeDropEvent } from 'ng-zorro-antd/core';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzFormatBeforeDropEvent } from 'ng-zorro-antd/core';
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 import { CacheDiffComponent } from '../partials/cache-diff/cache-diff.component';
 import { Router } from '@angular/router';
 import { NotificationService } from 'src/app/services/notification.service';
-import { ComponentCanDeactivate } from 'src/app/services/guards/can-deactivate-guard.service';
+import { ComponentCanDeactivate } from 'src/app/guards/can-deactivate.guard';
 import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NzSelectComponent } from 'ng-zorro-antd/select';
@@ -111,7 +110,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   ngOnInit() {
     // Get data from storage
     this.database = StorageService.getTmp('database');
-    if (this.database && this.database.collections) {
+    if (this.database?.collections) {
       this.collectionList = this.database.collections;
       this.setCollectionNodes(this.database.collections);
     }
@@ -119,7 +118,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.editor.setMode(this.options.editorMode);
     });
     // Sign in if authentication enabled
-    if (this.database.authentication && this.database.authentication.enabled) {
+    if (this.database.authentication?.enabled) {
       this.startLoading('Authentication');
       this.auth.signIn(this.database.authentication).catch(() => {
         if (this.auth.lastError) {
@@ -166,7 +165,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   ngOnDestroy() {
     this.firestore.unsubscribe();
     // Sign out if authentication enabled
-    if (this.database.authentication && this.database.authentication.enabled) {
+    if (this.database.authentication?.enabled) {
       this.auth.signOut();
     }
   }
@@ -198,7 +197,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   searchCollection(value: string): void {
-    if (value && value.length) {
+    if (value?.length) {
       // Check if collection exists
       this.isSearchCollectionLoading = true;
       this.firestore.isCollection(value).then((isCollection: boolean) => {
@@ -481,7 +480,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   onCollectionNodeExpand(event: Required<NzFormatEmitEvent>) {
     // console.log(event);
     const node = event.node;
-    if (node && node.isExpanded) {
+    if (node?.isExpanded) {
       this.expandNode(node);
     }
   }
@@ -562,7 +561,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     });
     Promise.all(promises).then(() => {
       // Clear cache
-      this.firestore.clearCache();
+      //this.firestore.clearCache(); // no need to clear cache after save (it will be updated by snapshotChanges)
       // this.selectedCollection = null;
       // this.updateEditor({});
       this.collectionNodesExpandedKeys = [];
@@ -729,7 +728,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   private restoreCollectionCache(cacheBackup: any, collection: NzTreeNode) {
     Object.keys(this.firestore.cache[collection.title]).forEach(documentName => {
-      if (cacheBackup[collection.title] && cacheBackup[collection.title][documentName]) {
+      if (cacheBackup[collection.title]?.[documentName]) {
         this.firestore.cache[collection.title][documentName] = cacheBackup[collection.title][documentName];
       }
     });
@@ -737,7 +736,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   private loadCollection(node: NzTreeNode|any, force: boolean = false, resetFilter: boolean = true): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (!force && node.children && node.children.length) {
+      if (!force && node.children?.length) {
         resolve();
       } else {
         this.firestore.getCollection(node.title).then((documents) => {
@@ -929,6 +928,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       case 'boolean':
         return booleanify(filter.value);
       case 'object':
+      case 'array':
         return jsonify(filter.value);
       default:
         return filter.value;
@@ -1038,7 +1038,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       }
     });
     // Uncheck parent node
-    if (node.parentNode && node.parentNode.isChecked) {
+    if (node.parentNode?.isChecked) {
       this.uncheckNode(node.parentNode);
     }
   }
@@ -1104,7 +1104,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   renameCollection(collection: NzTreeNode|any, name: string) {
-    if (name && name.length) {
+    if (name?.length) {
       collection.isRenameButtonLoading = true;
       // Check if collection already exists
       this.firestore.isCollection(name).then((exists: boolean) => {
@@ -1166,7 +1166,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   renameDocument(document: NzTreeNode|any, name: string) {
-    if (name && name.length) {
+    if (name?.length) {
       document.isRenameButtonLoading = true;
       // Check if document already exists
       const collectionName = document.parentNode.title;
@@ -1178,7 +1178,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           this.startLoading('Renaming');
           // Take cache backup & clear cache
           const cacheBackup = {};
-          if (this.firestore.cache[collectionName] && this.firestore.cache[collectionName][document.title]) {
+          if (this.firestore.cache[collectionName]?.[document.title]) {
             cacheBackup[collectionName] = {};
             cacheBackup[collectionName][name] = this.firestore.getCacheBackup(collectionName, document.title);
           }
@@ -1233,7 +1233,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   disableRenameMode(event: Event, node: NzTreeNode|any) {
-    event && event.stopPropagation();
+    event?.stopPropagation();
     node.isRenameModeEnabled = false;
     if (node.wasSelected) {
       node.isSelected = true;

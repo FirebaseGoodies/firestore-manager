@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { StorageService } from '../storage.service';
-import { Database } from '../../models/database.model';
+import { StorageService } from '../services/storage.service';
+import { Database } from '../models/database.model';
 
 @Injectable({
   providedIn: 'root'
