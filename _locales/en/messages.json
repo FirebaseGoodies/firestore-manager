@@ -382,6 +382,9 @@
     "Object": {
         "message": "Object"
     },
+    "Array": {
+        "message": "Array"
+    },
     "Dismiss": {
         "message": "Dismiss"
     }
