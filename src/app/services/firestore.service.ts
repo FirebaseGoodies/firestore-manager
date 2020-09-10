@@ -103,7 +103,7 @@ export class FirestoreService {
     isReference(ref: DocumentReference): Promise<boolean> {
       return new Promise((resolve, reject) => {
         this.db.doc(ref).get().toPromise().then((docSnapshot) => {
-          // console.log(documentName, docSnapshot.exists);
+          // console.log(ref.path, docSnapshot.exists);
           resolve(docSnapshot.exists);
         }).catch((error) => {
           reject(error);
