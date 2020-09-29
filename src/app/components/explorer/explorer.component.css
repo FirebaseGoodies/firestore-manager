@@ -121,3 +121,8 @@ textarea.tab-size {
 .pull-right {
   float: right;
 }
+::ng-deep .ant-drawer-body {
+  position: relative;
+  padding-bottom: 53px;
+  min-height: calc(100% - 55px);
+}
