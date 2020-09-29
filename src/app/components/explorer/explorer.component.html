@@ -231,8 +231,9 @@
                       <li nz-menu-item (click)="addDocument(node)" translate>Document</li>
                     </ul>
                   </li>
-                  <li nz-menu-item translate (click)="enableRenameMode($event, node)">Rename</li>
+                  <li nz-menu-item (click)="enableRenameMode($event, node)" translate>Rename</li>
                   <li nz-menu-item (click)="reloadCollection(node)" translate>Reload</li>
+                  <li nz-menu-item (click)="onDeleteCollectionClick(node)" translate>Delete</li>
                   <li *ngIf="node.children?.length" nz-submenu nzTitle="{{ 'Export' | translate }}">
                     <ul>
                       <li nz-menu-item (click)="exportCollection(node, exportFormat.JSON)">JSON</li>

@@ -369,9 +369,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
-  onDeleteCollectionClick() {
+  onDeleteCollectionClick(node?: NzTreeNode|any) {
     if (this.collectionNodes.length) {
-      this.collectionNodesCheckedKeys = [];
+      this.collectionNodesCheckedKeys = node ? [node.key] : [];
       this.collectionNodesSelectedKeys = [];
       this.collectionNodesExpandedKeys = [];
       this.permanentlyDeleteDocuments = false;
