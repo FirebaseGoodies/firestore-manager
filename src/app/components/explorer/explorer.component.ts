@@ -460,24 +460,28 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     this.closeContextMenu();
   }
 
-  private selectNode(node: NzTreeNode|any) {
+  private selectNode(node: NzTreeNode|any, keepEditorHistory: boolean = false) {
     if (node.level > 0) {
       this.firestore.getDocument(node.parentNode.title, node.title).then((document) => {
-        this.updateEditor(document);
+        this.updateEditor(document, keepEditorHistory);
         this.selectedCollection = node.parentNode;
         this.selectedDocument = node;
       });
     } else {
       this.firestore.getCollection(node.title).then((documents) => {
-        this.updateEditor(documents || {});
+        this.updateEditor(documents || {}, keepEditorHistory);
         this.selectedCollection = node;
         this.selectedDocument = null;
       });
     }
   }
 
-  private updateEditor(json: JSON|{}) {
-    this.editor.set(json as JSON);
+  private updateEditor(json: JSON|{}, keepHistory: boolean = false) {
+    if (keepHistory) {
+      this.editor.update(json as JSON);
+    } else {
+      this.editor.set(json as JSON);
+    }
     if (['tree', 'form'].indexOf(this.editor.getMode()) !== -1) {
       this.editor.expandAll();
     }
@@ -603,10 +607,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
               key: this.selectedDocument.key,
               title: this.selectedDocument.title,
               parentNode: selectedNode
-            });
+            }, true);
             this.collectionNodesSelectedKeys = [this.selectedDocument.key];
           } else {
-            this.selectNode(selectedNode);
+            this.selectNode(selectedNode, true);
             this.collectionNodesSelectedKeys = [this.selectedCollection.key];
           }
         }).catch((error) => {
