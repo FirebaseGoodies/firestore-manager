@@ -414,6 +414,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           this.isCollectionDeleteModeEnabled = false;
         }
       });
+      // Clear editor content
+      if (this.collectionNodesCheckedKeys.indexOf(this.selectedCollection.key) !== -1) {
+        this.updateEditor({});
+      }
     }).catch((error) => {
       this.displayError(error);
     }).finally(() => {
@@ -470,8 +474,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
-  private updateEditor(json: JSON) {
-    this.editor.set(json);
+  private updateEditor(json: JSON|{}) {
+    this.editor.set(json as JSON);
     if (['tree', 'form'].indexOf(this.editor.getMode()) !== -1) {
       this.editor.expandAll();
     }
