@@ -567,14 +567,16 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     });
     Promise.all(promises).then(() => {
       // Clear cache
-      //this.firestore.clearCache(); // no need to clear cache after save (it will be updated by snapshotChanges)
-      // this.selectedCollection = null;
-      // this.updateEditor({});
-      this.collectionNodesExpandedKeys = [];
-      this.collectionNodesSelectedKeys = [];
-      this.collectionNodes.forEach(node => {
-        node.children = []; // Remove child nodes (to refetch them)
-      });
+      if (!lastError) {
+        //this.firestore.clearCache(); // no need to clear cache after save (it will be updated by snapshotChanges)
+        // this.selectedCollection = null;
+        // this.updateEditor({});
+        this.collectionNodesExpandedKeys = [];
+        this.collectionNodesSelectedKeys = [];
+        this.collectionNodes.forEach(node => {
+          node.children = []; // Remove child nodes (to refetch them)
+        });
+      }
       // Define function to execute at the end
       const done: Function = () => {
         this.collectionNodes = [...this.collectionNodes]; // refresh
@@ -590,8 +592,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         }
       };
       // Reload selected collection/document
-      const selectedNode = this.collectionNodes.find((node) => node.key === this.selectedCollection.key);
-      if (selectedNode) {
+      const selectedNode = this.collectionNodes.find((node) => node.key === this.selectedCollection?.key);
+      if (selectedNode && !lastError) {
         //console.log(selectedNode);
         this.loadCollection(selectedNode).then(() => {
           this.collectionNodesExpandedKeys = [this.selectedCollection.key];
