@@ -51,6 +51,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   permanentlyDeleteDocuments: boolean = false;
   unsavedChanges: boolean = false;
   discardUnsavedChanges: boolean = false;
+  isViewUnsavedChangesDisabled: boolean = false;
   isSaveModalVisible: boolean = false;
   isSaveButtonLoading: boolean = false;
   isSaveButtonDisabled: boolean = false;
@@ -154,8 +155,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       if (this.editor.isValidJson()) {
         const data = this.editor.get();
         this.onEditorDataChange(data);
+        this.isViewUnsavedChangesDisabled = false;
       } else {
-        this.unsavedChanges = false;
+        this.isViewUnsavedChangesDisabled = true;
       }
     };
     // Set filter value types
