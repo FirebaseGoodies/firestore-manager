@@ -38,6 +38,9 @@
     "NoUnsavedChanges": {
         "message": "No unsaved changes"
     },
+    "FixJsonErrorsToViewUnsavedChanges": {
+        "message": "You have to fix json errors to be able to view unsaved changes"
+    },
     "Databases": {
         "message": "Databases"
     },
