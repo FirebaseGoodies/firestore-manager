@@ -88,7 +88,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   };
 
   constructor(
-    private fb: FormBuilder,
+    private formBuilder: FormBuilder,
     private firestore: FirestoreService,
     private storage: StorageService,
     private notification: NotificationService,
@@ -130,11 +130,11 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       });
     }
     // Init forms
-    this.addCollectionForm = this.fb.group({
+    this.addCollectionForm = this.formBuilder.group({
       name: [null, [Validators.required]],
       content: [null, [Validators.required, jsonValidator]]
     });
-    this.addDocumentForm = this.fb.group({
+    this.addDocumentForm = this.formBuilder.group({
       name: [null, [Validators.required, Validators.pattern("^[a-zA-Z0-9 _-]+$")]],
       useRandomName: [false, []],
       collection: [null, [Validators.required]],
@@ -152,12 +152,11 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       // console.error(error);
     };
     this.editorOptions.onChange = () => {
-      if (this.editor.isValidJson()) {
+      const isValid = this.editor.isValidJson();
+      this.isViewUnsavedChangesDisabled = !isValid;
+      if (isValid) {
         const data = this.editor.get();
         this.onEditorDataChange(data);
-        this.isViewUnsavedChangesDisabled = false;
-      } else {
-        this.isViewUnsavedChangesDisabled = true;
       }
     };
     // Set filter value types
