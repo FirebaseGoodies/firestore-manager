@@ -419,7 +419,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       });
       // Clear editor content
       if (this.collectionNodesCheckedKeys.indexOf(this.selectedCollection.key) !== -1) {
-        this.updateEditor({});
+        this.updateEditor({} as JSON);
       }
     }).catch((error) => {
       this.displayError(error);
@@ -477,11 +477,11 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
-  private updateEditor(json: JSON|{}, keepHistory: boolean = false) {
+  private updateEditor(json: JSON, keepHistory: boolean = false) {
     if (keepHistory) {
-      this.editor.update(json as JSON);
+      this.editor.update(json);
     } else {
-      this.editor.set(json as JSON);
+      this.editor.set(json);
     }
     if (['tree', 'form'].indexOf(this.editor.getMode()) !== -1) {
       this.editor.expandAll();
