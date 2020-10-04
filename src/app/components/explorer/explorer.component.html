@@ -7,7 +7,7 @@
         nz-tooltip
         nzTooltipTitle="{{ 'ReportBug' | translate }}"
         nzTooltipPlacement="left"
-        href="https://github.com/AXeL-dev/firestore-manager/issues"
+        [href]="app.links.issueTracker"
         target="_blank"
       >
         <i nz-icon nzType="bug" nzTheme="outline"></i>
@@ -47,7 +47,12 @@
               </div>
               <div nz-col nzSpan="8">
                 <nz-button-group class="pull-right">
-                  <button nz-button nzType="primary" class="no-transition valign-middle" (click)="onViewUnsavedChangesClick()"><span translate>View</span></button>
+                  <button nz-button nzType="primary" class="no-transition valign-middle" (click)="onViewUnsavedChangesClick()" [disabled]="isViewUnsavedChangesDisabled" nz-tooltip [nzTooltipTitle]="viewUnsavedChangesTooltip" [nzOverlayStyle]="isViewUnsavedChangesDisabled ? {} : {display:'none'}" nzTooltipPlacement="bottom">
+                    <ng-template #viewUnsavedChangesTooltip>
+                      <i nz-icon nzType="warning" style="margin-right: 8px"></i> <span>{{ 'FixJsonErrorsToViewUnsavedChanges' | translate }}</span>
+                    </ng-template>
+                    <span translate>View</span>
+                  </button>
                   <button nz-button nzType="primary" class="no-transition valign-middle" nz-dropdown nzPlacement="bottomRight" nzTrigger="click" [nzDropdownMenu]="unsavedChangesMenu"><i nz-icon nzType="down" nzTheme="outline"></i></button>
                   <nz-dropdown-menu #unsavedChangesMenu="nzDropdownMenu">
                     <ul nz-menu>
@@ -231,8 +236,9 @@
                       <li nz-menu-item (click)="addDocument(node)" translate>Document</li>
                     </ul>
                   </li>
-                  <li nz-menu-item translate (click)="enableRenameMode($event, node)">Rename</li>
+                  <li nz-menu-item (click)="enableRenameMode($event, node)" translate>Rename</li>
                   <li nz-menu-item (click)="reloadCollection(node)" translate>Reload</li>
+                  <li nz-menu-item (click)="onDeleteCollectionClick(node)" translate>Delete</li>
                   <li *ngIf="node.children?.length" nz-submenu nzTitle="{{ 'Export' | translate }}">
                     <ul>
                       <li nz-menu-item (click)="exportCollection(node, exportFormat.JSON)">JSON</li>

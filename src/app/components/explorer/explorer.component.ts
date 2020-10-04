@@ -51,6 +51,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   permanentlyDeleteDocuments: boolean = false;
   unsavedChanges: boolean = false;
   discardUnsavedChanges: boolean = false;
+  isViewUnsavedChangesDisabled: boolean = false;
   isSaveModalVisible: boolean = false;
   isSaveButtonLoading: boolean = false;
   isSaveButtonDisabled: boolean = false;
@@ -87,7 +88,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   };
 
   constructor(
-    private fb: FormBuilder,
+    private formBuilder: FormBuilder,
     private firestore: FirestoreService,
     private storage: StorageService,
     private notification: NotificationService,
@@ -129,11 +130,11 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       });
     }
     // Init forms
-    this.addCollectionForm = this.fb.group({
+    this.addCollectionForm = this.formBuilder.group({
       name: [null, [Validators.required]],
       content: [null, [Validators.required, jsonValidator]]
     });
-    this.addDocumentForm = this.fb.group({
+    this.addDocumentForm = this.formBuilder.group({
       name: [null, [Validators.required, Validators.pattern("^[a-zA-Z0-9 _-]+$")]],
       useRandomName: [false, []],
       collection: [null, [Validators.required]],
@@ -151,7 +152,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       // console.error(error);
     };
     this.editorOptions.onChange = () => {
-      if (this.editor.isValidJson()) {
+      const isValid = this.editor.isValidJson();
+      this.isViewUnsavedChangesDisabled = !isValid;
+      if (isValid) {
         const data = this.editor.get();
         this.onEditorDataChange(data);
       }
@@ -369,9 +372,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
-  onDeleteCollectionClick() {
+  onDeleteCollectionClick(node?: NzTreeNode|any) {
     if (this.collectionNodes.length) {
-      this.collectionNodesCheckedKeys = [];
+      this.collectionNodesCheckedKeys = node ? [node.key] : [];
       this.collectionNodesSelectedKeys = [];
       this.collectionNodesExpandedKeys = [];
       this.permanentlyDeleteDocuments = false;
@@ -414,6 +417,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           this.isCollectionDeleteModeEnabled = false;
         }
       });
+      // Clear editor content
+      if (this.collectionNodesCheckedKeys.indexOf(this.selectedCollection.key) !== -1) {
+        this.updateEditor({});
+      }
     }).catch((error) => {
       this.displayError(error);
     }).finally(() => {
@@ -454,24 +461,28 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     this.closeContextMenu();
   }
 
-  private selectNode(node: NzTreeNode|any) {
+  private selectNode(node: NzTreeNode|any, keepEditorHistory: boolean = false) {
     if (node.level > 0) {
       this.firestore.getDocument(node.parentNode.title, node.title).then((document) => {
-        this.updateEditor(document);
+        this.updateEditor(document, keepEditorHistory);
         this.selectedCollection = node.parentNode;
         this.selectedDocument = node;
       });
     } else {
       this.firestore.getCollection(node.title).then((documents) => {
-        this.updateEditor(documents || {});
+        this.updateEditor(documents || {}, keepEditorHistory);
         this.selectedCollection = node;
         this.selectedDocument = null;
       });
     }
   }
 
-  private updateEditor(json: JSON) {
-    this.editor.set(json);
+  private updateEditor(json: JSON|{}, keepHistory: boolean = false) {
+    if (keepHistory) {
+      this.editor.update(json as JSON);
+    } else {
+      this.editor.set(json as JSON);
+    }
     if (['tree', 'form'].indexOf(this.editor.getMode()) !== -1) {
       this.editor.expandAll();
     }
@@ -561,14 +572,16 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     });
     Promise.all(promises).then(() => {
       // Clear cache
-      //this.firestore.clearCache(); // no need to clear cache after save (it will be updated by snapshotChanges)
-      // this.selectedCollection = null;
-      // this.updateEditor({});
-      this.collectionNodesExpandedKeys = [];
-      this.collectionNodesSelectedKeys = [];
-      this.collectionNodes.forEach(node => {
-        node.children = []; // Remove child nodes (to refetch them)
-      });
+      if (!lastError) {
+        //this.firestore.clearCache(); // no need to clear cache after save (it will be updated by snapshotChanges)
+        // this.selectedCollection = null;
+        // this.updateEditor({});
+        this.collectionNodesExpandedKeys = [];
+        this.collectionNodesSelectedKeys = [];
+        this.collectionNodes.forEach(node => {
+          node.children = []; // Remove child nodes (to refetch them)
+        });
+      }
       // Define function to execute at the end
       const done: Function = () => {
         this.collectionNodes = [...this.collectionNodes]; // refresh
@@ -584,8 +597,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         }
       };
       // Reload selected collection/document
-      const selectedNode = this.collectionNodes.find((node) => node.key === this.selectedCollection.key);
-      if (selectedNode) {
+      const selectedNode = this.collectionNodes.find((node) => node.key === this.selectedCollection?.key);
+      if (selectedNode && !lastError) {
         //console.log(selectedNode);
         this.loadCollection(selectedNode).then(() => {
           this.collectionNodesExpandedKeys = [this.selectedCollection.key];
@@ -595,10 +608,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
               key: this.selectedDocument.key,
               title: this.selectedDocument.title,
               parentNode: selectedNode
-            });
+            }, true);
             this.collectionNodesSelectedKeys = [this.selectedDocument.key];
           } else {
-            this.selectNode(selectedNode);
+            this.selectNode(selectedNode, true);
             this.collectionNodesSelectedKeys = [this.selectedCollection.key];
           }
         }).catch((error) => {

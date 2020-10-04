@@ -38,6 +38,9 @@
     "NoUnsavedChanges": {
         "message": "Aucune modification non sauvegardée"
     },
+    "FixJsonErrorsToViewUnsavedChanges": {
+        "message": "Vous devez corriger les erreurs json pour afficher les modifications non sauvegardées"
+    },
     "Databases": {
         "message": "Bases de données"
     },
@@ -107,10 +110,10 @@
         "message": "Vous avez des modifications non sauvegardées!"
     },
     "ClickToSeeAllModifications": {
-        "message": "Cliquez sur 'Voir' pour voir toutes les modifications."
+        "message": "Cliquez sur 'Afficher' pour voir toutes les modifications."
     },
     "View": {
-        "message": "Voir"
+        "message": "Afficher"
     },
     "Collection": {
         "message": "Collection"

@@ -2,3 +2,7 @@
 
 @import "~jsoneditor/dist/jsoneditor.min.css";
 @import "~diff2html/dist/diff2html.min.css";
+
+html {
+  position: relative !important;
+}

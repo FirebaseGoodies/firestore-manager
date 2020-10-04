@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, AfterViewInit } from '@angular/
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/core';
 import { DiffStyle, DiffFormat } from 'ngx-diff2html';
+import { sortObject } from 'src/app/helpers/sort.helper';
 
 @Component({
   selector: 'fm-cache-diff',
@@ -53,14 +54,14 @@ export class CacheDiffComponent implements AfterViewInit {
         const unchangedCache = this.firestore.getUnchangedCache();
         // Check collections diff
         Object.keys(cache).forEach((collectionName: string) => {
-          const newCache = JSON.stringify(cache[collectionName], null, 4);
-          const oldCache = JSON.stringify(unchangedCache[collectionName] || {}, null, 4);
+          const newCache = JSON.stringify(sortObject(cache[collectionName]), null, 4);
+          const oldCache = JSON.stringify(sortObject(unchangedCache[collectionName] || {}), null, 4);
           if (newCache !== oldCache) {
             const node: NzTreeNode|any = { title: collectionName, key: collectionName, expanded: true, children: [], oldContent: oldCache, newContent: newCache };
             // Check documents diff
             Object.keys(cache[collectionName]).forEach((documentName: string) => {
-              const newCache = JSON.stringify(cache[collectionName][documentName], null, 4);
-              const oldCache = JSON.stringify(unchangedCache[collectionName] ? unchangedCache[collectionName][documentName] || {} : {}, null, 4);
+              const newCache = JSON.stringify(sortObject(cache[collectionName][documentName]), null, 4);
+              const oldCache = JSON.stringify(sortObject(unchangedCache[collectionName] ? unchangedCache[collectionName][documentName] || {} : {}), null, 4);
               if (newCache !== oldCache) {
                 let oldContent = oldCache;
                 let newContent = newCache;
