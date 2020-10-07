@@ -51,7 +51,7 @@ export class CacheDiffComponent implements AfterViewInit {
     return new Promise((resolve, reject) => {
       setTimeout(() => { // used to allow showing the modal without freezes
         const cache = this.firestore.cache;
-        const unchangedCache = this.firestore.getUnchangedCache();
+        const unchangedCache = this.convertDates(this.firestore.getUnchangedCache());
         // Check collections diff
         Object.keys(cache).forEach((collectionName: string) => {
           const newCache = JSON.stringify(sortObject(cache[collectionName]), null, 4);
@@ -79,6 +79,20 @@ export class CacheDiffComponent implements AfterViewInit {
         resolve();
       }, 1000);
     });
+  }
+
+  private convertDates(data: any) {
+    if (!data) {
+      return data;
+    }
+    if (data instanceof Date) {
+      data = data.toISOString();
+    } else if (typeof data === 'object') {
+      Object.keys(data).forEach((key: string) => {
+        data[key] = this.convertDates(data[key]);
+      });
+    }
+    return data;
   }
 
   onCollectionNodeClick(event: Required<NzFormatEmitEvent>) {
