@@ -165,7 +165,7 @@
                   (nzOnConfirm)="onCollectionDeleteConfirm()"><span translate>Delete</span></button>
               </nz-badge>
               <ng-template #confirmDeleteTpl>
-                <span><i nz-icon nzType="exclamation-circle" nzTheme="fill" style="color: #faad14; margin-right: 5px;"></i><strong translate>DeleteQuestion</strong></span>
+                <span><i nz-icon nzType="exclamation-circle" nzTheme="fill" class="warning-icon"></i><strong translate>DeleteQuestion</strong></span>
                 <div [ngStyle]="{ 'margin-top': '10px' }">
                   <label nz-checkbox [(ngModel)]="permanentlyDeleteDocuments"><span translate>PermanentlyDeleteDocuments</span></label>
                 </div>

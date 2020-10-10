@@ -67,7 +67,7 @@ textarea.tab-size {
 }
 .custom-node {
   cursor: pointer;
-  line-height: 24px;
+  line-height: 24px !important;
   border-radius: 2px;
   padding: 0 5px;
 }
@@ -125,4 +125,8 @@ textarea.tab-size {
   position: relative;
   padding-bottom: 53px;
   min-height: calc(100% - 55px);
+}
+.warning-icon {
+  color: #faad14;
+  margin-right: 5px;
 }
