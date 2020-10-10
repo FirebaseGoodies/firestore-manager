@@ -49,7 +49,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   collectionNodesExpandedKeys: string[] = [];
   isCollectionDeleteModeEnabled: boolean = false;
   permanentlyDeleteDocuments: boolean = false;
-  unsavedChanges: boolean = false;
+  isUnsavedChangesAlertVisible: boolean = false;
   discardUnsavedChanges: boolean = false;
   isViewUnsavedChangesDisabled: boolean = false;
   isSaveModalVisible: boolean = false;
@@ -105,7 +105,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   // @HostListener allows us to also guard against browser refresh, close, etc.
   @HostListener('window:beforeunload')
   canDeactivate(): Observable<boolean> | boolean {
-    return !environment.production || !this.unsavedChanges;
+    return !environment.production || !this.isUnsavedChangesAlertVisible;
   }
 
   ngOnInit() {
@@ -537,10 +537,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       // Save to cache
       if (this.selectedDocument === null) {
         this.firestore.cache[this.selectedCollection.title] = event;
-        this.unsavedChanges = true;
+        this.isUnsavedChangesAlertVisible = true;
       } else {
         this.firestore.cache[this.selectedCollection.title][this.selectedDocument.title] = event;
-        this.unsavedChanges = true;
+        this.isUnsavedChangesAlertVisible = true;
       }
     }
   }
@@ -590,7 +590,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         if (lastError) {
           this.displayError(lastError);
         } else {
-          this.unsavedChanges = false;
+          this.isUnsavedChangesAlertVisible = false;
           // Display success message
           this.displayMessage('ChangesSuccessfullySaved');
           this.displayNotification('SavingChangesCompleted');
@@ -650,7 +650,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   onReloadCollectionClick() {
     if (this.collectionNodes.length) {
-      if (this.unsavedChanges) {
+      if (this.isUnsavedChangesAlertVisible) {
         this.modal.confirm({
           nzTitle: this.translation.get('ReloadAllCollections'),
           nzContent: this.reloadModalTpl,
@@ -670,7 +670,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.displayError(error);
     }).finally(() => {
       if (this.discardUnsavedChanges) {
-        this.unsavedChanges = false;
+        this.isUnsavedChangesAlertVisible = false;
       }
       this.stopLoading();
     });

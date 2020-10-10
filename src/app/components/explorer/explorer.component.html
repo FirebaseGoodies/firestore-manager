@@ -35,7 +35,7 @@
     <nz-sider nzTheme="light" nzWidth="300px" #collectionSider>
       <nz-spin nzTip="{{ collectionListLoadingMessage | translate }}..." [nzSpinning]="isCollectionListLoading">
         <nz-alert
-          *ngIf="unsavedChanges && !isCollectionListLoading"
+          *ngIf="isUnsavedChangesAlertVisible && !isCollectionListLoading"
           nzBanner
           [nzMessage]="unsavedChangesTpl"
           [ngStyle]="{ 'position': 'sticky', 'top': '-20px', 'margin': '-20px -20px 15px', 'z-index': 100, 'border-bottom': '1px solid #eee' }"
@@ -56,7 +56,7 @@
                   <button nz-button nzType="primary" class="no-transition valign-middle" nz-dropdown nzPlacement="bottomRight" nzTrigger="click" [nzDropdownMenu]="unsavedChangesMenu"><i nz-icon nzType="down" nzTheme="outline"></i></button>
                   <nz-dropdown-menu #unsavedChangesMenu="nzDropdownMenu">
                     <ul nz-menu>
-                      <li nz-menu-item (click)="unsavedChanges = false" translate>Dismiss</li>
+                      <li nz-menu-item (click)="isUnsavedChangesAlertVisible = false" translate>Dismiss</li>
                     </ul>
                   </nz-dropdown-menu>
                 </nz-button-group>
@@ -517,7 +517,7 @@
     [outputFormat]="options.diffOutputFormat"
     [enableSaveButton]="isSaveButtonDisabled"
     (enableSaveButtonChange)="onSaveButtonStatusChange($event)"
-    (emptyDiff)="unsavedChanges = false"
+    (emptyDiff)="isUnsavedChangesAlertVisible = false"
   ></fm-cache-diff>
   <nz-alert
     *ngIf="!isSaveButtonDisabled"
