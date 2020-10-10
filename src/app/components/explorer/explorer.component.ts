@@ -587,10 +587,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         this.collectionNodes = [...this.collectionNodes]; // refresh
         this.isSaveButtonLoading = false;
         this.isSaveModalVisible = false;
-        this.unsavedChanges = false;
         if (lastError) {
           this.displayError(lastError);
         } else {
+          this.unsavedChanges = false;
           // Display success message
           this.displayMessage('ChangesSuccessfullySaved');
           this.displayNotification('SavingChangesCompleted');
