@@ -567,7 +567,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   onSaveChangesClick() {
     // console.log('Saving...');
     this.isSaveButtonLoading = true;
-    this.firestore.cacheStatus.locked = true;
+    this.firestore.cacheStatus.lock();
     let promises: Promise<any>[] = [];
     let lastError: Error = null;
     // Save changed documents
@@ -610,8 +610,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         }
         // Unlock cache status
         setTimeout(() => { // setTimeout used to wait for upcoming snapshotChanges after save
-          this.firestore.cacheStatus.hasChanged = false;
-          this.firestore.cacheStatus.locked = false;
+          this.firestore.cacheStatus.unlock();
         }, 5000);
       };
       // Reload selected collection/document

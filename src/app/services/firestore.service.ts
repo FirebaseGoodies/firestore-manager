@@ -6,11 +6,7 @@ import { StorageService } from './storage.service';
 import { Observable, combineLatest } from 'rxjs';
 import { firestore } from 'firebase/app';
 import { isDate, isDocumentReference } from '../helpers/parser.helper';
-
-interface CacheStatus {
-  hasChanged: boolean,
-  locked: boolean
-}
+import { CacheStatus } from '../models/cache-status.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +15,7 @@ export class FirestoreService {
 
     db: AngularFirestore;
     cache: any = {};
-    cacheStatus: CacheStatus = {
-      hasChanged: false,
-      locked: false
-    };
+    cacheStatus: CacheStatus = new CacheStatus();
     private syncedCache: any = {}; // synced with the firestore database
     private subscriptions: { [key: string]: Subscription } = {};
 
@@ -69,8 +62,7 @@ export class FirestoreService {
         this.syncedCache = {};
         this.unsubscribe();
       }
-      this.cacheStatus.hasChanged = false;
-      this.cacheStatus.locked = false;
+      this.cacheStatus.reset();
     }
 
     unsubscribe(subscriptionName?: string) {
@@ -138,7 +130,7 @@ export class FirestoreService {
             // console.log(docs);
             if (! this.cache[name]) {
               this.cache[name] = docs;
-            } else if (! this.cacheStatus.locked) {
+            } else if (! this.cacheStatus.isLocked()) {
               const hasChanged: boolean = snapshot.map(({ payload }) => payload.type).indexOf('modified') !== -1;
               if (hasChanged) {
                 this.cacheStatus.hasChanged = true;
