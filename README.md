@@ -19,9 +19,8 @@ A simple, fast and intuitive web-extension to manage firestore databases, made w
 - Powerful diff viewer (using [diff-match-patch](https://github.com/google/diff-match-patch) & [diff2html](https://github.com/rtfpessoa/diff2html)).
 - JSON export/import.
 - Firebase Authentication (Anonymous, email & password, JWT token).
-- Add/Clone/Rename or Delete collections & documents.
-- Filter documents in each collection.
-- Display collections/documents count.
+- Add/Clone/Rename/Delete/Filter collections & documents.
+- Display collections & documents count.
 
 ## Installation
 
