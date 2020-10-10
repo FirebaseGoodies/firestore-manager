@@ -25,7 +25,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { Filter, FilterValueType } from 'src/app/models/filter.model';
 import { booleanify, isNumber, jsonify } from 'src/app/helpers/parser.helper';
 import { CollectionReference, QueryFn } from '@angular/fire/firestore';
-//import { slideInOut } from 'src/app/animations/slide-in-out.animation';
+import { slideInOut } from 'src/app/animations/slide-in-out.animation';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -38,7 +38,7 @@ const Chars = {
   templateUrl: './explorer.component.html',
   styleUrls: ['./explorer.component.css'],
   providers: [AuthService],
-  //animations: [slideInOut]
+  animations: [slideInOut]
 })
 export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
 

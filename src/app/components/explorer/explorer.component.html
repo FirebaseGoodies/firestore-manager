@@ -36,6 +36,7 @@
       <nz-spin nzTip="{{ collectionListLoadingMessage | translate }}..." [nzSpinning]="isCollectionListLoading">
         <nz-alert
           *ngIf="isUnsavedChangesAlertVisible && !isCollectionListLoading"
+          @slideInOut
           nzBanner
           [nzMessage]="unsavedChangesTpl"
           [ngStyle]="{ 'position': 'sticky', 'top': '-20px', 'margin': '-20px -20px 15px', 'z-index': 100, 'border-bottom': '1px solid #eee' }"
