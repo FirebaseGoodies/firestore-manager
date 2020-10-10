@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/core';
 import { DiffStyle, DiffFormat } from 'ngx-diff2html';
@@ -13,9 +13,8 @@ export class CacheDiffComponent implements AfterViewInit {
 
   @Input() diffStyle: DiffStyle = 'word';
   @Input() outputFormat: DiffFormat = 'line-by-line';
-  @Input() enableSaveButton: boolean = false;
-  @Output() enableSaveButtonChange: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() emptyDiff: EventEmitter<void> = new EventEmitter<void>();
+  @Input() reverseContent: boolean = false;
+  @Output() diffInit: EventEmitter<boolean> = new EventEmitter<boolean>();
   collectionNodes: any[] = [];
   newNodes: string[] = [];
   removedNodes: string[] = []; // Not used
@@ -23,10 +22,11 @@ export class CacheDiffComponent implements AfterViewInit {
   diff: string = null;
   diffContent: any = null;
 
-  constructor(private firestore: FirestoreService) { }
+  constructor(private firestore: FirestoreService, private cdr: ChangeDetectorRef) { }
 
   ngAfterViewInit() {
     this.getCacheDiff().then(() => {
+      let isEmpty = false;
       // Select first node
       if (this.collectionNodes.length) {
         const node = this.collectionNodes[0];
@@ -37,13 +37,12 @@ export class CacheDiffComponent implements AfterViewInit {
           filename: node.title
         };
         this.collectionNodes = [...this.collectionNodes]; // refresh
-        this.enableSaveButton = false;
       } else {
-        this.emptyDiff.emit();
-        this.enableSaveButton = true;
+        isEmpty = true;
       }
-      this.enableSaveButtonChange.emit(this.enableSaveButton);
+      this.diffInit.emit(isEmpty);
       this.isLoading = false;
+      this.cdr.detectChanges(); // used to fix "Expression has changed after it was checked" error
     });
   }
 

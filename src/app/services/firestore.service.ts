@@ -7,6 +7,11 @@ import { Observable, combineLatest } from 'rxjs';
 import { firestore } from 'firebase/app';
 import { isDate, isDocumentReference } from '../helpers/parser.helper';
 
+interface CacheStatus {
+  hasChanged: boolean,
+  locked: boolean
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +19,10 @@ export class FirestoreService {
 
     db: AngularFirestore;
     cache: any = {};
-    syncedCacheHasChanged: boolean = false;
+    cacheStatus: CacheStatus = {
+      hasChanged: false,
+      locked: false
+    };
     private syncedCache: any = {}; // synced with the firestore database
     private subscriptions: { [key: string]: Subscription } = {};
 
@@ -61,7 +69,8 @@ export class FirestoreService {
         this.syncedCache = {};
         this.unsubscribe();
       }
-      this.syncedCacheHasChanged = false;
+      this.cacheStatus.hasChanged = false;
+      this.cacheStatus.locked = false;
     }
 
     unsubscribe(subscriptionName?: string) {
@@ -120,7 +129,7 @@ export class FirestoreService {
           resolve(this.cache[name]);
         } else if (! this.subscriptions[name]) {
           this.subscriptions[name] = this.db.collection(name).snapshotChanges().subscribe((snapshot) => {
-            // console.log(snapshot);
+            // console.log('snapshot:', snapshot);
             let docs = {};
             snapshot.forEach(({ payload: { doc } }) => {
               // console.log(doc);
@@ -129,8 +138,11 @@ export class FirestoreService {
             // console.log(docs);
             if (! this.cache[name]) {
               this.cache[name] = docs;
-            } else {
-              this.syncedCacheHasChanged = true;
+            } else if (! this.cacheStatus.locked) {
+              const hasChanged: boolean = snapshot.map(({ payload }) => payload.type).indexOf('modified') !== -1;
+              if (hasChanged) {
+                this.cacheStatus.hasChanged = true;
+              }
             }
             this.syncedCache[name] = {...docs}; // assign a copy
             resolve(docs);
