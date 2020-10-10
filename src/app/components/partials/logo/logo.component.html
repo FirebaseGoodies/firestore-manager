@@ -5,4 +5,6 @@
   src="assets/images/firestore_logo.png"
 />
 <span>Firestore Manager</span>
-<nz-tag *ngIf="!app.isWebExtension" nzColor="#108ee9" style="margin-left: 10px;">{{ version }}</nz-tag>
+<nz-tag nzColor="#108ee9" style="margin-left: 10px;">
+  <a [href]="app.links.releases" target="_blank">{{ version }}</a>
+</nz-tag>
