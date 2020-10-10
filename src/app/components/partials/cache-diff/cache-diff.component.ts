@@ -51,17 +51,17 @@ export class CacheDiffComponent implements AfterViewInit {
     return new Promise((resolve, reject) => {
       setTimeout(() => { // used to allow showing the modal without freezes
         const cache = this.firestore.cache;
-        const unchangedCache = this.convertDates(this.firestore.getUnchangedCache());
+        const syncedCache = this.convertDates(this.firestore.getSyncedCache());
         // Check collections diff
         Object.keys(cache).forEach((collectionName: string) => {
           const newCache = JSON.stringify(sortObject(cache[collectionName]), null, 4);
-          const oldCache = JSON.stringify(sortObject(unchangedCache[collectionName] || {}), null, 4);
+          const oldCache = JSON.stringify(sortObject(syncedCache[collectionName] || {}), null, 4);
           if (newCache !== oldCache) {
             const node: NzTreeNode|any = { title: collectionName, key: collectionName, expanded: true, children: [], oldContent: oldCache, newContent: newCache };
             // Check documents diff
             Object.keys(cache[collectionName]).forEach((documentName: string) => {
               const newCache = JSON.stringify(sortObject(cache[collectionName][documentName]), null, 4);
-              const oldCache = JSON.stringify(sortObject(unchangedCache[collectionName] ? unchangedCache[collectionName][documentName] || {} : {}), null, 4);
+              const oldCache = JSON.stringify(sortObject(syncedCache[collectionName] ? syncedCache[collectionName][documentName] || {} : {}), null, 4);
               if (newCache !== oldCache) {
                 let oldContent = oldCache;
                 let newContent = newCache;

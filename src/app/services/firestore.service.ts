@@ -14,7 +14,8 @@ export class FirestoreService {
 
     db: AngularFirestore;
     cache: any = {};
-    private unchangedCache: any = {};
+    syncedCacheHasChanged: boolean = false;
+    private syncedCache: any = {}; // synced with the firestore database
     private subscriptions: { [key: string]: Subscription } = {};
 
     constructor(afs: AngularFirestore) {
@@ -27,8 +28,8 @@ export class FirestoreService {
       return database ? database.config : null;
     }
 
-    getUnchangedCache() {
-      return this.unchangedCache;
+    getSyncedCache() {
+      return this.syncedCache;
     }
 
     getCacheBackup(collectionName?: string, documentName?: string) {
@@ -47,19 +48,20 @@ export class FirestoreService {
       if (collectionName) {
         if (documentName) {
           this.cache[collectionName][documentName] && delete this.cache[collectionName][documentName];
-          this.unchangedCache[collectionName][documentName] && delete this.unchangedCache[collectionName][documentName];
+          this.syncedCache[collectionName][documentName] && delete this.syncedCache[collectionName][documentName];
           const subscriptionName = collectionName + '.' + documentName;
           this.unsubscribe(subscriptionName);
         } else {
           this.cache[collectionName] && delete this.cache[collectionName];
-          this.unchangedCache[collectionName] && delete this.unchangedCache[collectionName];
+          this.syncedCache[collectionName] && delete this.syncedCache[collectionName];
           this.unsubscribe(collectionName);
         }
       } else {
         this.cache = {};
-        this.unchangedCache = {};
+        this.syncedCache = {};
         this.unsubscribe();
       }
+      this.syncedCacheHasChanged = false;
     }
 
     unsubscribe(subscriptionName?: string) {
@@ -127,8 +129,10 @@ export class FirestoreService {
             // console.log(docs);
             if (! this.cache[name]) {
               this.cache[name] = docs;
+            } else {
+              this.syncedCacheHasChanged = true;
             }
-            this.unchangedCache[name] = {...docs}; // assign a copy
+            this.syncedCache[name] = {...docs}; // assign a copy
             resolve(docs);
           }, (error) => {
             reject(error);
@@ -160,7 +164,7 @@ export class FirestoreService {
           });
           // console.log(docs);
           this.cache[name] = docs;
-          this.unchangedCache[name] = {...docs}; // assign a copy
+          this.syncedCache[name] = {...docs}; // assign a copy
           resolve(docs);
         }).catch((error) => {
           reject(error);
@@ -195,7 +199,7 @@ export class FirestoreService {
             if (! this.cache[collectionName][documentName]) {
               this.cache[collectionName][documentName] = doc;
             }
-            this.unchangedCache[collectionName][documentName] = {...doc}; // assign a copy
+            this.syncedCache[collectionName][documentName] = {...doc}; // assign a copy
             resolve(doc);
           }, (error) => {
             reject(error);

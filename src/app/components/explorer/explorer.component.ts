@@ -781,7 +781,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.reloadCollections().catch((error) => {
         this.displayError(error);
       }).finally(() => {
-        const cache = this.firestore.getUnchangedCache();
+        const cache = this.firestore.getSyncedCache();
         const json = JSON.stringify(cache, null, 4);
         const file = new Blob([json], {type: 'text/json'});
         download(file, `${this.database.config.projectId}.json`);
@@ -1077,7 +1077,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   exportCollection(node: NzTreeNode, format: string) {
     this.startLoading('Exporting');
-    const cache = this.firestore.getUnchangedCache();
+    const cache = this.firestore.getSyncedCache();
     const data = { [node.title]: cache[node.title] || {} };
     switch(format) {
       case this.exportFormat.JSON:
