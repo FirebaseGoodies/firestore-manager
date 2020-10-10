@@ -16,6 +16,7 @@ jobs:
         run: |
           npm install
           npm run build:github
+          cp dist/firestore-manager/webapp/index.html dist/firestore-manager/webapp/404.html
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@3.6.2
