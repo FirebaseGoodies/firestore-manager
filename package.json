@@ -1,6 +1,6 @@
 {
   "name": "firestore-manager",
-  "version": "1.3.4-rc",
+  "version": "1.3.4",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
