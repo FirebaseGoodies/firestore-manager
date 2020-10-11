@@ -40,8 +40,8 @@
         </div> 
       </div>
       <ngx-diff2html
-        [left]="diffContent?.left"
-        [right]="diffContent?.right"
+        [left]="reverseContent ? diffContent?.right : diffContent?.left"
+        [right]="reverseContent ? diffContent?.left : diffContent?.right"
         [filename]="diffContent?.filename"
         [format]="outputFormat"
         [style]="diffStyle"
@@ -51,6 +51,6 @@
   </div>
   <nz-empty
     *ngIf="!isLoading && !diff"
-    nzNotFoundContent="{{ 'NoUnsavedChanges' | translate }}"
+    nzNotFoundContent="{{ 'NoChanges' | translate }}"
   ></nz-empty>
 </nz-spin>

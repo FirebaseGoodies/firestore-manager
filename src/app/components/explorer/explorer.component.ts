@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, HostListener, OnDestroy, ElementRef, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener, OnDestroy, ElementRef, TemplateRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { jsonValidator } from 'src/app/validators/json.validator';
 import { FirestoreService } from 'src/app/services/firestore.service';
@@ -25,7 +25,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { Filter, FilterValueType } from 'src/app/models/filter.model';
 import { booleanify, isNumber, jsonify } from 'src/app/helpers/parser.helper';
 import { CollectionReference, QueryFn } from '@angular/fire/firestore';
-//import { slideInOut } from 'src/app/animations/slide-in-out.animation';
+import { slideInOut } from 'src/app/animations/slide-in-out.animation';
 
 const Chars = {
   Numeric: [...'0123456789'],
@@ -38,7 +38,7 @@ const Chars = {
   templateUrl: './explorer.component.html',
   styleUrls: ['./explorer.component.css'],
   providers: [AuthService],
-  //animations: [slideInOut]
+  animations: [slideInOut]
 })
 export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
 
@@ -49,10 +49,13 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   collectionNodesExpandedKeys: string[] = [];
   isCollectionDeleteModeEnabled: boolean = false;
   permanentlyDeleteDocuments: boolean = false;
-  unsavedChanges: boolean = false;
+  hasUnsavedChanges: boolean = false;
   discardUnsavedChanges: boolean = false;
   isViewUnsavedChangesDisabled: boolean = false;
-  isSaveModalVisible: boolean = false;
+  isCacheDiffModalVisible: boolean = false;
+  isCacheDiffModalFooterVisible: boolean = true;
+  cacheDiffModalTitle: string = 'UnsavedChanges';
+  reverseCacheDiffContent: boolean = false;
   isSaveButtonLoading: boolean = false;
   isSaveButtonDisabled: boolean = false;
   isCollectionListLoading: boolean = false;
@@ -89,7 +92,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   constructor(
     private formBuilder: FormBuilder,
-    private firestore: FirestoreService,
+    public firestore: FirestoreService,
     private storage: StorageService,
     private notification: NotificationService,
     private translation: TranslateService,
@@ -97,7 +100,6 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     private message: NzMessageService,
     private modal: NzModalService,
     private contextMenu: NzContextMenuService,
-    private cdr: ChangeDetectorRef,
     private router: Router,
     public app: AppService
   ) { }
@@ -105,7 +107,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   // @HostListener allows us to also guard against browser refresh, close, etc.
   @HostListener('window:beforeunload')
   canDeactivate(): Observable<boolean> | boolean {
-    return !environment.production || !this.unsavedChanges;
+    return !environment.production || !this.hasUnsavedChanges;
   }
 
   ngOnInit() {
@@ -419,7 +421,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       });
       // Clear editor content
       if (this.collectionNodesCheckedKeys.indexOf(this.selectedCollection.key) !== -1) {
-        this.updateEditor({});
+        this.updateEditor({} as JSON);
       }
     }).catch((error) => {
       this.displayError(error);
@@ -477,11 +479,11 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     }
   }
 
-  private updateEditor(json: JSON|{}, keepHistory: boolean = false) {
+  private updateEditor(json: JSON, keepHistory: boolean = false) {
     if (keepHistory) {
-      this.editor.update(json as JSON);
+      this.editor.update(json);
     } else {
-      this.editor.set(json as JSON);
+      this.editor.set(json);
     }
     if (['tree', 'form'].indexOf(this.editor.getMode()) !== -1) {
       this.editor.expandAll();
@@ -537,26 +539,35 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       // Save to cache
       if (this.selectedDocument === null) {
         this.firestore.cache[this.selectedCollection.title] = event;
-        this.unsavedChanges = true;
+        this.hasUnsavedChanges = true;
       } else {
         this.firestore.cache[this.selectedCollection.title][this.selectedDocument.title] = event;
-        this.unsavedChanges = true;
+        this.hasUnsavedChanges = true;
       }
     }
   }
 
-  onViewUnsavedChangesClick() {
+  openCacheDiffModal(title: string = 'UnsavedChanges', showFooter: boolean = true, reverseContent: boolean = false) {
     this.isSaveButtonDisabled = true;
-    this.isSaveModalVisible = true
+    this.cacheDiffModalTitle = title;
+    this.isCacheDiffModalFooterVisible = showFooter;
+    this.reverseCacheDiffContent = reverseContent;
+    this.isCacheDiffModalVisible = true;
   }
 
-  onSaveButtonStatusChange(value: boolean) {
-    this.isSaveButtonDisabled = value;
-    this.cdr.detectChanges();
+  onDiffInit(isEmpty: boolean) {
+    if (isEmpty) {
+      this.isSaveButtonDisabled = true;
+      this.hasUnsavedChanges = false;
+    } else if (this.isCacheDiffModalFooterVisible) {
+      this.isSaveButtonDisabled = false;
+    }
   }
 
   onSaveChangesClick() {
+    // console.log('Saving...');
     this.isSaveButtonLoading = true;
+    this.firestore.cacheStatus.lock();
     let promises: Promise<any>[] = [];
     let lastError: Error = null;
     // Save changed documents
@@ -571,9 +582,10 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       }
     });
     Promise.all(promises).then(() => {
+      // console.log('Saving: clearing cache');
       // Clear cache
       if (!lastError) {
-        //this.firestore.clearCache(); // no need to clear cache after save (it will be updated by snapshotChanges)
+        // this.firestore.clearCache(); // no need to clear cache after save (it will be updated by snapshotChanges), fixes collections child nodes reload after save
         // this.selectedCollection = null;
         // this.updateEditor({});
         this.collectionNodesExpandedKeys = [];
@@ -584,17 +596,22 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       }
       // Define function to execute at the end
       const done: Function = () => {
+        // console.log('Saving: done');
         this.collectionNodes = [...this.collectionNodes]; // refresh
         this.isSaveButtonLoading = false;
-        this.isSaveModalVisible = false;
-        this.unsavedChanges = false;
+        this.isCacheDiffModalVisible = false;
         if (lastError) {
           this.displayError(lastError);
         } else {
+          this.hasUnsavedChanges = false;
           // Display success message
           this.displayMessage('ChangesSuccessfullySaved');
           this.displayNotification('SavingChangesCompleted');
         }
+        // Unlock cache status
+        setTimeout(() => { // setTimeout used to wait for upcoming snapshotChanges after save
+          this.firestore.cacheStatus.unlock();
+        }, 5000);
       };
       // Reload selected collection/document
       const selectedNode = this.collectionNodes.find((node) => node.key === this.selectedCollection?.key);
@@ -650,33 +667,33 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   onReloadCollectionClick() {
     if (this.collectionNodes.length) {
-      if (this.unsavedChanges) {
+      if (this.hasUnsavedChanges) {
         this.modal.confirm({
           nzTitle: this.translation.get('ReloadAllCollections'),
           nzContent: this.reloadModalTpl,
           nzOkText: this.translation.get('Confirm'),
           nzCancelText: this.translation.get('Cancel'),
-          nzOnOk: () => this.reload()
+          nzOnOk: () => this.reload(true, !this.discardUnsavedChanges)
         });
       } else {
-        this.reload();
+        this.reload(true);
       }
     }
   }
 
-  private reload(): void {
+  private reload(keepEditorHistory: boolean = false, restoreCache: boolean = false): void {
     this.startLoading('Reloading');
-    this.reloadCollections(!this.discardUnsavedChanges).catch((error) => {
+    this.reloadCollections(restoreCache, keepEditorHistory).catch((error) => {
       this.displayError(error);
     }).finally(() => {
       if (this.discardUnsavedChanges) {
-        this.unsavedChanges = false;
+        this.hasUnsavedChanges = false;
       }
       this.stopLoading();
     });
   }
 
-  private reloadCollections(restoreCache: boolean = true): Promise<void> {
+  private reloadCollections(restoreCache: boolean = true, keepEditorHistory: boolean = false): Promise<void> {
     // console.log(this.firestore.cache);
     const cacheBackup = this.firestore.getCacheBackup();
     let promises: Promise<any>[] = [];
@@ -703,7 +720,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           this.restoreCache(cacheBackup);
         }
         // Restore selected collection/document
-        this.restoreSelection();
+        this.restoreSelection(keepEditorHistory);
         if (lastError) {
           reject(lastError);
         } else {
@@ -726,14 +743,14 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     });
   }
 
-  private restoreSelection() {
+  private restoreSelection(keepEditorHistory: boolean = false) {
     if (this.selectedCollection) {
       this.collectionNodesExpandedKeys = [this.selectedCollection.key];
       if (this.selectedDocument && this.firestore.cache[this.selectedCollection.title][this.selectedDocument.title]) {
-        this.updateEditor(this.firestore.cache[this.selectedCollection.title][this.selectedDocument.title]);
+        this.updateEditor(this.firestore.cache[this.selectedCollection.title][this.selectedDocument.title], keepEditorHistory);
         this.collectionNodesSelectedKeys = [this.selectedDocument.key];
       } else {
-        this.updateEditor(this.firestore.cache[this.selectedCollection.title]);
+        this.updateEditor(this.firestore.cache[this.selectedCollection.title], keepEditorHistory);
         this.collectionNodesSelectedKeys = [this.selectedCollection.key];
       }
     }
@@ -781,7 +798,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       this.reloadCollections().catch((error) => {
         this.displayError(error);
       }).finally(() => {
-        const cache = this.firestore.getUnchangedCache();
+        const cache = this.firestore.getSyncedCache();
         const json = JSON.stringify(cache, null, 4);
         const file = new Blob([json], {type: 'text/json'});
         download(file, `${this.database.config.projectId}.json`);
@@ -1077,7 +1094,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
 
   exportCollection(node: NzTreeNode, format: string) {
     this.startLoading('Exporting');
-    const cache = this.firestore.getUnchangedCache();
+    const cache = this.firestore.getSyncedCache();
     const data = { [node.title]: cache[node.title] || {} };
     switch(format) {
       case this.exportFormat.JSON:

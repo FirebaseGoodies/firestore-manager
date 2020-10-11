@@ -67,7 +67,7 @@ textarea.tab-size {
 }
 .custom-node {
   cursor: pointer;
-  line-height: 24px;
+  line-height: 24px !important;
   border-radius: 2px;
   padding: 0 5px;
 }
@@ -125,4 +125,27 @@ textarea.tab-size {
   position: relative;
   padding-bottom: 53px;
   min-height: calc(100% - 55px);
+}
+.warning-icon {
+  color: #faad14;
+  margin-right: 5px;
+}
+.sticky-alert {
+  position: sticky;
+  top: -20px;
+  margin: -20px -20px 15px;
+  z-index: 100;
+  border-bottom: 1px solid #eee;
+}
+::ng-deep .sticky-alert.centered > .ant-alert {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+::ng-deep .sticky-alert.centered i.ant-alert-icon {
+  top: 50%;
+  transform: translateY(-50%);
+}
+::ng-deep .sticky-alert.centered .ant-alert-message > .ant-row {
+  display: flex;
+  align-items: center;
 }

@@ -35,8 +35,8 @@
     "LineByLine": {
         "message": "Line by Line"
     },
-    "NoUnsavedChanges": {
-        "message": "No unsaved changes"
+    "NoChanges": {
+        "message": "No changes"
     },
     "FixJsonErrorsToViewUnsavedChanges": {
         "message": "You have to fix json errors to be able to view unsaved changes"
@@ -115,6 +115,9 @@
     "View": {
         "message": "View"
     },
+    "CacheHasChanged": {
+        "message": "Database data has changed! It's recommended to reload collections before continuing to avoid data loss."
+    },
     "Collection": {
         "message": "Collection"
     },
@@ -165,6 +168,9 @@
     },
     "UnsavedChanges": {
         "message": "Unsaved Changes"
+    },
+    "Changes": {
+        "message": "Changes"
     },
     "SaveWarning": {
         "message": "Once saved, the above changes will override your existing firestore data. This operation is not reversible!"

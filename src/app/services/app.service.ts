@@ -8,6 +8,7 @@ export class AppService {
   isWebExtension: boolean = false;
   links: any = {
     github: 'https://github.com/AXeL-dev/firestore-manager',
+    releases: 'https://github.com/AXeL-dev/firestore-manager/releases',
     issueTracker: 'https://github.com/AXeL-dev/firestore-manager/issues',
     firefoxAddon: 'https://addons.mozilla.org/firefox/addon/firestore-manager'
   };

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/core';
 import { DiffStyle, DiffFormat } from 'ngx-diff2html';
@@ -13,9 +13,8 @@ export class CacheDiffComponent implements AfterViewInit {
 
   @Input() diffStyle: DiffStyle = 'word';
   @Input() outputFormat: DiffFormat = 'line-by-line';
-  @Input() enableSaveButton: boolean = false;
-  @Output() enableSaveButtonChange: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() emptyDiff: EventEmitter<void> = new EventEmitter<void>();
+  @Input() reverseContent: boolean = false;
+  @Output() diffInit: EventEmitter<boolean> = new EventEmitter<boolean>();
   collectionNodes: any[] = [];
   newNodes: string[] = [];
   removedNodes: string[] = []; // Not used
@@ -23,10 +22,11 @@ export class CacheDiffComponent implements AfterViewInit {
   diff: string = null;
   diffContent: any = null;
 
-  constructor(private firestore: FirestoreService) { }
+  constructor(private firestore: FirestoreService, private cdr: ChangeDetectorRef) { }
 
   ngAfterViewInit() {
     this.getCacheDiff().then(() => {
+      let isEmpty = false;
       // Select first node
       if (this.collectionNodes.length) {
         const node = this.collectionNodes[0];
@@ -37,13 +37,12 @@ export class CacheDiffComponent implements AfterViewInit {
           filename: node.title
         };
         this.collectionNodes = [...this.collectionNodes]; // refresh
-        this.enableSaveButton = false;
       } else {
-        this.emptyDiff.emit();
-        this.enableSaveButton = true;
+        isEmpty = true;
       }
-      this.enableSaveButtonChange.emit(this.enableSaveButton);
+      this.diffInit.emit(isEmpty);
       this.isLoading = false;
+      this.cdr.detectChanges(); // used to fix "Expression has changed after it was checked" error
     });
   }
 
@@ -51,17 +50,17 @@ export class CacheDiffComponent implements AfterViewInit {
     return new Promise((resolve, reject) => {
       setTimeout(() => { // used to allow showing the modal without freezes
         const cache = this.firestore.cache;
-        const unchangedCache = this.firestore.getUnchangedCache();
+        const syncedCache = this.convertDates(this.firestore.getSyncedCache());
         // Check collections diff
         Object.keys(cache).forEach((collectionName: string) => {
           const newCache = JSON.stringify(sortObject(cache[collectionName]), null, 4);
-          const oldCache = JSON.stringify(sortObject(unchangedCache[collectionName] || {}), null, 4);
+          const oldCache = JSON.stringify(sortObject(syncedCache[collectionName] || {}), null, 4);
           if (newCache !== oldCache) {
             const node: NzTreeNode|any = { title: collectionName, key: collectionName, expanded: true, children: [], oldContent: oldCache, newContent: newCache };
             // Check documents diff
             Object.keys(cache[collectionName]).forEach((documentName: string) => {
               const newCache = JSON.stringify(sortObject(cache[collectionName][documentName]), null, 4);
-              const oldCache = JSON.stringify(sortObject(unchangedCache[collectionName] ? unchangedCache[collectionName][documentName] || {} : {}), null, 4);
+              const oldCache = JSON.stringify(sortObject(syncedCache[collectionName] ? syncedCache[collectionName][documentName] || {} : {}), null, 4);
               if (newCache !== oldCache) {
                 let oldContent = oldCache;
                 let newContent = newCache;
@@ -79,6 +78,20 @@ export class CacheDiffComponent implements AfterViewInit {
         resolve();
       }, 1000);
     });
+  }
+
+  private convertDates(data: any) {
+    if (!data) {
+      return data;
+    }
+    if (data instanceof Date) {
+      data = data.toISOString();
+    } else if (typeof data === 'object') {
+      Object.keys(data).forEach((key: string) => {
+        data[key] = this.convertDates(data[key]);
+      });
+    }
+    return data;
   }
 
   onCollectionNodeClick(event: Required<NzFormatEmitEvent>) {

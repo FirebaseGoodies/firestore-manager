@@ -35,10 +35,12 @@
     <nz-sider nzTheme="light" nzWidth="300px" #collectionSider>
       <nz-spin nzTip="{{ collectionListLoadingMessage | translate }}..." [nzSpinning]="isCollectionListLoading">
         <nz-alert
-          *ngIf="unsavedChanges && !isCollectionListLoading"
+          *ngIf="hasUnsavedChanges && !isCollectionListLoading"
+          @slideInOut
           nzBanner
+          nzType="warning"
           [nzMessage]="unsavedChangesTpl"
-          [ngStyle]="{ 'position': 'sticky', 'top': '-20px', 'margin': '-20px -20px 15px', 'z-index': 100, 'border-bottom': '1px solid #eee' }"
+          class="sticky-alert"
         >
           <ng-template #unsavedChangesTpl>
             <div nz-row nzGutter="8">
@@ -47,7 +49,7 @@
               </div>
               <div nz-col nzSpan="8">
                 <nz-button-group class="pull-right">
-                  <button nz-button nzType="primary" class="no-transition valign-middle" (click)="onViewUnsavedChangesClick()" [disabled]="isViewUnsavedChangesDisabled" nz-tooltip [nzTooltipTitle]="viewUnsavedChangesTooltip" [nzOverlayStyle]="isViewUnsavedChangesDisabled ? {} : {display:'none'}" nzTooltipPlacement="bottom">
+                  <button nz-button nzType="primary" class="no-transition valign-middle" (click)="openCacheDiffModal()" [disabled]="isViewUnsavedChangesDisabled" nz-tooltip [nzTooltipTitle]="viewUnsavedChangesTooltip" [nzOverlayStyle]="isViewUnsavedChangesDisabled ? {} : {display:'none'}" nzTooltipPlacement="bottom">
                     <ng-template #viewUnsavedChangesTooltip>
                       <i nz-icon nzType="warning" style="margin-right: 8px"></i> <span>{{ 'FixJsonErrorsToViewUnsavedChanges' | translate }}</span>
                     </ng-template>
@@ -56,7 +58,7 @@
                   <button nz-button nzType="primary" class="no-transition valign-middle" nz-dropdown nzPlacement="bottomRight" nzTrigger="click" [nzDropdownMenu]="unsavedChangesMenu"><i nz-icon nzType="down" nzTheme="outline"></i></button>
                   <nz-dropdown-menu #unsavedChangesMenu="nzDropdownMenu">
                     <ul nz-menu>
-                      <li nz-menu-item (click)="unsavedChanges = false" translate>Dismiss</li>
+                      <li nz-menu-item (click)="hasUnsavedChanges = false" translate>Dismiss</li>
                     </ul>
                   </nz-dropdown-menu>
                 </nz-button-group>
@@ -165,7 +167,7 @@
                   (nzOnConfirm)="onCollectionDeleteConfirm()"><span translate>Delete</span></button>
               </nz-badge>
               <ng-template #confirmDeleteTpl>
-                <span><i nz-icon nzType="exclamation-circle" nzTheme="fill" style="color: #faad14; margin-right: 5px;"></i><strong translate>DeleteQuestion</strong></span>
+                <span><i nz-icon nzType="exclamation-circle" nzTheme="fill" class="warning-icon"></i><strong translate>DeleteQuestion</strong></span>
                 <div [ngStyle]="{ 'margin-top': '10px' }">
                   <label nz-checkbox [(ngModel)]="permanentlyDeleteDocuments"><span translate>PermanentlyDeleteDocuments</span></label>
                 </div>
@@ -338,7 +340,7 @@
                     <span translate>Apply</span>
                   </button>
                   <button nz-button nzType="default" [ngStyle]="{ 'vertical-align': 'middle' }" nz-tooltip nzTooltipPlacement="right" nzTitle="{{ 'Remove' | translate }}" [disabled]="!filters[node.title].isApplied" (click)="removeFilter(node)">
-                    <i nz-icon nzType="minus-circle" nzTheme="outline"></i>
+                    <i nz-icon nzType="delete" nzTheme="outline"></i>
                   </button>
                 </nz-button-group>
                 
@@ -351,6 +353,38 @@
     <nz-layout class="right-layout">
       <nz-content>
         <div class="inner-content">
+          <nz-alert
+            *ngIf="firestore.cacheStatus.hasChanged"
+            @slideInOut
+            nzBanner
+            nzType="warning"
+            [nzMessage]="cacheStatusHasChangedTpl"
+            class="sticky-alert centered"
+          >
+            <ng-template #cacheStatusHasChangedTpl>
+              <div nz-row nzGutter="8">
+                <div nz-col nzSpan="20">
+                  <span translate>CacheHasChanged</span>
+                </div>
+                <div nz-col nzSpan="4">
+                  <nz-button-group class="pull-right">
+                    <button nz-button nzType="primary" class="no-transition valign-middle" (click)="openCacheDiffModal('Changes', false, true)">
+                      <span translate>View</span>
+                    </button>
+                    <button nz-button nzType="primary" class="no-transition valign-middle" nz-tooltip nzTooltipPlacement="bottom" nzTitle="{{ 'Reload' | translate }}" (click)="onReloadCollectionClick()">
+                      <i nz-icon nzType="reload" nzTheme="outline"></i>
+                    </button>
+                    <button nz-button nzType="primary" class="no-transition valign-middle" nz-dropdown nzPlacement="bottomRight" nzTrigger="click" [nzDropdownMenu]="cacheStatusHasChangedMenu"><i nz-icon nzType="down" nzTheme="outline"></i></button>
+                    <nz-dropdown-menu #cacheStatusHasChangedMenu="nzDropdownMenu">
+                      <ul nz-menu>
+                        <li nz-menu-item (click)="firestore.cacheStatus.hasChanged = false" translate>Dismiss</li>
+                      </ul>
+                    </nz-dropdown-menu>
+                  </nz-button-group>
+                </div>
+              </div>
+            </ng-template>
+          </nz-alert>
           <div>
             <div [ngStyle]="{ display: 'flex', margin: '0 5px 10px' }">
               <nz-breadcrumb>
@@ -501,23 +535,23 @@
   </form>
 </nz-drawer>
 <nz-modal
-  *ngIf="isSaveModalVisible"
-  [(nzVisible)]="isSaveModalVisible"
-  nzTitle="{{ 'UnsavedChanges' | translate }}"
+  *ngIf="isCacheDiffModalVisible"
+  [(nzVisible)]="isCacheDiffModalVisible"
+  nzTitle="{{ cacheDiffModalTitle | translate }}"
   nzOkText="{{ 'Save' | translate }}"
   nzCancelText="{{ 'Cancel' | translate }}"
   nzWidth="60%"
-  (nzOnCancel)="isSaveModalVisible = false"
+  (nzOnCancel)="isCacheDiffModalVisible = false"
   (nzOnOk)="onSaveChangesClick()"
   [nzOkLoading]="isSaveButtonLoading"
   [nzOkDisabled]="isSaveButtonDisabled"
+  [nzFooter]="!isCacheDiffModalFooterVisible ? null : undefined"
 >
   <fm-cache-diff
     [diffStyle]="options.diffStyle"
     [outputFormat]="options.diffOutputFormat"
-    [enableSaveButton]="isSaveButtonDisabled"
-    (enableSaveButtonChange)="onSaveButtonStatusChange($event)"
-    (emptyDiff)="unsavedChanges = false"
+    [reverseContent]="reverseCacheDiffContent"
+    (diffInit)="onDiffInit($event)"
   ></fm-cache-diff>
   <nz-alert
     *ngIf="!isSaveButtonDisabled"

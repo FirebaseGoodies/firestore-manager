@@ -1,11 +1,11 @@
 {
   "name": "firestore-manager",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng run firestore-manager:build-webextension --configuration=production",
-    "package": "web-ext build --source-dir=dist/firestore-manager/webextension --artifacts-dir=.",
+    "package": "web-ext build --source-dir=dist/firestore-manager/webextension --artifacts-dir=. --overwrite-dest",
     "build:github": "ng build --prod --base-href \"/firestore-manager/\"",
     "deploy:github": "ngh --dir=dist/firestore-manager/webapp",
     "test": "ng test",

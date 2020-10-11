@@ -35,8 +35,8 @@
     "LineByLine": {
         "message": "Ligne par ligne"
     },
-    "NoUnsavedChanges": {
-        "message": "Aucune modification non sauvegardée"
+    "NoChanges": {
+        "message": "Aucune modification"
     },
     "FixJsonErrorsToViewUnsavedChanges": {
         "message": "Vous devez corriger les erreurs json pour afficher les modifications non sauvegardées"
@@ -115,6 +115,9 @@
     "View": {
         "message": "Afficher"
     },
+    "CacheHasChanged": {
+        "message": "Certaines données ont changé au niveau de votre base de données! Il est recommandé de recharger les collections avant de continuer pour éviter toute perte de données."
+    },
     "Collection": {
         "message": "Collection"
     },
@@ -165,6 +168,9 @@
     },
     "UnsavedChanges": {
         "message": "Modifications non sauvegardées"
+    },
+    "Changes": {
+        "message": "Modifications"
     },
     "SaveWarning": {
         "message": "Une fois enregistrées, les modifications ci-dessus remplaceront vos données existantes sur firetore. Cette opération n'est pas réversible!"
