@@ -1,8 +1,15 @@
 {
   "manifest_version": 2,
 
+  "applications": {
+    "gecko": {
+      "id": "{95f13245-fbca-4cae-8baa-dd27e27a1136}",
+      "strict_min_version": "52.0"
+    }
+  },
+
   "name": "__MSG_extensionName__",
-  "version": "1.3.3",
+  "version": "1.3.4",
 
   "default_locale": "en",
   "description": "__MSG_extensionDesc__",
