@@ -16,10 +16,7 @@ jobs:
           npm run build
 
       - name: Release to AMO 🚀
-        run: |
-          npm install web-ext-submit
-          cd dist/firestore-manager/webextension
-          web-ext-submit
+        run: cd dist/firestore-manager/webextension && npx web-ext-submit
         env:
           WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
           WEB_EXT_API_SECRET: ${{ secrets.WEB_EXT_API_SECRET }}
