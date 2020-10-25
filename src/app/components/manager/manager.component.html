@@ -69,7 +69,8 @@
       </div>
     </ng-template>
     <ng-template #itemTpl let-database let-index="index">
-      <nz-list-item [nzActions]="[authAction, consoleAction, moreAction]">
+      <nz-list-item [nzActions]="[autoBackupAction, authAction, consoleAction, moreAction]">
+        <ng-template #autoBackupAction><a (click)="onAutoBackupAction(database, index)" nz-tooltip nzTooltipTitle="{{ 'AutoBackup' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="history" nzTheme="outline"></i></a></ng-template>
         <ng-template #authAction><a (click)="onSetAuthenticationAction(database, index)" nz-tooltip nzTooltipTitle="{{ 'SetAuthentication' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="user" nzTheme="outline"></i></a></ng-template>
         <ng-template #consoleAction><a [href]="database.config.databaseURL" target="_blank" nz-tooltip nzTooltipTitle="{{ 'OpenFirebaseConsole' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="fire" nzTheme="outline"></i></a></ng-template>
         <ng-template #moreAction><a nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"><i nz-icon nzType="more" nzTheme="outline"></i></a></ng-template>
@@ -122,6 +123,30 @@
       [nzAutosize]="{ minRows: 9, maxRows: 10 }"
       (keyup)="databaseConfigKeyUp.next($event)"
     ></textarea>
+  </nz-modal>
+
+  <!-- Auto Backup Modal -->
+  <nz-modal
+    [nzStyle]="{ top: app.isWebExtension ? '20px' : '100px' }"
+    [(nzVisible)]="isAutoBackupModalVisible"
+    nzTitle="{{ 'AutoBackup' | translate }}"
+    nzCancelText="{{ 'Cancel' | translate }}"
+    (nzOnCancel)="isAutoBackupModalVisible = false"
+    (nzOnOk)="onAutoBackupModalSave()"
+    nzOkText="{{ 'Save' | translate }}"
+  >
+    <label nz-checkbox [(ngModel)]="autoBackup.enabled">{{ 'AutoBackupEnabled' | translate }}</label>
+    <div class="auto-backup-schedule">
+      <nz-checkbox-wrapper (nzOnChange)="autoBackup.schedule.days = $event">
+        <div nz-row *ngFor="let day of autoBackupDays">
+          <label nz-checkbox [nzValue]="day.value" [nzChecked]="autoBackup.schedule.days.indexOf(day.value) !== -1" [nzDisabled]="!autoBackup.enabled">{{ day.label | translate }}</label>
+        </div>
+      </nz-checkbox-wrapper>
+      <span>
+        <label for="auto-backup-time-picker">{{ 'At' | translate }} :</label>
+        <nz-time-picker id="auto-backup-time-picker" [(ngModel)]="autoBackup.schedule.time" nzFormat="HH:mm" [nzDisabled]="!autoBackup.enabled" [nzAllowEmpty]="autoBackup.enabled"></nz-time-picker>
+      </span>
+    </div>
   </nz-modal>
 
   <!-- Authentication Modal -->

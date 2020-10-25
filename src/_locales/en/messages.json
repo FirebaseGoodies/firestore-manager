@@ -396,5 +396,35 @@
     },
     "Dismiss": {
         "message": "Dismiss"
+    },
+    "AutoBackup": {
+        "message": "Auto backup"
+    },
+    "AutoBackupEnabled": {
+        "message": "Enabled"
+    },
+    "Monday": {
+        "message": "Monday"
+    },
+    "Tuesday": {
+        "message": "Tuesday"
+    },
+    "Wednesday": {
+        "message": "Wednesday"
+    },
+    "Thursday": {
+        "message": "Thursday"
+    },
+    "Friday": {
+        "message": "Friday"
+    },
+    "Saturday": {
+        "message": "Saturday"
+    },
+    "Sunday": {
+        "message": "Sunday"
+    },
+    "At": {
+        "message": "At"
     }
 }

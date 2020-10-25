@@ -10,6 +10,7 @@ import { DatabaseConfig, DatabaseConfigSample } from 'src/app/models/database-co
 import { download } from 'src/app/helpers/download.helper';
 import { Database } from 'src/app/models/database.model';
 import { Authentication, AuthenticationType, AuthenticationData } from 'src/app/models/auth.model';
+import { AutoBackup, AutoBackupDays, AutoBackupDay, AutoBackupDefaultTime } from 'src/app/models/auto-backup.model';
 
 @Component({
   selector: 'fm-manager',
@@ -20,6 +21,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
 
   databases: any[] = [];
   isDatabaseModalVisible: boolean = false;
+  isAutoBackupModalVisible: boolean = false;
   isAuthenticationModalVisible: boolean = false;
   isTagModalVisible: boolean = false;
   databaseModalOkButtonText: string = 'Add';
@@ -27,6 +29,13 @@ export class ManagerComponent implements OnInit, OnDestroy {
   databaseConfigKeyUp: Subject<string> = new Subject<string>();
   databaseConfig: string = '';
   readonly databaseConfigSample: string = DatabaseConfigSample;
+  autoBackup: AutoBackup = {
+    schedule: {
+      days: [],
+      time: AutoBackupDefaultTime
+    }
+  };
+  readonly autoBackupDays: AutoBackupDay[] = AutoBackupDays;
   authentication: Authentication = {
     type: AuthenticationType.None,
     data: AuthenticationData
@@ -185,6 +194,35 @@ export class ManagerComponent implements OnInit, OnDestroy {
     this.tags = database.tags || [];
     this.selectedDatabaseIndex = index;
     this.isTagModalVisible = true;
+  }
+
+  onAutoBackupAction(database: Database, index: number) {
+    this.autoBackup.enabled = database.autoBackup?.enabled || false;
+    if (database.autoBackup?.schedule) {
+      this.autoBackup.schedule.days = database.autoBackup.schedule.days;
+      const time = (database.autoBackup.schedule.time as string).split(':');
+      this.autoBackup.schedule.time = new Date();
+      this.autoBackup.schedule.time.setHours(+time[0]);
+      this.autoBackup.schedule.time.setMinutes(+time[1]);
+    } else {
+      this.autoBackup.schedule.days = AutoBackupDays.filter((day: AutoBackupDay) => day.checked).map((day: AutoBackupDay) => day.value);
+      this.autoBackup.schedule.time = AutoBackupDefaultTime;
+    }
+    this.selectedDatabaseIndex = index;
+    this.isAutoBackupModalVisible = true;
+  }
+
+  onAutoBackupModalSave() {
+    let autoBackup: AutoBackup = this.databases[this.selectedDatabaseIndex].autoBackup || {};
+    const time: Date = this.autoBackup.schedule.time as Date || AutoBackupDefaultTime;
+    autoBackup.enabled = this.autoBackup.enabled;
+    autoBackup.schedule = {
+      days: this.autoBackup.schedule.days,
+      time: time.getHours() + ':' + time.getMinutes()
+    };
+    this.databases[this.selectedDatabaseIndex].autoBackup = autoBackup;
+    this.saveDatabases();
+    this.isAutoBackupModalVisible = false;
   }
 
   onEditAction(database: Database, index: number) {
