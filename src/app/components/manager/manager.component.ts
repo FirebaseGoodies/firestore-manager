@@ -78,7 +78,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
     });
     this.addButtonTranslation = this.translation.get('Add');
     this.saveButtonTranslation = this.translation.get('Save');
-    this.explorerUrl = this.app.getUrl();
+    this.explorerUrl = this.app.getUrl('explorer');
     this.subscriptions.push(this.databaseConfigKeyUp.pipe(
         map((event: any) => event.target.value),
         debounceTime(300),
@@ -150,7 +150,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   }
 
   getDatabaseUrl(index: number) {
-    return `${this.explorerUrl}?index=${index}`;
+    return `${this.explorerUrl}?dbindex=${index}`;
   }
 
   onSetAuthenticationAction(database: Database, index: number) {
