@@ -19,7 +19,7 @@ import { AutoBackup, AutoBackupDays, AutoBackupDay, AutoBackupDefaultTime } fro
 })
 export class ManagerComponent implements OnInit, OnDestroy {
 
-  databases: any[] = [];
+  databases: Database[] = [];
   isDatabaseModalVisible: boolean = false;
   isAutoBackupModalVisible: boolean = false;
   isAuthenticationModalVisible: boolean = false;
@@ -115,7 +115,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
           if (this.isDatabaseConfigValid(config)) {
             // Add
             if (this.databaseModalOkButtonText === this.addButtonTranslation) {
-              this.databases.unshift({config: config});
+              this.databases.unshift({ config: config } as any);
             }
             // Edit
             else {
@@ -167,7 +167,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   }
 
   onAuthenticationModalSave() {
-    let auth: Authentication = this.databases[this.selectedDatabaseIndex].authentication || {};
+    let auth: Authentication = this.databases[this.selectedDatabaseIndex].authentication || {} as any;
     switch(this.authentication.type) {
       case AuthenticationType.Anonymous:
       case AuthenticationType.EmailAndPassword:
@@ -213,7 +213,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   }
 
   onAutoBackupModalSave() {
-    let autoBackup: AutoBackup = this.databases[this.selectedDatabaseIndex].autoBackup || {};
+    let autoBackup: AutoBackup = this.databases[this.selectedDatabaseIndex].autoBackup || {} as any;
     const time: Date = this.autoBackup.schedule.time as Date || AutoBackupDefaultTime;
     autoBackup.enabled = this.autoBackup.enabled;
     autoBackup.schedule = {
