@@ -2,7 +2,7 @@
 export interface Authentication {
   enabled?: boolean,
   type: AuthenticationType,
-  data: any
+  data: AuthenticationCredentials
 }
 
 export enum AuthenticationType {
@@ -12,7 +12,13 @@ export enum AuthenticationType {
   Token = 'token'
 }
 
-export const AuthenticationData: object = {
+export interface AuthenticationCredentials {
+  email?: string,
+  password?: string,
+  token?: string
+}
+
+export const AuthenticationData: AuthenticationCredentials = {
   email: null,
   password: null,
   token: null
