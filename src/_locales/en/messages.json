@@ -453,5 +453,8 @@
     },
     "Close": {
         "message": "Close"
+    },
+    "PendingChangesAlert": {
+        "message": "You have unsaved changes! If you leave, your changes will be lost."
     }
 }

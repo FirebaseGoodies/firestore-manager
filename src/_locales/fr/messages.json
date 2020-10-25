@@ -453,5 +453,8 @@
     },
     "Close": {
         "message": "Fermer"
+    },
+    "PendingChangesAlert": {
+        "message": "Vous avez des modifications non sauvegardées! Si vous quittez, vos modifications seront perdues."
     }
 }
