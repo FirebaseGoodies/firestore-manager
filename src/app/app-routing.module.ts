@@ -6,6 +6,8 @@ import { ExplorerComponent } from './components/explorer/explorer.component';
 import { ExplorerGuard } from './guards/explorer.guard';
 import { CanDeactivateGuard } from './guards/can-deactivate.guard';
 import { BackgroundComponent } from './components/background/background.component';
+import { AutoBackupComponent } from './components/auto-backup/auto-backup.component';
+import { AutoBackupGuard } from './guards/auto-backup.guard';
 
 
 const routes: Routes = [
@@ -20,6 +22,11 @@ const routes: Routes = [
   {
     path: 'background',
     component: BackgroundComponent
+  },
+  {
+    path: 'autoBackup',
+    component: AutoBackupComponent,
+    canActivate: [AutoBackupGuard]
   },
   {
     path: '**',

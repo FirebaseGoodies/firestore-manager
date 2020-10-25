@@ -69,7 +69,7 @@
       </div>
     </ng-template>
     <ng-template #itemTpl let-database let-index="index">
-      <nz-list-item [nzActions]="[autoBackupAction, authAction, consoleAction, moreAction]">
+      <nz-list-item [nzActions]="app.isWebExtension ? [autoBackupAction, authAction, consoleAction, moreAction] : [authAction, consoleAction, moreAction]">
         <ng-template #autoBackupAction><a (click)="onAutoBackupAction(database, index)" nz-tooltip nzTooltipTitle="{{ 'AutoBackup' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="history" nzTheme="outline"></i></a></ng-template>
         <ng-template #authAction><a (click)="onSetAuthenticationAction(database, index)" nz-tooltip nzTooltipTitle="{{ 'SetAuthentication' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="user" nzTheme="outline"></i></a></ng-template>
         <ng-template #consoleAction><a [href]="database.config.databaseURL" target="_blank" nz-tooltip nzTooltipTitle="{{ 'OpenFirebaseConsole' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="fire" nzTheme="outline"></i></a></ng-template>

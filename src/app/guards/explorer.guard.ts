@@ -8,13 +8,15 @@ import { Database } from '../models/database.model';
 })
 export class ExplorerGuard implements CanActivate {
 
+  protected pageName: string = 'popup';
+
   constructor(private router: Router, private storage: StorageService) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean>|boolean {
     return new Promise((resolve, reject) => {
       const page = route.queryParams['page'];
 
-      if (!page || page === 'popup') {
+      if (!page || page === this.pageName) {
         const index = route.queryParams['index'] || null;
         //console.log(index);
         let accessAllowed = false;

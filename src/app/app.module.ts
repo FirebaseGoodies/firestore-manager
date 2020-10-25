@@ -4,7 +4,9 @@ import { NgModule, APP_INITIALIZER } from '@angular/core';
 /** config angular i18n **/
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
+import fr from '@angular/common/locales/fr';
 registerLocaleData(en);
+registerLocaleData(fr);
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -29,6 +31,7 @@ import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { SafePipe } from './pipes/safe.pipe';
 import { LogoComponent } from './components/partials/logo/logo.component';
 import { BackgroundComponent } from './components/background/background.component';
+import { AutoBackupComponent } from './components/auto-backup/auto-backup.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +45,8 @@ import { BackgroundComponent } from './components/background/background.componen
     ClickOutsideDirective,
     SafePipe,
     LogoComponent,
-    BackgroundComponent
+    BackgroundComponent,
+    AutoBackupComponent
   ],
   imports: [
     BrowserModule,

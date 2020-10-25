@@ -26,5 +26,3 @@ export const AutoBackupDays: AutoBackupDay[] = [
 const now = new Date();
 
 export const AutoBackupDefaultTime: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0, 0);
-
-export const AutoBackupDirectoryName: string = 'firestore_manager_backups';

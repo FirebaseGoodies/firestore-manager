@@ -403,14 +403,27 @@
     "AutoBackupEnabled": {
         "message": "Activée"
     },
-    "AutoBackupDone": {
-        "message": "Sauvegarde automatique pour $database$ enregistrée avec succès dans $filename$",
+    "AutoBackupInProgress": {
+        "message": "Sauvegarde automatique de $database$ en cours",
         "placeholders": {
             "database" : {
                 "content" : "$1"
-            },
+            }
+        }
+    },
+    "AutoBackupDone": {
+        "message": "La sauvegarde automatique de $database$ est terminée!",
+        "placeholders": {
+            "database" : {
+                "content" : "$1"
+            }
+        }
+    },
+    "AutoBackupSavedTo": {
+        "message": "Sauvegarde automatique enregistrée avec succès dans $filename$",
+        "placeholders": {
             "filename" : {
-                "content" : "$2"
+                "content" : "$1"
             }
         }
     },
