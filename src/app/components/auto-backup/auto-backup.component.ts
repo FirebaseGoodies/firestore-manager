@@ -97,4 +97,13 @@ export class AutoBackupComponent implements OnInit {
     this.router.navigate([route]);
   }
 
+  async close() {
+    if (this.app.isWebExtension) {
+      const currentTab = await browser.tabs.getCurrent();
+      browser.tabs.remove(currentTab.id);
+    } else {
+      window.close();
+    }
+  }
+
 }

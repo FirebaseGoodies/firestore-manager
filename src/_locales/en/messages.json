@@ -450,5 +450,8 @@
     },
     "At": {
         "message": "At"
+    },
+    "Close": {
+        "message": "Close"
     }
 }
