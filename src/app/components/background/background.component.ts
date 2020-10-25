@@ -26,24 +26,31 @@ export class BackgroundComponent implements OnInit {
   }
 
   private init() {
-    // Auto backup check loop
+    // Auto backup check
     setTimeout(async () => {
       const databases: Database[] = await this.storage.get('databases');
+      // console.log('Auto backup check:', databases);
       databases.forEach((database: Database, index: number) => {
         if (database.autoBackup?.enabled && this.isScheduledTime(database.autoBackup?.schedule as any)) {
-          this.app.openUrl(this.app.getUrl('autoBackup&index=' + index), false);
+          const url = this.app.getUrl('autoBackup&dbindex=' + index);
+          // console.log('is scheduled time for:', database.config.projectId, url);
+          this.app.openUrl(url, false);
         }
       });
+      // re-loop
+      this.init();
     }, 60000); // every minute
   }
 
   private isScheduledTime(schedule: { days: number[], time: string }) {
     const now = new Date();
-    now.setMilliseconds(0);
     const splittedTime = schedule.time.split(':');
-    const scheduledTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), +splittedTime[0], +splittedTime[1], 0);
+    const scheduledTime = {
+      hours: +splittedTime[0],
+      minutes: +splittedTime[1]
+    };
 
-    return schedule.days.indexOf(now.getDay()) !== -1 && now === scheduledTime;
+    return schedule.days.indexOf(now.getDay()) !== -1 && now.getHours() === scheduledTime.hours && now.getMinutes() === scheduledTime.minutes;
   }
 
 }
