@@ -403,6 +403,17 @@
     "AutoBackupEnabled": {
         "message": "Enabled"
     },
+    "AutoBackupDone": {
+        "message": "$database$ auto backup successfully saved to $filename$",
+        "placeholders": {
+            "database" : {
+                "content" : "$1"
+            },
+            "filename" : {
+                "content" : "$2"
+            }
+        }
+    },
     "Monday": {
         "message": "Monday"
     },

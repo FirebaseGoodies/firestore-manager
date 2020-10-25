@@ -20,9 +20,11 @@ export const AutoBackupDays: AutoBackupDay[] = [
   { label: 'Thursday', value: 4 },
   { label: 'Friday', value: 5 },
   { label: 'Saturday', value: 6 },
-  { label: 'Sunday', value: 7 }
+  { label: 'Sunday', value: 0 } // @see https://www.w3schools.com/jsref/jsref_getday.asp
 ];
 
 const now = new Date();
 
 export const AutoBackupDefaultTime: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0, 0);
+
+export const AutoBackupDirectoryName: string = 'firestore_manager_backups';

@@ -28,6 +28,7 @@ import { NgxDiff2htmlModule } from 'ngx-diff2html';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { SafePipe } from './pipes/safe.pipe';
 import { LogoComponent } from './components/partials/logo/logo.component';
+import { BackgroundComponent } from './components/background/background.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { LogoComponent } from './components/partials/logo/logo.component';
     TranslatePipe,
     ClickOutsideDirective,
     SafePipe,
-    LogoComponent
+    LogoComponent,
+    BackgroundComponent
   ],
   imports: [
     BrowserModule,

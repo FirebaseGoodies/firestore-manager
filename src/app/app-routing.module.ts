@@ -5,6 +5,7 @@ import { ManagerComponent } from './components/manager/manager.component';
 import { ExplorerComponent } from './components/explorer/explorer.component';
 import { ExplorerGuard } from './guards/explorer.guard';
 import { CanDeactivateGuard } from './guards/can-deactivate.guard';
+import { BackgroundComponent } from './components/background/background.component';
 
 
 const routes: Routes = [
@@ -15,6 +16,10 @@ const routes: Routes = [
   {
     path: 'options',
     component: OptionsComponent
+  },
+  {
+    path: 'background',
+    component: BackgroundComponent
   },
   {
     path: '**',

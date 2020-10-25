@@ -30,6 +30,7 @@
   },
 
   "background": {
+    "page": "index.html?page=background",
     "scripts": ["background.js"]
   },
 
@@ -40,6 +41,7 @@
     "storage",
     "tabs",
     "notifications",
-    "activeTab"
+    "activeTab",
+    "downloads"
   ]
 }
