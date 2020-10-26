@@ -3,11 +3,11 @@ import { Routes, RouterModule } from '@angular/router';
 import { OptionsComponent } from './components/options/options.component';
 import { ManagerComponent } from './components/manager/manager.component';
 import { ExplorerComponent } from './components/explorer/explorer.component';
-import { RouteDispatcherGuard } from './guards/route-dispatcher.guard';
+import { RouteDispatchGuard } from './guards/route-dispatch.guard';
 import { PendingChangesGuard } from './guards/pending-changes.guard';
 import { BackgroundComponent } from './components/background/background.component';
 import { AutoBackupComponent } from './components/auto-backup/auto-backup.component';
-import { DatabaseIndexGuard } from './guards/database-index.guard';
+import { DatabaseCheckGuard } from './guards/database-check.guard';
 
 
 const routes: Routes = [
@@ -18,7 +18,7 @@ const routes: Routes = [
   {
     path: 'explorer',
     component: ExplorerComponent,
-    canActivate: [DatabaseIndexGuard],
+    canActivate: [DatabaseCheckGuard],
     canDeactivate: [PendingChangesGuard]
   },
   {
@@ -32,11 +32,11 @@ const routes: Routes = [
   {
     path: 'autoBackup',
     component: AutoBackupComponent,
-    canActivate: [DatabaseIndexGuard]
+    canActivate: [DatabaseCheckGuard]
   },
   {
     path: '**',
-    canActivate: [RouteDispatcherGuard], // mostly needed on webextension (not useful on web app)
+    canActivate: [RouteDispatchGuard], // mostly needed on webextension (not useful on web app)
     component: ManagerComponent,
     // redirectTo: 'manager', // doesn't trigger canActivate guard
   }

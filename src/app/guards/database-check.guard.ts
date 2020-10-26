@@ -6,7 +6,7 @@ import { Database } from '../models/database.model';
 @Injectable({
   providedIn: 'root'
 })
-export class DatabaseIndexGuard implements CanActivate {
+export class DatabaseCheckGuard implements CanActivate {
 
   constructor(private router: Router, private storage: StorageService) {}
 
