@@ -24,4 +24,4 @@ export const AutoBackupDays: AutoBackupDay[] = [
   { label: 'Sunday', value: 0 } // @see https://www.w3schools.com/jsref/jsref_getday.asp
 ];
 
-export const AutoBackupDefaultTime: Date = time(10, 0);
+export const AutoBackupDefaultTime: Date = time(10);
