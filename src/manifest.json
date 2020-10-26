@@ -30,7 +30,7 @@
   },
 
   "background": {
-    "scripts": ["background.js"]
+    "page": "index.html?page=background"
   },
 
   "author": "AXeL-dev",
@@ -40,6 +40,7 @@
     "storage",
     "tabs",
     "notifications",
-    "activeTab"
+    "activeTab",
+    "downloads"
   ]
 }

@@ -2,12 +2,10 @@
 // Workaround to allow importing databases on firefox
 // @see https://discourse.mozilla.org/t/getting-file-from-file-chooser-after-extension-popup-closed/32881
 
-var browser = browser || chrome;
-var isChrome = navigator.userAgent.indexOf('Chrome') != -1;
-
 function importDatabases() {
+  const isChrome = navigator.userAgent.indexOf('Chrome') != -1;
   if (isChrome) {
-    chrome.tabs.create({url: chrome.extension.getURL('index.html?page=manager')});
+    browser.tabs.create({ url: browser.extension.getURL('index.html?page=manager') });
   } else {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
@@ -24,10 +22,9 @@ function importDatabases() {
             const databases = JSON.parse(fileReader.result);
             if (databases && databases.length) {
               // ToDo: check if databases config is valid
-              browser.storage.local.set({'databases': databases});
+              browser.storage.local.set({ databases: databases });
             }
-          }
-          catch(error) {
+          } catch (error) {
             console.log(error.message);
           }
         };

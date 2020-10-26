@@ -396,5 +396,65 @@
     },
     "Dismiss": {
         "message": "Dismiss"
+    },
+    "AutoBackup": {
+        "message": "Auto backup"
+    },
+    "AutoBackupEnabled": {
+        "message": "Enabled"
+    },
+    "AutoBackupInProgress": {
+        "message": "$database$ auto backup is in progress",
+        "placeholders": {
+            "database" : {
+                "content" : "$1"
+            }
+        }
+    },
+    "AutoBackupDone": {
+        "message": "$database$ auto backup done!",
+        "placeholders": {
+            "database" : {
+                "content" : "$1"
+            }
+        }
+    },
+    "AutoBackupSavedTo": {
+        "message": "Auto backup successfully saved to $filename$",
+        "placeholders": {
+            "filename" : {
+                "content" : "$1"
+            }
+        }
+    },
+    "Monday": {
+        "message": "Monday"
+    },
+    "Tuesday": {
+        "message": "Tuesday"
+    },
+    "Wednesday": {
+        "message": "Wednesday"
+    },
+    "Thursday": {
+        "message": "Thursday"
+    },
+    "Friday": {
+        "message": "Friday"
+    },
+    "Saturday": {
+        "message": "Saturday"
+    },
+    "Sunday": {
+        "message": "Sunday"
+    },
+    "At": {
+        "message": "At"
+    },
+    "Close": {
+        "message": "Close"
+    },
+    "PendingChangesAlert": {
+        "message": "You have unsaved changes! If you leave, your changes will be lost."
     }
 }

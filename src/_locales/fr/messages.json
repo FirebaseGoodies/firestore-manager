@@ -396,5 +396,65 @@
     },
     "Dismiss": {
         "message": "Rejeter"
+    },
+    "AutoBackup": {
+        "message": "Sauvegarde automatique"
+    },
+    "AutoBackupEnabled": {
+        "message": "Activée"
+    },
+    "AutoBackupInProgress": {
+        "message": "Sauvegarde automatique de $database$ en cours",
+        "placeholders": {
+            "database" : {
+                "content" : "$1"
+            }
+        }
+    },
+    "AutoBackupDone": {
+        "message": "La sauvegarde automatique de $database$ est terminée!",
+        "placeholders": {
+            "database" : {
+                "content" : "$1"
+            }
+        }
+    },
+    "AutoBackupSavedTo": {
+        "message": "Sauvegarde automatique enregistrée avec succès dans $filename$",
+        "placeholders": {
+            "filename" : {
+                "content" : "$1"
+            }
+        }
+    },
+    "Monday": {
+        "message": "Lundi"
+    },
+    "Tuesday": {
+        "message": "Mardi"
+    },
+    "Wednesday": {
+        "message": "Mercredi"
+    },
+    "Thursday": {
+        "message": "Jeudi"
+    },
+    "Friday": {
+        "message": "Vendredi"
+    },
+    "Saturday": {
+        "message": "Samedi"
+    },
+    "Sunday": {
+        "message": "Dimanche"
+    },
+    "At": {
+        "message": "À"
+    },
+    "Close": {
+        "message": "Fermer"
+    },
+    "PendingChangesAlert": {
+        "message": "Vous avez des modifications non sauvegardées! Si vous quittez, vos modifications seront perdues."
     }
 }
