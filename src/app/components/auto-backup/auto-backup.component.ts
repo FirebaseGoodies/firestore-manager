@@ -70,7 +70,9 @@ export class AutoBackupComponent implements OnInit {
         if (this.app.isWebExtension) {
           browser.downloads.download({
             url: URL.createObjectURL(content),
-            filename: filename
+            filename: filename,
+            saveAs: false,
+            conflictAction: 'uniquify'
           });
         } else {
           download(content, filename);
