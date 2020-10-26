@@ -20,7 +20,7 @@ A simple, fast and intuitive web-extension to manage firestore databases, made w
 - JSON export/import.
 - Firebase Authentication (Anonymous, email & password, JWT token).
 - Add/Clone/Rename/Delete/Filter collections & documents.
-- Display collections & documents count.
+- [Experimental] Auto Backup your databases (webextension only).
 
 ## Installation
 
