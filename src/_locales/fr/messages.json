@@ -80,8 +80,8 @@
     "ConfirmDelete": {
         "message": "Êtes-vous sûr de vouloir supprimer $name$ ?",
         "placeholders": {
-            "name" : {
-                "content" : "$1"
+            "name": {
+                "content": "$1"
             }
         }
     },
@@ -406,24 +406,40 @@
     "AutoBackupInProgress": {
         "message": "Sauvegarde automatique de $database$ en cours",
         "placeholders": {
-            "database" : {
-                "content" : "$1"
+            "database": {
+                "content": "$1"
             }
         }
     },
     "AutoBackupDone": {
         "message": "La sauvegarde automatique de $database$ est terminée!",
         "placeholders": {
-            "database" : {
-                "content" : "$1"
+            "database": {
+                "content": "$1"
+            }
+        }
+    },
+    "AutoBackupError": {
+        "message": "Une erreur s'est produite lors de la sauvegarde de $database$!",
+        "placeholders": {
+            "database": {
+                "content": "$1"
+            }
+        }
+    },
+    "AutoBackupEmptyDatabase": {
+        "message": "$database$ est vide!",
+        "placeholders": {
+            "database": {
+                "content": "$1"
             }
         }
     },
     "AutoBackupSavedTo": {
         "message": "Sauvegarde automatique enregistrée avec succès dans $filename$",
         "placeholders": {
-            "filename" : {
-                "content" : "$1"
+            "filename": {
+                "content": "$1"
             }
         }
     },

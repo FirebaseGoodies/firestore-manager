@@ -3,7 +3,7 @@
   <nz-result
     *ngIf="status"
     [nzStatus]="status"
-    nzTitle="{{ 'AutoBackupDone' | translate:database.config.projectId }}"
+    nzTitle="{{ message | translate:database.config.projectId }}"
     [nzSubTitle]="date | datetime:'MMMM d, y, HH:mm:ss'"
   >
     <div nz-result-extra>

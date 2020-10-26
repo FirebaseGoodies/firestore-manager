@@ -20,6 +20,7 @@ export class AutoBackupComponent implements OnInit {
 
   database: Database = null;
   status: string = null;
+  message: string = null;
   date: Date = new Date();
   private options: Options = new Options();
 
@@ -58,7 +59,7 @@ export class AutoBackupComponent implements OnInit {
         promises.push(this.firestore.getCollection(collection));
       });
 
-      Promise.all(promises).finally(() => {
+      Promise.all(promises).finally(async () => {
         // Save to file
         const cache = this.firestore.getSyncedCache();
         const json = JSON.stringify(cache, null, 4);
@@ -66,14 +67,32 @@ export class AutoBackupComponent implements OnInit {
         const filename = `${this.database.config.projectId}-${this.date.toISOString().slice(0, 10)}.json`;
 
         if (this.app.isWebExtension) {
-          browser.downloads.download({
-            url: URL.createObjectURL(content),
-            filename: filename,
-            saveAs: false,
-            conflictAction: 'uniquify'
-          });
+          try {
+            await browser.downloads.download({
+              url: URL.createObjectURL(content),
+              filename: filename,
+              saveAs: false,
+              conflictAction: 'uniquify'
+            });
+            this.status = 'success';
+          } catch(error) {
+            this.status = 'error';
+            console.error(error.message);
+          }
         } else {
           download(content, filename);
+          this.status = 'success';
+        }
+
+        // Set message
+        switch(this.status) {
+          case 'error':
+            this.message = 'AutoBackupError';
+            break;
+          case 'success':
+          default:
+            this.message = 'AutoBackupDone';
+            break;
         }
 
         // Notify
@@ -81,9 +100,11 @@ export class AutoBackupComponent implements OnInit {
           this.notification.create(this.translation.get('AutoBackupSavedTo', filename));
         }
 
-        this.status = 'success';
+        // Close
+        this.close();
       });
     } else {
+      this.message = 'AutoBackupEmptyDatabase';
       this.status = 'warning';
     }
   }
@@ -97,7 +118,7 @@ export class AutoBackupComponent implements OnInit {
       const currentTab = await browser.tabs.getCurrent();
       browser.tabs.remove(currentTab.id);
     } else {
-      window.close();
+      // window.close(); // doesn't work
     }
   }
 
