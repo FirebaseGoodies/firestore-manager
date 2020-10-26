@@ -14,13 +14,13 @@ A simple, fast and intuitive web-extension to manage firestore databases, made w
 
 ## Features
 
-- Clean UI (based on [ng-zorro-antd](https://github.com/NG-ZORRO/ng-zorro-antd)).
+<!-- - Clean UI (based on [ng-zorro-antd](https://github.com/NG-ZORRO/ng-zorro-antd)). -->
+- Easily Add/Clone/Rename/Delete/Filter collections & documents.
 - 3 editing modes (thanks to [jsoneditor](https://github.com/josdejong/jsoneditor) project).
 - Powerful diff viewer (using [diff-match-patch](https://github.com/google/diff-match-patch) & [diff2html](https://github.com/rtfpessoa/diff2html)).
 - JSON export/import.
-- Firebase Authentication (Anonymous, email & password, JWT token).
-- Add/Clone/Rename/Delete/Filter collections & documents.
-- [Experimental] Auto Backup your databases (webextension only).
+- Firebase Authentication Support (Anonymous, email & password, JWT token).
+- [Experimental] Databases Auto Backup (webextension only).
 
 ## Installation
 
