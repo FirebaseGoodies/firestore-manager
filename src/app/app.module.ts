@@ -29,6 +29,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { NgxDiff2htmlModule } from 'ngx-diff2html';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { SafePipe } from './pipes/safe.pipe';
+import { DateTimePipe } from './pipes/datetime.pipe';
 import { LogoComponent } from './components/partials/logo/logo.component';
 import { BackgroundComponent } from './components/background/background.component';
 import { AutoBackupComponent } from './components/auto-backup/auto-backup.component';
@@ -54,6 +55,7 @@ function getNZLang(translateService: TranslateService) {
     TranslatePipe,
     ClickOutsideDirective,
     SafePipe,
+    DateTimePipe,
     LogoComponent,
     BackgroundComponent,
     AutoBackupComponent
