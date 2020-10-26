@@ -19,9 +19,8 @@ import { Router } from '@angular/router';
 export class AutoBackupComponent implements OnInit {
 
   database: Database = null;
-  isInProgress: boolean = true;
   status: string = null;
-  lang: string = null;
+  date: Date = new Date();
   private options: Options = new Options();
 
   constructor(
@@ -30,14 +29,13 @@ export class AutoBackupComponent implements OnInit {
     private notification: NotificationService,
     private translation: TranslateService,
     private auth: AuthService,
-    private app: AppService,
-    private router: Router
+    private router: Router,
+    public app: AppService
   ) { }
 
   ngOnInit(): void {
     // Get data from storage
     this.database = StorageService.getTmp('database');
-    this.lang = this.translation.getLanguage();
     this.storage.get('options').then((options: Options) => {
       if (options) {
         this.options = {...this.options, ...options}; // merge
@@ -65,7 +63,7 @@ export class AutoBackupComponent implements OnInit {
         const cache = this.firestore.getSyncedCache();
         const json = JSON.stringify(cache, null, 4);
         const content = new Blob([json], { type: 'text/json' });
-        const filename = `${this.database.config.projectId}-${this.now().toISOString().slice(0, 10)}.json`;
+        const filename = `${this.database.config.projectId}-${this.date.toISOString().slice(0, 10)}.json`;
 
         if (this.app.isWebExtension) {
           browser.downloads.download({
@@ -84,15 +82,10 @@ export class AutoBackupComponent implements OnInit {
         }
 
         this.status = 'success';
-        this.isInProgress = false;
       });
     } else {
       this.status = 'warning';
     }
-  }
-
-  now() {
-    return new Date();
   }
 
   navigateTo(route: string) {

@@ -1,14 +1,14 @@
 
-<nz-spin nzTip="{{ 'AutoBackupInProgress' | translate:database.config.projectId }}..." [nzSpinning]="isInProgress">
+<nz-spin nzTip="{{ 'AutoBackupInProgress' | translate:database.config.projectId }}..." [nzSpinning]="!status">
   <nz-result
-    *ngIf="!isInProgress"
+    *ngIf="status"
     [nzStatus]="status"
     nzTitle="{{ 'AutoBackupDone' | translate:database.config.projectId }}"
-    [nzSubTitle]="now() | date:'MMMM d, y, HH:mm:ss':'':lang"
+    [nzSubTitle]="date | datetime:'MMMM d, y, HH:mm:ss'"
   >
     <div nz-result-extra>
       <button nz-button nzType="primary" (click)="navigateTo('/manager')">{{ 'GoBackToMainPage' | translate }}</button>
-      <button nz-button (click)="close()">{{ 'Close' | translate }}</button>
+      <button nz-button *ngIf="app.isWebExtension" (click)="close()">{{ 'Close' | translate }}</button>
     </div>
   </nz-result>
 </nz-spin>
