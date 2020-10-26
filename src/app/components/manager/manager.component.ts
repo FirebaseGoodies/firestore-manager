@@ -11,6 +11,7 @@ import { download } from 'src/app/helpers/download.helper';
 import { Database } from 'src/app/models/database.model';
 import { Authentication, AuthenticationType, AuthenticationData } from 'src/app/models/auth.model';
 import { AutoBackup, AutoBackupDays, AutoBackupDay, AutoBackupDefaultTime } from 'src/app/models/auto-backup.model';
+import { concatUrl } from 'src/app/helpers/url.helper';
 
 @Component({
   selector: 'fm-manager',
@@ -150,7 +151,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   }
 
   getDatabaseUrl(index: number) {
-    return `${this.explorerUrl}?dbindex=${index}`;
+    return concatUrl(this.explorerUrl, `dbindex=${index}`);
   }
 
   onSetAuthenticationAction(database: Database, index: number) {

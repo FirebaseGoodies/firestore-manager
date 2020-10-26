@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { sanitizePath } from 'src/app/helpers/url.helper';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +26,7 @@ export class AppService {
   getUrl(path?: string) {
     let url = this.isWebExtension ? 'index.html' : './';
     if (path?.length) {
-      const sanitizedPath = path.replace('/^[.|\/]+/', '');
-      url += this.isWebExtension ? '?page=' + sanitizedPath : sanitizedPath;
+      url += (this.isWebExtension ? '?page=' : '') + sanitizePath(path);
     }
     return this.isWebExtension ? browser.extension.getURL(url) : url;
   }

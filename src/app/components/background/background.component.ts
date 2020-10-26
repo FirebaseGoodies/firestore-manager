@@ -3,6 +3,7 @@ import { AppService } from 'src/app/services/app.service';
 import { Router } from '@angular/router';
 import { Database } from 'src/app/models/database.model';
 import { StorageService } from 'src/app/services/storage.service';
+import { concatUrl } from 'src/app/helpers/url.helper';
 
 @Component({
   selector: 'fm-background',
@@ -10,6 +11,8 @@ import { StorageService } from 'src/app/services/storage.service';
   styleUrls: ['./background.component.css']
 })
 export class BackgroundComponent implements OnInit {
+
+  private autoBackupUrl: string = '';
 
   constructor(
     private storage: StorageService,
@@ -19,6 +22,7 @@ export class BackgroundComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.app.isWebExtension) {
+      this.autoBackupUrl = this.app.getUrl('autoBackup');
       this.init();
     } else {
       this.router.navigate(['/']);
@@ -32,7 +36,7 @@ export class BackgroundComponent implements OnInit {
       // console.log('Auto backup check:', databases);
       databases.forEach((database: Database, index: number) => {
         if (database.autoBackup?.enabled && this.isScheduledTime(database.autoBackup?.schedule as any)) {
-          const url = this.app.getUrl('autoBackup&dbindex=' + index);
+          const url = concatUrl(this.autoBackupUrl, `dbindex=${index}`);
           // console.log('is scheduled time for:', database.config.projectId, url);
           this.app.openUrl(url, false);
         }
