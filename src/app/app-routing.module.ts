@@ -6,7 +6,7 @@ import { ExplorerComponent } from './components/explorer/explorer.component';
 import { RouteDispatchGuard } from './guards/route-dispatch.guard';
 import { PendingChangesGuard } from './guards/pending-changes.guard';
 import { BackgroundComponent } from './components/background/background.component';
-import { AutoBackupComponent } from './components/auto-backup/auto-backup.component';
+import { BackupComponent } from './components/backup/backup.component';
 import { DatabaseCheckGuard } from './guards/database-check.guard';
 
 
@@ -30,8 +30,8 @@ const routes: Routes = [
     component: BackgroundComponent
   },
   {
-    path: 'autoBackup',
-    component: AutoBackupComponent,
+    path: 'backup',
+    component: BackupComponent,
     canActivate: [DatabaseCheckGuard]
   },
   {

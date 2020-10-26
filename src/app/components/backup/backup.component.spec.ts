@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AutoBackupComponent } from './auto-backup.component';
+import { BackupComponent } from './backup.component';
 
-describe('AutoBackupComponent', () => {
-  let component: AutoBackupComponent;
-  let fixture: ComponentFixture<AutoBackupComponent>;
+describe('BackupComponent', () => {
+  let component: BackupComponent;
+  let fixture: ComponentFixture<BackupComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AutoBackupComponent ]
+      declarations: [ BackupComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AutoBackupComponent);
+    fixture = TestBed.createComponent(BackupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

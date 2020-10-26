@@ -32,7 +32,7 @@ import { SafePipe } from './pipes/safe.pipe';
 import { DateTimePipe } from './pipes/datetime.pipe';
 import { LogoComponent } from './components/partials/logo/logo.component';
 import { BackgroundComponent } from './components/background/background.component';
-import { AutoBackupComponent } from './components/auto-backup/auto-backup.component';
+import { BackupComponent } from './components/backup/backup.component';
 
 function getNZLang(translateService: TranslateService) {
   const lang = translateService.getLanguage();
@@ -58,7 +58,7 @@ function getNZLang(translateService: TranslateService) {
     DateTimePipe,
     LogoComponent,
     BackgroundComponent,
-    AutoBackupComponent
+    BackupComponent
   ],
   imports: [
     BrowserModule,

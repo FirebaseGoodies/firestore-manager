@@ -11,12 +11,12 @@ import { download } from 'src/app/helpers/download.helper';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'fm-auto-backup',
-  templateUrl: './auto-backup.component.html',
-  styleUrls: ['./auto-backup.component.css'],
+  selector: 'fm-backup',
+  templateUrl: './backup.component.html',
+  styleUrls: ['./backup.component.css'],
   providers: [AuthService]
 })
-export class AutoBackupComponent implements OnInit {
+export class BackupComponent implements OnInit {
 
   database: Database = null;
   status: string = null;
@@ -87,24 +87,24 @@ export class AutoBackupComponent implements OnInit {
         // Set message
         switch(this.status) {
           case 'error':
-            this.message = 'AutoBackupError';
+            this.message = 'BackupError';
             break;
           case 'success':
           default:
-            this.message = 'AutoBackupDone';
+            this.message = 'BackupDone';
             break;
         }
 
         // Notify
         if (this.options.enableNotifications) {
-          this.notification.create(this.translation.get('AutoBackupSavedTo', filename));
+          this.notification.create(this.translation.get('BackupSavedTo', filename));
         }
 
         // Close
         this.close();
       });
     } else {
-      this.message = 'AutoBackupEmptyDatabase';
+      this.message = 'BackupEmptyDatabase';
       this.status = 'warning';
     }
   }

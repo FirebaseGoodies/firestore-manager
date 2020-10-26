@@ -12,7 +12,7 @@ import { concatUrl } from 'src/app/helpers/url.helper';
 })
 export class BackgroundComponent implements OnInit {
 
-  private autoBackupUrl: string = '';
+  private backupUrl: string = '';
 
   constructor(
     private storage: StorageService,
@@ -22,7 +22,7 @@ export class BackgroundComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.app.isWebExtension) {
-      this.autoBackupUrl = this.app.getUrl('autoBackup');
+      this.backupUrl = this.app.getUrl('backup');
       this.init();
     } else {
       this.router.navigate(['/']);
@@ -36,7 +36,7 @@ export class BackgroundComponent implements OnInit {
       // console.log('Auto backup check:', databases);
       databases.forEach((database: Database, index: number) => {
         if (database.autoBackup?.enabled && this.isScheduledTime(database.autoBackup?.schedule as any)) {
-          const url = concatUrl(this.autoBackupUrl, `dbindex=${index}`);
+          const url = concatUrl(this.backupUrl, `dbindex=${index}`);
           // console.log('is scheduled time for:', database.config.projectId, url);
           this.app.openUrl(url, false);
         }

@@ -403,23 +403,23 @@
     "AutoBackupEnabled": {
         "message": "Activée"
     },
-    "AutoBackupInProgress": {
-        "message": "Sauvegarde automatique de $database$ en cours",
+    "BackupInProgress": {
+        "message": "Sauvegarde de $database$ en cours",
         "placeholders": {
             "database": {
                 "content": "$1"
             }
         }
     },
-    "AutoBackupDone": {
-        "message": "La sauvegarde automatique de $database$ est terminée!",
+    "BackupDone": {
+        "message": "La sauvegarde de $database$ est terminée!",
         "placeholders": {
             "database": {
                 "content": "$1"
             }
         }
     },
-    "AutoBackupError": {
+    "BackupError": {
         "message": "Une erreur s'est produite lors de la sauvegarde de $database$!",
         "placeholders": {
             "database": {
@@ -427,7 +427,7 @@
             }
         }
     },
-    "AutoBackupEmptyDatabase": {
+    "BackupEmptyDatabase": {
         "message": "$database$ est vide!",
         "placeholders": {
             "database": {
@@ -435,8 +435,8 @@
             }
         }
     },
-    "AutoBackupSavedTo": {
-        "message": "Sauvegarde automatique enregistrée avec succès dans $filename$",
+    "BackupSavedTo": {
+        "message": "Sauvegarde enregistrée avec succès dans $filename$",
         "placeholders": {
             "filename": {
                 "content": "$1"

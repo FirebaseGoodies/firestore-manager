@@ -1,5 +1,5 @@
 
-<nz-spin nzTip="{{ 'AutoBackupInProgress' | translate:database.config.projectId }}..." [nzSpinning]="!status">
+<nz-spin nzTip="{{ 'BackupInProgress' | translate:database.config.projectId }}..." [nzSpinning]="!status">
   <nz-result
     *ngIf="status"
     [nzStatus]="status"
