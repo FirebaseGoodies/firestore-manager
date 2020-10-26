@@ -7,6 +7,8 @@ import { sanitizePath } from 'src/app/helpers/url.helper';
 export class AppService {
 
   isWebExtension: boolean = false;
+  explorerUrl: string;
+  backupUrl: string;
   links: any = {
     github: 'https://github.com/AXeL-dev/firestore-manager',
     releases: 'https://github.com/AXeL-dev/firestore-manager/releases',
@@ -21,6 +23,8 @@ export class AppService {
       // console.log(error.message);
       // this.isWebExtension = false;
     }
+    this.explorerUrl = this.getUrl('explorer');
+    this.backupUrl = this.getUrl('backup');
   }
 
   getUrl(path?: string) {

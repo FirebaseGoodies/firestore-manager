@@ -48,7 +48,6 @@ export class ManagerComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   private addButtonTranslation: string = 'Add';
   private saveButtonTranslation: string = 'Save';
-  private explorerUrl: string = '';
   private isPopup: boolean = false;
   @ViewChild('importFileInput', { static: false, read: ElementRef }) private importFileInput: ElementRef;
   tags: string[] = [];
@@ -80,7 +79,6 @@ export class ManagerComponent implements OnInit, OnDestroy {
     });
     this.addButtonTranslation = this.translation.get('Add');
     this.saveButtonTranslation = this.translation.get('Save');
-    this.explorerUrl = this.app.getUrl('explorer');
     this.subscriptions.push(this.databaseConfigKeyUp.pipe(
         map((event: any) => event.target.value),
         debounceTime(300),
@@ -152,7 +150,11 @@ export class ManagerComponent implements OnInit, OnDestroy {
   }
 
   getDatabaseUrl(index: number) {
-    return concatUrl(this.explorerUrl, `dbindex=${index}`);
+    return concatUrl(this.app.explorerUrl, `dbindex=${index}`);
+  }
+
+  getQuickBackupUrl(index: number) {
+    return concatUrl(this.app.backupUrl, `dbindex=${index}`);
   }
 
   onSetAuthenticationAction(database: Database, index: number) {

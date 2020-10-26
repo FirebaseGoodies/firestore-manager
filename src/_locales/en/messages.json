@@ -403,6 +403,9 @@
     "AutoBackupEnabled": {
         "message": "Enabled"
     },
+    "QuickBackup": {
+        "message": "Quick backup"
+    },
     "BackupInProgress": {
         "message": "$database$ backup is in progress",
         "placeholders": {
