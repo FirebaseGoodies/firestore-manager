@@ -12,6 +12,7 @@ import { Database } from 'src/app/models/database.model';
 import { Authentication, AuthenticationType, AuthenticationData } from 'src/app/models/auth.model';
 import { AutoBackup, AutoBackupDays, AutoBackupDay, AutoBackupDefaultTime } from 'src/app/models/auto-backup.model';
 import { concatUrl } from 'src/app/helpers/url.helper';
+import { time } from 'src/app/helpers/date.helper';
 
 @Component({
   selector: 'fm-manager',
@@ -201,10 +202,8 @@ export class ManagerComponent implements OnInit, OnDestroy {
     this.autoBackup.enabled = database.autoBackup?.enabled || false;
     if (database.autoBackup?.schedule) {
       this.autoBackup.schedule.days = database.autoBackup.schedule.days;
-      const time = (database.autoBackup.schedule.time as string).split(':');
-      this.autoBackup.schedule.time = new Date();
-      this.autoBackup.schedule.time.setHours(+time[0]);
-      this.autoBackup.schedule.time.setMinutes(+time[1]);
+      const splittedTime = (database.autoBackup.schedule.time as string).split(':');
+      this.autoBackup.schedule.time = time(+splittedTime[0], +splittedTime[1]);
     } else {
       this.autoBackup.schedule.days = AutoBackupDays.filter((day: AutoBackupDay) => day.checked).map((day: AutoBackupDay) => day.value);
       this.autoBackup.schedule.time = AutoBackupDefaultTime;
