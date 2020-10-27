@@ -70,11 +70,23 @@
     </ng-template>
     <ng-template #itemTpl let-database let-index="index">
       <nz-list-item [nzActions]="app.isWebExtension ? [quickBackupAction, autoBackupAction, authAction, consoleAction, moreAction] : [quickBackupAction, authAction, consoleAction, moreAction]">
-        <ng-template #quickBackupAction><a [href]="getQuickBackupUrl(index) | safe:'resourceUrl'" [target]="app.isWebExtension ? '_blank' : '_self'" nz-tooltip nzTooltipTitle="{{ 'QuickBackup' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="save" nzTheme="outline"></i></a></ng-template>
-        <ng-template #autoBackupAction><a (click)="onAutoBackupAction(database, index)" nz-tooltip nzTooltipTitle="{{ 'AutoBackup' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="history" nzTheme="outline"></i></a></ng-template>
-        <ng-template #authAction><a (click)="onSetAuthenticationAction(database, index)" nz-tooltip nzTooltipTitle="{{ 'SetAuthentication' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="user" nzTheme="outline"></i></a></ng-template>
-        <ng-template #consoleAction><a [href]="database.config.databaseURL" target="_blank" nz-tooltip nzTooltipTitle="{{ 'OpenFirebaseConsole' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="fire" nzTheme="outline"></i></a></ng-template>
-        <ng-template #moreAction><a nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"><i nz-icon nzType="more" nzTheme="outline"></i></a></ng-template>
+        <ng-template #quickBackupAction>
+          <a [href]="getQuickBackupUrl(index) | safe:'resourceUrl'" [target]="app.isWebExtension ? '_blank' : '_self'" nz-tooltip nzTooltipTitle="{{ 'QuickBackup' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="save" nzTheme="outline"></i></a>
+        </ng-template>
+        <ng-template #autoBackupAction>
+          <nz-badge [nzDot]="database.autoBackup?.enabled" class="green-dot">
+            <a (click)="onAutoBackupAction(database, index)" nz-tooltip nzTooltipTitle="{{ 'AutoBackup' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="history" nzTheme="outline"></i></a>
+          </nz-badge>
+        </ng-template>
+        <ng-template #authAction>
+          <a (click)="onSetAuthenticationAction(database, index)" nz-tooltip nzTooltipTitle="{{ 'SetAuthentication' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="user" nzTheme="outline"></i></a>
+        </ng-template>
+        <ng-template #consoleAction>
+          <a [href]="database.config.databaseURL" target="_blank" nz-tooltip nzTooltipTitle="{{ 'OpenFirebaseConsole' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="fire" nzTheme="outline"></i></a>
+        </ng-template>
+        <ng-template #moreAction>
+          <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"><i nz-icon nzType="more" nzTheme="outline"></i></a>
+        </ng-template>
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item (click)="onTagAction(database, index)" translate>Tag</li>

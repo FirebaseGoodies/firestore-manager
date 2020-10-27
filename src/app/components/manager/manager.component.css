@@ -136,3 +136,6 @@ svg#clouds {
 .auto-backup-schedule > span label {
   margin-right: 10px;
 }
+.green-dot ::ng-deep .ant-badge-dot {
+  background-color: #52c41a;
+}
