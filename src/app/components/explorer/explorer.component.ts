@@ -420,7 +420,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         }
       });
       // Clear editor content
-      if (this.collectionNodesCheckedKeys.indexOf(this.selectedCollection?.key) !== -1) {
+      if (this.selectedCollection && this.collectionNodesCheckedKeys.indexOf(this.selectedCollection.key) !== -1) {
         this.updateEditor({} as JSON);
       }
     }).catch((error) => {
