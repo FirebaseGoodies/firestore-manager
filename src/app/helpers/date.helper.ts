@@ -4,3 +4,7 @@ export function time(hours: number, min: number = 0, sec: number = 0, ms: number
   date.setHours(hours, min, sec, ms);
   return date;
 }
+
+export function cloneDate(date: Date) {
+  return new Date(date.getTime());
+}
