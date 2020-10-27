@@ -1,4 +1,3 @@
-import { time } from '../helpers/date.helper';
 
 export interface AutoBackup {
   enabled?: boolean,
@@ -23,5 +22,3 @@ export const AutoBackupDays: AutoBackupDay[] = [
   { label: 'Saturday', value: 6 },
   { label: 'Sunday', value: 0 } // @see https://www.w3schools.com/jsref/jsref_getday.asp
 ];
-
-export const AutoBackupDefaultTime: Date = time(10);

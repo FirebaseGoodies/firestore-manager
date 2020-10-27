@@ -10,7 +10,7 @@ import { DatabaseConfig, DatabaseConfigSample } from 'src/app/models/database-co
 import { download } from 'src/app/helpers/download.helper';
 import { Database } from 'src/app/models/database.model';
 import { Authentication, AuthenticationType, AuthenticationData } from 'src/app/models/auth.model';
-import { AutoBackup, AutoBackupDays, AutoBackupDay, AutoBackupDefaultTime } from 'src/app/models/auto-backup.model';
+import { AutoBackup, AutoBackupDays, AutoBackupDay } from 'src/app/models/auto-backup.model';
 import { concatUrl } from 'src/app/helpers/url.helper';
 import { time } from 'src/app/helpers/date.helper';
 
@@ -34,7 +34,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   autoBackup: AutoBackup = {
     schedule: {
       days: [],
-      time: AutoBackupDefaultTime
+      time: new Date()
     }
   };
   readonly autoBackupDays: AutoBackupDay[] = AutoBackupDays;
@@ -208,7 +208,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
       this.autoBackup.schedule.time = time(+splittedTime[0], +splittedTime[1]);
     } else {
       this.autoBackup.schedule.days = AutoBackupDays.filter((day: AutoBackupDay) => day.checked).map((day: AutoBackupDay) => day.value);
-      this.autoBackup.schedule.time = AutoBackupDefaultTime;
+      this.autoBackup.schedule.time = new Date();
     }
     this.selectedDatabaseIndex = index;
     this.isAutoBackupModalVisible = true;
@@ -216,7 +216,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
 
   onAutoBackupModalSave() {
     let autoBackup: AutoBackup = this.databases[this.selectedDatabaseIndex].autoBackup || {} as any;
-    const time: Date = this.autoBackup.schedule.time as Date || AutoBackupDefaultTime;
+    const time: Date = this.autoBackup.schedule.time as Date || new Date();
     autoBackup.enabled = this.autoBackup.enabled;
     autoBackup.schedule = {
       days: this.autoBackup.schedule.days,
