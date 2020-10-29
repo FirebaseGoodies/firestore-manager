@@ -79,7 +79,9 @@
           </nz-badge>
         </ng-template>
         <ng-template #authAction>
-          <a (click)="onSetAuthenticationAction(database, index)" nz-tooltip nzTooltipTitle="{{ 'SetAuthentication' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="user" nzTheme="outline"></i></a>
+          <nz-badge [nzDot]="database.authentication?.enabled" class="green-dot">
+            <a (click)="onSetAuthenticationAction(database, index)" nz-tooltip nzTooltipTitle="{{ 'SetAuthentication' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="user" nzTheme="outline"></i></a>
+          </nz-badge>
         </ng-template>
         <ng-template #consoleAction>
           <a [href]="database.config.databaseURL" target="_blank" nz-tooltip nzTooltipTitle="{{ 'OpenFirebaseConsole' | translate }}" nzTooltipPlacement="bottom"><i nz-icon nzType="fire" nzTheme="outline"></i></a>
