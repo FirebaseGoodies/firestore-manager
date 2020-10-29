@@ -100,7 +100,7 @@
                   <li nz-submenu nzTitle="{{ 'Add' | translate }}">
                     <ul>
                       <li nz-menu-item (click)="isAddCollectionDrawerVisible = true" translate>Collection</li>
-                      <li nz-menu-item (click)="isAddDocumentDrawerVisible = collectionNodes.length ? true : false" [nzDisabled]="!collectionNodes.length" translate>Document</li>
+                      <li nz-menu-item (click)="isAddDocumentDrawerVisible = true" translate>Document</li>
                     </ul>
                   </li>
                   <li nz-submenu nzTitle="{{ 'Expand' | translate }}" [nzDisabled]="!collectionNodes.length">
@@ -483,11 +483,18 @@
       <div nz-col nzSpan="24">
         <nz-form-item>
           <nz-form-label nzRequired><span translate>Collection</span></nz-form-label>
-          <nz-form-control nzErrorTip="{{ 'PleaseSelectCollection' | translate }}">
-            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="{{ 'SelectCollection' | translate }}"  formControlName="collection">
-              <nz-option *ngFor="let collection of collectionNodes" [nzLabel]="collection.title" [nzValue]="collection.key"></nz-option>
-            </nz-select>
-          </nz-form-control>
+          <ng-container *ngIf="collectionNodes.length; else addDocumentCollectionNameInputTpl">
+            <nz-form-control nzErrorTip="{{ 'PleaseSelectCollection' | translate }}">
+              <nz-select nzShowSearch nzAllowClear nzPlaceHolder="{{ 'SelectCollection' | translate }}" formControlName="collection">
+                <nz-option *ngFor="let collection of collectionNodes" [nzLabel]="collection.title" [nzValue]="collection.key"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </ng-container>
+          <ng-template #addDocumentCollectionNameInputTpl>
+            <nz-form-control nzErrorTip="{{ 'EnterCollectionName' | translate }}">
+              <input nz-input placeholder="{{ 'CollectionName' | translate }}" formControlName="collection" />
+            </nz-form-control>
+          </ng-template>
         </nz-form-item>
       </div>
     </div>
