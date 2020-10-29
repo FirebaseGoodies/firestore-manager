@@ -772,7 +772,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         this.firestore.getCollection(node.title).then((documents) => {
           // console.log('Loading collection:', node.title, 'forced:', force);
           node.children = [];
-          Object.keys(documents).forEach((documentId: string) => {
+          Object.keys(documents || {}).forEach((documentId: string) => {
             if (node instanceof NzTreeNode) {
               node.addChildren([{ title: documentId, key: node.key + '.' + documentId, isLeaf: true }]);
             } else {
