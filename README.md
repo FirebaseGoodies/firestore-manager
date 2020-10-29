@@ -1,4 +1,4 @@
-# <img src="src/assets/images/firestore_logo.png" alt="icon" width="38"/> Firestore Manager
+# <img src="src/assets/images/firestore_logo.png" alt="icon" width="38" align="top" /> Firestore Manager
 
 [![Mozilla Add-on version](https://img.shields.io/amo/v/firestore-manager.svg)](https://addons.mozilla.org/firefox/addon/firestore-manager/?src=external-github-shield-downloads)
 [![Mozilla Add-on downloads](https://img.shields.io/amo/dw/firestore-manager.svg)](https://addons.mozilla.org/firefox/addon/firestore-manager/?src=external-github-shield-downloads)
