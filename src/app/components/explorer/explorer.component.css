@@ -65,13 +65,28 @@ textarea.tab-size {
   -o-tab-size:  4;
   -webkit-tab-size: 4;
 }
+.custom-node-container {
+  display: inline-block;
+  width: calc(100% - 24px);
+}
+.custom-node-container > div {
+  display: flex;
+  align-items: center;
+}
+.custom-node-container > div > .right-side {
+  flex-grow: 1;
+  text-align: right;
+}
 .custom-node {
   cursor: pointer;
-  line-height: 24px !important;
+  line-height: 20px !important;
   border-radius: 2px;
   padding: 0 5px;
   border-top: 2px transparent solid;
   border-bottom: 2px transparent solid;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .custom-node:hover:not(.rename-mode) {
   background-color: #e6f7ff;
