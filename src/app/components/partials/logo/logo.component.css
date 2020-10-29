@@ -1,3 +1,6 @@
 img {
   margin: 0 16px;
 }
+nz-tag {
+  transition: none;
+}
