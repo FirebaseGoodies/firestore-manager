@@ -25,7 +25,7 @@ A simple, fast and intuitive web-extension to manage firestore databases, made w
 ## Installation
 
 [![Get it for Firefox!](https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_1.png)](https://addons.mozilla.org/firefox/addon/firestore-manager/?src=external-github-download)
-[![Get it for Chrome!](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_206x58.png)](https://github.com/AXeL-dev/firestore-manager/releases)
+[![Get it for Chrome!](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_206x58.png)](https://github.com/FirebaseGoodies/firestore-manager/releases)
 
 Or [try it as a web application](https://firebasegoodies.github.io/firestore-manager/manager).
 
@@ -57,9 +57,9 @@ npm run build:github && npm run deploy:github
 
 - [x] Translations
 - [x] Add collections filter (field - operator - value)
+- [ ] Refactor long components code (by decomposition)
 - [ ] Handle sub-collections
 - [ ] Add unit tests
-- [ ] Refactor long components code (by decomposition)
 
 ## License
 
