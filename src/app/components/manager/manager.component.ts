@@ -107,7 +107,12 @@ export class ManagerComponent implements OnInit, OnDestroy {
         try {
           const validJson = this.databaseConfig.replace(/(["':\w]+)(:)/g, (match, $1, $2) => {
             //console.log($1);
-            return $1.match(/["':]/g) ? $1 + $2 : `"${$1}":`;
+            if ($1.match(/^["']/g)) {
+              return $1 + $2;
+            } else {
+              const colonIndex = $1.indexOf(':');
+              return colonIndex === -1 ? `"${$1}":` : `"${$1.slice(0, colonIndex)}":${$1.slice(colonIndex+1)}`;
+            }
           }).replace(/'/g, '"');
           //console.log(validJson);
           const config: DatabaseConfig = JSON.parse(validJson);
