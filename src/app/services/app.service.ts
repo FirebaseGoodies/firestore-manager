@@ -10,9 +10,9 @@ export class AppService {
   explorerUrl: string;
   backupUrl: string;
   links: any = {
-    github: 'https://github.com/AXeL-dev/firestore-manager',
-    releases: 'https://github.com/AXeL-dev/firestore-manager/releases',
-    issueTracker: 'https://github.com/AXeL-dev/firestore-manager/issues',
+    github: 'https://github.com/FirebaseGoodies/firestore-manager',
+    releases: 'https://github.com/FirebaseGoodies/firestore-manager/releases',
+    issueTracker: 'https://github.com/FirebaseGoodies/firestore-manager/issues',
     firefoxAddon: 'https://addons.mozilla.org/firefox/addon/firestore-manager'
   };
 
