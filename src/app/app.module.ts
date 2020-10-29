@@ -33,6 +33,7 @@ import { DateTimePipe } from './pipes/datetime.pipe';
 import { LogoComponent } from './components/partials/logo/logo.component';
 import { BackgroundComponent } from './components/background/background.component';
 import { BackupComponent } from './components/backup/backup.component';
+import { LoadingIndicatorComponent } from './components/partials/loading-indicator/loading-indicator.component';
 
 function getNZLang(translateService: TranslateService) {
   const lang = translateService.getLanguage();
@@ -58,7 +59,8 @@ function getNZLang(translateService: TranslateService) {
     DateTimePipe,
     LogoComponent,
     BackgroundComponent,
-    BackupComponent
+    BackupComponent,
+    LoadingIndicatorComponent
   ],
   imports: [
     BrowserModule,

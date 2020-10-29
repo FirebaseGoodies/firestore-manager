@@ -33,7 +33,7 @@
   </nz-header>
   <nz-layout>
     <nz-sider nzTheme="light" nzWidth="300px" #collectionSider>
-      <nz-spin nzTip="{{ collectionListLoadingMessage | translate }}..." [nzSpinning]="isCollectionListLoading">
+      <fm-loading-indicator text="{{ collectionListLoadingMessage | translate }}..." [isLoading]="isCollectionListLoading">
         <nz-alert
           *ngIf="hasUnsavedChanges && !isCollectionListLoading"
           @slideInOut
@@ -348,7 +348,7 @@
             </ng-template>
           </ng-template>
         </nz-tree>
-      </nz-spin>
+      </fm-loading-indicator>
     </nz-sider>
     <nz-layout class="right-layout">
       <nz-content>
@@ -577,9 +577,9 @@
   nzTitle="{{ 'Settings' | translate }}"
   (nzOnClose)="onSettingsDrawerClose()"
 >
-  <nz-spin nzTip="{{ 'Loading' | translate }}..." [nzSpinning]="!isSettingsDrawerLoaded">
+  <fm-loading-indicator text="{{ 'Loading' | translate }}..." [isLoading]="!isSettingsDrawerLoaded">
     <iframe [src]="app.getUrl('options') | safe:'resourceUrl'" width="100%" frameBorder="0" (load)="isSettingsDrawerLoaded = true" [ngStyle]="{ 'min-height': '80vh', border: 0 }"></iframe>
-  </nz-spin>
+  </fm-loading-indicator>
 </nz-drawer>
 <ng-template #reloadModalTpl>
   <label nz-checkbox [(ngModel)]="discardUnsavedChanges"><span translate>DiscardUnsavedChanges</span></label>

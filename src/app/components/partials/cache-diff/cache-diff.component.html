@@ -1,4 +1,4 @@
-<nz-spin nzTip="{{ 'Loading' | translate }}..." [nzSpinning]="isLoading" [ngStyle]="{ 'min-height': '150px' }">
+<fm-loading-indicator text="{{ 'Loading' | translate }}..." [isLoading]="isLoading" [style]="{ 'min-height': '150px' }">
   <div nz-row nzGutter="16">
     <div nz-col nzSpan="6" [ngStyle]="{ 'max-height': '300px', overflow: 'auto' }">
       <nz-tree
@@ -53,4 +53,4 @@
     *ngIf="!isLoading && !diff"
     nzNotFoundContent="{{ 'NoChanges' | translate }}"
   ></nz-empty>
-</nz-spin>
+</fm-loading-indicator>

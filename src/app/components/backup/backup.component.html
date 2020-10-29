@@ -1,5 +1,5 @@
 
-<nz-spin nzTip="{{ 'BackupInProgress' | translate:database.config.projectId }}..." [nzSpinning]="!status">
+<fm-loading-indicator text="{{ 'BackupInProgress' | translate:database.config.projectId }}..." [isLoading]="!status">
   <nz-result
     *ngIf="status"
     [nzStatus]="status"
@@ -11,4 +11,4 @@
       <button nz-button *ngIf="app.isWebExtension" (click)="close()">{{ 'Close' | translate }}</button>
     </div>
   </nz-result>
-</nz-spin>
+</fm-loading-indicator>
