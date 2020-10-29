@@ -47,7 +47,7 @@ export class BackupComponent implements OnInit {
   }
 
   private async backup() {
-    if (this.database.collections.length) {
+    if (this.database.collections?.length) {
       // Sign in if authentication enabled
       if (this.database.authentication?.enabled) {
         await this.auth.signIn(this.database.authentication);
