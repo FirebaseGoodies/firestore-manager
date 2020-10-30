@@ -309,12 +309,13 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
             this.startLoading('Updating');
             this.saveCollection(name).finally(() => {
               this.stopLoading();
-              // Unlock cache status
-              this.firestore.cacheStatus.unlock(5000);
             });
             this.isAddCollectionDrawerVisible = false;
           }).catch(error => {
             this.displayError(error);
+          }).finally(() => {
+            // Unlock cache status
+            this.firestore.cacheStatus.unlock(5000);
           });
         }
       }).catch((error) => {
@@ -430,12 +431,12 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       if (this.selectedCollection && this.collectionNodesCheckedKeys.indexOf(this.selectedCollection.key) !== -1) {
         this.updateEditor({} as JSON);
       }
-      // Unlock cache status
-      this.firestore.cacheStatus.unlock(5000);
     }).catch((error) => {
       this.displayError(error);
     }).finally(() => {
       this.stopLoading();
+      // Unlock cache status
+      this.firestore.cacheStatus.unlock(5000);
     });
   }
 
