@@ -310,7 +310,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
             this.saveCollection(name).finally(() => {
               this.stopLoading();
               // Unlock cache status
-              setTimeout(() => this.firestore.cacheStatus.unlock(), 5000);
+              this.firestore.cacheStatus.unlock(5000);
             });
             this.isAddCollectionDrawerVisible = false;
           }).catch(error => {
@@ -350,7 +350,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
             }).finally(() => {
               this.stopLoading();
               // Unlock cache status
-              setTimeout(() => this.firestore.cacheStatus.unlock(), 5000);
+              this.firestore.cacheStatus.unlock(5000);
             });
           }, 1000);
           this.isAddDocumentDrawerVisible = false;
@@ -431,7 +431,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         this.updateEditor({} as JSON);
       }
       // Unlock cache status
-      setTimeout(() => this.firestore.cacheStatus.unlock(), 5000);
+      this.firestore.cacheStatus.unlock(5000);
     }).catch((error) => {
       this.displayError(error);
     }).finally(() => {
@@ -618,9 +618,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
           this.displayNotification('SavingChangesCompleted');
         }
         // Unlock cache status
-        setTimeout(() => { // setTimeout used to wait for upcoming snapshotChanges after save
-          this.firestore.cacheStatus.unlock();
-        }, 5000);
+        this.firestore.cacheStatus.unlock(5000); // 5000ms timeout used to wait for upcoming snapshotChanges after save
       };
       // Reload selected collection/document
       const selectedNode = this.collectionNodes.find((node) => node.key === this.selectedCollection?.key);
@@ -1184,7 +1182,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
                   this.disableRenameMode(null, collection);
                   this.stopLoading();
                   // Unlock cache status
-                  setTimeout(() => this.firestore.cacheStatus.unlock(), 5000);
+                  this.firestore.cacheStatus.unlock(5000);
                 });
               }).catch(error => {
                 this.displayError(error);
@@ -1245,7 +1243,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
                   this.disableRenameMode(null, document);
                   this.stopLoading();
                   // Unlock cache status
-                  setTimeout(() => this.firestore.cacheStatus.unlock(), 5000);
+                  this.firestore.cacheStatus.unlock(5000);
                 });
               }).catch(error => {
                 this.displayError(error);
