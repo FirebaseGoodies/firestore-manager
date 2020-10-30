@@ -61,8 +61,8 @@ export class FirestoreService {
         this.cache = {};
         this.syncedCache = {};
         this.unsubscribe();
+        this.cacheStatus.reset();
       }
-      this.cacheStatus.reset();
     }
 
     unsubscribe(subscriptionName?: string) {

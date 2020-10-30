@@ -300,6 +300,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
         if (exists) {
           this.addCollectionForm.controls.name.setErrors({ alreadyExists: true });
         } else {
+          this.firestore.cacheStatus.lock();
           // Add collection
           const content = JSON.parse(this.addCollectionForm.controls.content.value);
           this.firestore.addCollection(name, content).then((results) => {
@@ -308,6 +309,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
             this.startLoading('Updating');
             this.saveCollection(name).finally(() => {
               this.stopLoading();
+              // Unlock cache status
+              setTimeout(() => this.firestore.cacheStatus.unlock(), 5000);
             });
             this.isAddCollectionDrawerVisible = false;
           }).catch(error => {
@@ -332,6 +335,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       const duplicate = this.addDocumentForm.controls.duplicate.value;
       const duplicateTimes = duplicate ? this.addDocumentForm.controls.duplicateTimes.value : 1;
       const addDocument: Function = () => {
+        this.firestore.cacheStatus.lock();
         let promises: Promise<any>[] = [];
         for (let doc = 0; doc < duplicateTimes; doc++) {
           promises.push(this.firestore.addDocument(collectionName, content, doc === 0 ? documentName : null));
@@ -345,6 +349,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
               this.displayError(error);
             }).finally(() => {
               this.stopLoading();
+              // Unlock cache status
+              setTimeout(() => this.firestore.cacheStatus.unlock(), 5000);
             });
           }, 1000);
           this.isAddDocumentDrawerVisible = false;
@@ -388,6 +394,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     this.startLoading('Deleting');
     let collectionsToKeep = [];
     let promises: Promise<any>[] = [];
+    this.firestore.cacheStatus.lock();
     this.collectionNodes.forEach(node => {
       // Save unchecked nodes
       if (! node.checked) {
@@ -423,6 +430,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
       if (this.selectedCollection && this.collectionNodesCheckedKeys.indexOf(this.selectedCollection.key) !== -1) {
         this.updateEditor({} as JSON);
       }
+      // Unlock cache status
+      setTimeout(() => this.firestore.cacheStatus.unlock(), 5000);
     }).catch((error) => {
       this.displayError(error);
     }).finally(() => {
@@ -1149,6 +1158,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
             cacheBackup[name] = this.firestore.getCacheBackup(collection.title);
           }
           this.firestore.clearCache(collection.title);
+          this.firestore.cacheStatus.lock();
           // Get collection
           this.firestore.getCollection(collection.title).then((documents) => {
             let promises: Promise<any>[] = [];
@@ -1173,6 +1183,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
                   collection.isSelected = false;
                   this.disableRenameMode(null, collection);
                   this.stopLoading();
+                  // Unlock cache status
+                  setTimeout(() => this.firestore.cacheStatus.unlock(), 5000);
                 });
               }).catch(error => {
                 this.displayError(error);
@@ -1213,6 +1225,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
             cacheBackup[collectionName][name] = this.firestore.getCacheBackup(collectionName, document.title);
           }
           this.firestore.clearCache(collectionName, document.title);
+          this.firestore.cacheStatus.lock();
           // Get document
           this.firestore.getDocument(collectionName, document.title).then((content) => {
             // Add new document
@@ -1231,6 +1244,8 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
                   document.key = collectionName + '.' + name;
                   this.disableRenameMode(null, document);
                   this.stopLoading();
+                  // Unlock cache status
+                  setTimeout(() => this.firestore.cacheStatus.unlock(), 5000);
                 });
               }).catch(error => {
                 this.displayError(error);
