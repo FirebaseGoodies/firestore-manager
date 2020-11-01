@@ -336,10 +336,6 @@ export class ManagerComponent implements OnInit, OnDestroy {
     });
   }
 
-  deduplicateTags(tags: string[]) {
-    return tags.filter((tag: string, index: number) => tags.indexOf(tag) === index);
-  }
-
   getTagColor(tag: string): string {
     switch(tag) {
       case 'development':
