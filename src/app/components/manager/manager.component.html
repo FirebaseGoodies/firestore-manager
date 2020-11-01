@@ -173,6 +173,7 @@
     (nzOnCancel)="isAuthenticationModalVisible = false"
     (nzOnOk)="onAuthenticationModalSave()"
     nzOkText="{{ 'Save' | translate }}"
+    [nzOkDisabled]="(authentication.type === authenticationTypes.EmailAndPassword && (!authentication.data?.email?.length || !authentication.data?.password?.length)) || (authentication.type === authenticationTypes.Token && !authentication.data?.token?.length)"
   >
     <nz-radio-group [(ngModel)]="authentication.type">
       <label nz-radio class="radio" [nzValue]="authenticationTypes.None">{{ 'NoAuthentication' | translate }}</label>
