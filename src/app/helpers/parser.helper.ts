@@ -18,6 +18,11 @@ export function jsonify(value: string) {
   }
 }
 
+export function stringify(obj: any) {
+  const str = Object.keys(obj).map(key => `\t${key}: "${obj[key]}"`).join(",\n");
+  return `{\n${str}\n}`;
+}
+
 export function isNumber(value: string) {
   return !isNaN(+value) && /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/.test(value);
 }
