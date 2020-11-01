@@ -80,8 +80,8 @@
     "ConfirmDelete": {
         "message": "Are you sure delete $name$ ?",
         "placeholders": {
-            "name" : {
-                "content" : "$1"
+            "name": {
+                "content": "$1"
             }
         }
     },
@@ -396,5 +396,84 @@
     },
     "Dismiss": {
         "message": "Dismiss"
+    },
+    "AutoBackup": {
+        "message": "Auto backup"
+    },
+    "AutoBackupEnabled": {
+        "message": "Enabled"
+    },
+    "QuickBackup": {
+        "message": "Quick backup"
+    },
+    "BackupInProgress": {
+        "message": "$database$ backup is in progress",
+        "placeholders": {
+            "database": {
+                "content": "$1"
+            }
+        }
+    },
+    "BackupDone": {
+        "message": "$database$ backup done!",
+        "placeholders": {
+            "database": {
+                "content": "$1"
+            }
+        }
+    },
+    "BackupError": {
+        "message": "An error occured while backing up $database$!",
+        "placeholders": {
+            "database": {
+                "content": "$1"
+            }
+        }
+    },
+    "BackupEmptyDatabase": {
+        "message": "$database$ is empty!",
+        "placeholders": {
+            "database": {
+                "content": "$1"
+            }
+        }
+    },
+    "BackupSavedTo": {
+        "message": "Backup successfully saved to $filename$",
+        "placeholders": {
+            "filename": {
+                "content": "$1"
+            }
+        }
+    },
+    "Monday": {
+        "message": "Monday"
+    },
+    "Tuesday": {
+        "message": "Tuesday"
+    },
+    "Wednesday": {
+        "message": "Wednesday"
+    },
+    "Thursday": {
+        "message": "Thursday"
+    },
+    "Friday": {
+        "message": "Friday"
+    },
+    "Saturday": {
+        "message": "Saturday"
+    },
+    "Sunday": {
+        "message": "Sunday"
+    },
+    "At": {
+        "message": "At"
+    },
+    "Close": {
+        "message": "Close"
+    },
+    "PendingChangesAlert": {
+        "message": "You have unsaved changes! If you leave, your changes will be lost."
     }
 }

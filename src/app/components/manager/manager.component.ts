@@ -10,6 +10,9 @@ import { DatabaseConfig, DatabaseConfigSample } from 'src/app/models/database-co
 import { download } from 'src/app/helpers/download.helper';
 import { Database } from 'src/app/models/database.model';
 import { Authentication, AuthenticationType, AuthenticationData } from 'src/app/models/auth.model';
+import { AutoBackup, AutoBackupDays, AutoBackupDay } from 'src/app/models/auto-backup.model';
+import { concatUrl } from 'src/app/helpers/url.helper';
+import { time } from 'src/app/helpers/date.helper';
 
 @Component({
   selector: 'fm-manager',
@@ -18,8 +21,9 @@ import { Authentication, AuthenticationType, AuthenticationData } from 'src/app/
 })
 export class ManagerComponent implements OnInit, OnDestroy {
 
-  databases: any[] = [];
+  databases: Database[] = [];
   isDatabaseModalVisible: boolean = false;
+  isAutoBackupModalVisible: boolean = false;
   isAuthenticationModalVisible: boolean = false;
   isTagModalVisible: boolean = false;
   databaseModalOkButtonText: string = 'Add';
@@ -27,6 +31,13 @@ export class ManagerComponent implements OnInit, OnDestroy {
   databaseConfigKeyUp: Subject<string> = new Subject<string>();
   databaseConfig: string = '';
   readonly databaseConfigSample: string = DatabaseConfigSample;
+  autoBackup: AutoBackup = {
+    schedule: {
+      days: [],
+      time: new Date()
+    }
+  };
+  readonly autoBackupDays: AutoBackupDay[] = AutoBackupDays;
   authentication: Authentication = {
     type: AuthenticationType.None,
     data: AuthenticationData
@@ -37,7 +48,6 @@ export class ManagerComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   private addButtonTranslation: string = 'Add';
   private saveButtonTranslation: string = 'Save';
-  private explorerUrl: string = '';
   private isPopup: boolean = false;
   @ViewChild('importFileInput', { static: false, read: ElementRef }) private importFileInput: ElementRef;
   tags: string[] = [];
@@ -69,7 +79,6 @@ export class ManagerComponent implements OnInit, OnDestroy {
     });
     this.addButtonTranslation = this.translation.get('Add');
     this.saveButtonTranslation = this.translation.get('Save');
-    this.explorerUrl = this.app.isWebExtension ? browser.runtime.getURL('index.html') : './';
     this.subscriptions.push(this.databaseConfigKeyUp.pipe(
         map((event: any) => event.target.value),
         debounceTime(300),
@@ -98,7 +107,12 @@ export class ManagerComponent implements OnInit, OnDestroy {
         try {
           const validJson = this.databaseConfig.replace(/(["':\w]+)(:)/g, (match, $1, $2) => {
             //console.log($1);
-            return $1.match(/["':]/g) ? $1 + $2 : `"${$1}":`;
+            if ($1.match(/^["']/g)) {
+              return $1 + $2;
+            } else {
+              const colonIndex = $1.indexOf(':');
+              return colonIndex === -1 ? `"${$1}":` : `"${$1.slice(0, colonIndex)}":${$1.slice(colonIndex+1)}`;
+            }
           }).replace(/'/g, '"');
           //console.log(validJson);
           const config: DatabaseConfig = JSON.parse(validJson);
@@ -106,7 +120,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
           if (this.isDatabaseConfigValid(config)) {
             // Add
             if (this.databaseModalOkButtonText === this.addButtonTranslation) {
-              this.databases.unshift({config: config});
+              this.databases.unshift({ config: config } as any);
             }
             // Edit
             else {
@@ -141,7 +155,11 @@ export class ManagerComponent implements OnInit, OnDestroy {
   }
 
   getDatabaseUrl(index: number) {
-    return `${this.explorerUrl}?index=${index}`;
+    return concatUrl(this.app.explorerUrl, `dbindex=${index}`);
+  }
+
+  getQuickBackupUrl(index: number) {
+    return concatUrl(this.app.backupUrl, `dbindex=${index}`);
   }
 
   onSetAuthenticationAction(database: Database, index: number) {
@@ -158,7 +176,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   }
 
   onAuthenticationModalSave() {
-    let auth: Authentication = this.databases[this.selectedDatabaseIndex].authentication || {};
+    let auth: Authentication = this.databases[this.selectedDatabaseIndex].authentication || {} as any;
     switch(this.authentication.type) {
       case AuthenticationType.Anonymous:
       case AuthenticationType.EmailAndPassword:
@@ -185,6 +203,33 @@ export class ManagerComponent implements OnInit, OnDestroy {
     this.tags = database.tags || [];
     this.selectedDatabaseIndex = index;
     this.isTagModalVisible = true;
+  }
+
+  onAutoBackupAction(database: Database, index: number) {
+    this.autoBackup.enabled = database.autoBackup?.enabled || false;
+    if (database.autoBackup?.schedule) {
+      this.autoBackup.schedule.days = database.autoBackup.schedule.days;
+      const splittedTime = (database.autoBackup.schedule.time as string).split(':');
+      this.autoBackup.schedule.time = time(+splittedTime[0], +splittedTime[1]);
+    } else {
+      this.autoBackup.schedule.days = AutoBackupDays.filter((day: AutoBackupDay) => day.checked).map((day: AutoBackupDay) => day.value);
+      this.autoBackup.schedule.time = new Date();
+    }
+    this.selectedDatabaseIndex = index;
+    this.isAutoBackupModalVisible = true;
+  }
+
+  onAutoBackupModalSave() {
+    let autoBackup: AutoBackup = this.databases[this.selectedDatabaseIndex].autoBackup || {} as any;
+    const time: Date = this.autoBackup.schedule.time as Date || new Date();
+    autoBackup.enabled = this.autoBackup.enabled;
+    autoBackup.schedule = {
+      days: this.autoBackup.schedule.days,
+      time: time.getHours() + ':' + time.getMinutes()
+    };
+    this.databases[this.selectedDatabaseIndex].autoBackup = autoBackup;
+    this.saveDatabases();
+    this.isAutoBackupModalVisible = false;
   }
 
   onEditAction(database: Database, index: number) {

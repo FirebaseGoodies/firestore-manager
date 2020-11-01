@@ -61,8 +61,8 @@ export class FirestoreService {
         this.cache = {};
         this.syncedCache = {};
         this.unsubscribe();
+        this.cacheStatus.reset();
       }
-      this.cacheStatus.reset();
     }
 
     unsubscribe(subscriptionName?: string) {
@@ -131,10 +131,9 @@ export class FirestoreService {
             if (! this.cache[name]) {
               this.cache[name] = docs;
             } else if (! this.cacheStatus.isLocked()) {
-              const hasChanged: boolean = snapshot.map(({ payload }) => payload.type).indexOf('modified') !== -1;
-              if (hasChanged) {
+              // if (snapshot.map(({ payload }) => payload.type).indexOf('modified') !== -1) {
                 this.cacheStatus.hasChanged = true;
-              }
+              // }
             }
             this.syncedCache[name] = {...docs}; // assign a copy
             resolve(docs);

@@ -1,0 +1,7 @@
+
+<nz-spin nzTip="{{ text }}" [nzSpinning]="isLoading" [nzIndicator]="indicatorTpl" [ngStyle]="style">
+  <ng-content></ng-content>
+</nz-spin>
+<ng-template #indicatorTpl>
+  <i nz-icon nzType="loading"></i>
+</ng-template>

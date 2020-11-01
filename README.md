@@ -1,4 +1,4 @@
-# <img src="src/assets/images/firestore_logo.png" alt="icon" width="38"/> Firestore Manager
+# <img src="src/assets/images/firestore_logo.png" alt="icon" width="38" align="top" /> Firestore Manager
 
 [![Mozilla Add-on version](https://img.shields.io/amo/v/firestore-manager.svg)](https://addons.mozilla.org/firefox/addon/firestore-manager/?src=external-github-shield-downloads)
 [![Mozilla Add-on downloads](https://img.shields.io/amo/dw/firestore-manager.svg)](https://addons.mozilla.org/firefox/addon/firestore-manager/?src=external-github-shield-downloads)
@@ -14,20 +14,20 @@ A simple, fast and intuitive web-extension to manage firestore databases, made w
 
 ## Features
 
-- Clean UI (based on [ng-zorro-antd](https://github.com/NG-ZORRO/ng-zorro-antd)).
+<!-- - Clean UI (based on [ng-zorro-antd](https://github.com/NG-ZORRO/ng-zorro-antd)). -->
+- Easily Add/Clone/Rename/Delete/Filter collections & documents.
 - 3 editing modes (thanks to [jsoneditor](https://github.com/josdejong/jsoneditor) project).
 - Powerful diff viewer (using [diff-match-patch](https://github.com/google/diff-match-patch) & [diff2html](https://github.com/rtfpessoa/diff2html)).
 - JSON export/import.
-- Firebase Authentication (Anonymous, email & password, JWT token).
-- Add/Clone/Rename/Delete/Filter collections & documents.
-- Display collections & documents count.
+- Firebase Authentication Support (Anonymous, email & password, JWT token).
+- [Experimental] Databases Auto Backup (webextension only).
 
 ## Installation
 
 [![Get it for Firefox!](https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_1.png)](https://addons.mozilla.org/firefox/addon/firestore-manager/?src=external-github-download)
-[![Get it for Chrome!](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_206x58.png)](https://github.com/AXeL-dev/firestore-manager/releases)
+[![Get it for Chrome!](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_206x58.png)](https://github.com/FirebaseGoodies/firestore-manager/releases)
 
-Or [try it as a web application](https://axel-dev.github.io/firestore-manager/manager).
+Or [try it as a web application](https://firebasegoodies.github.io/firestore-manager/manager).
 
 ## Development server
 
@@ -57,6 +57,7 @@ npm run build:github && npm run deploy:github
 
 - [x] Translations
 - [x] Add collections filter (field - operator - value)
+- [ ] Refactor long components code (by decomposition)
 - [ ] Handle sub-collections
 - [ ] Add unit tests
 

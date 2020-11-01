@@ -1,0 +1,7 @@
+
+fm-loading-indicator ::ng-deep nz-spin {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -124,3 +124,18 @@ svg#clouds {
 .mr-5 {
   margin-right: 5px;
 }
+.auto-backup-schedule {
+  margin: 10px;
+  display: flex;
+  align-items: center;
+}
+.auto-backup-schedule > span {
+  flex-grow: 1;
+  text-align: center;
+}
+.auto-backup-schedule > span label {
+  margin-right: 10px;
+}
+.green-dot ::ng-deep .ant-badge-dot {
+  background-color: #52c41a;
+}

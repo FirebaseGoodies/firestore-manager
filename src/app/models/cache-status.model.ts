@@ -16,8 +16,10 @@ export class CacheStatus {
     this.locked = true;
   }
 
-  unlock(): void {
-    this.reset();
+  unlock(timeout: number = 0): void {
+    setTimeout(() => {
+      this.reset();
+    }, timeout);
   }
 
   isLocked(): boolean {

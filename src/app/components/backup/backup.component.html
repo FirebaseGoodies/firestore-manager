@@ -1,0 +1,14 @@
+
+<fm-loading-indicator text="{{ 'BackupInProgress' | translate:database.config.projectId }}..." [isLoading]="!status">
+  <nz-result
+    *ngIf="status"
+    [nzStatus]="status"
+    nzTitle="{{ message | translate:database.config.projectId }}"
+    [nzSubTitle]="date | datetime:'MMMM d, y, HH:mm:ss'"
+  >
+    <div nz-result-extra>
+      <button nz-button nzType="primary" (click)="navigateTo('/manager')">{{ 'GoBackToMainPage' | translate }}</button>
+      <button nz-button *ngIf="app.isWebExtension" (click)="close()">{{ 'Close' | translate }}</button>
+    </div>
+  </nz-result>
+</fm-loading-indicator>
