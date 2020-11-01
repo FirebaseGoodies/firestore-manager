@@ -80,8 +80,8 @@
     "ConfirmDelete": {
         "message": "Êtes-vous sûr de vouloir supprimer $name$ ?",
         "placeholders": {
-            "name" : {
-                "content" : "$1"
+            "name": {
+                "content": "$1"
             }
         }
     },
@@ -396,5 +396,84 @@
     },
     "Dismiss": {
         "message": "Rejeter"
+    },
+    "AutoBackup": {
+        "message": "Sauvegarde automatique"
+    },
+    "AutoBackupEnabled": {
+        "message": "Activée"
+    },
+    "QuickBackup": {
+        "message": "Sauvegarde rapide"
+    },
+    "BackupInProgress": {
+        "message": "Sauvegarde de $database$ en cours",
+        "placeholders": {
+            "database": {
+                "content": "$1"
+            }
+        }
+    },
+    "BackupDone": {
+        "message": "La sauvegarde de $database$ est terminée!",
+        "placeholders": {
+            "database": {
+                "content": "$1"
+            }
+        }
+    },
+    "BackupError": {
+        "message": "Une erreur s'est produite lors de la sauvegarde de $database$!",
+        "placeholders": {
+            "database": {
+                "content": "$1"
+            }
+        }
+    },
+    "BackupEmptyDatabase": {
+        "message": "$database$ est vide!",
+        "placeholders": {
+            "database": {
+                "content": "$1"
+            }
+        }
+    },
+    "BackupSavedTo": {
+        "message": "Sauvegarde enregistrée avec succès dans $filename$",
+        "placeholders": {
+            "filename": {
+                "content": "$1"
+            }
+        }
+    },
+    "Monday": {
+        "message": "Lundi"
+    },
+    "Tuesday": {
+        "message": "Mardi"
+    },
+    "Wednesday": {
+        "message": "Mercredi"
+    },
+    "Thursday": {
+        "message": "Jeudi"
+    },
+    "Friday": {
+        "message": "Vendredi"
+    },
+    "Saturday": {
+        "message": "Samedi"
+    },
+    "Sunday": {
+        "message": "Dimanche"
+    },
+    "At": {
+        "message": "À"
+    },
+    "Close": {
+        "message": "Fermer"
+    },
+    "PendingChangesAlert": {
+        "message": "Vous avez des modifications non sauvegardées! Si vous quittez, vos modifications seront perdues."
     }
 }
