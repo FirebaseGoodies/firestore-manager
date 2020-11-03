@@ -221,7 +221,7 @@
     nzOkText="{{ 'Save' | translate }}"
   >
     <nz-select [(ngModel)]="tags" [ngStyle]="{ width: '100%' }" nzMode="tags" nzPlaceHolder="{{ 'Tags' | translate }}">
-      <nz-option *ngFor="let tag of deduplicateTags(tags.concat(defaultTags))" [nzLabel]="tag" [nzValue]="tag"></nz-option>
+      <nz-option *ngFor="let tag of tags.concat(defaultTags) | deduplicate" [nzLabel]="tag" [nzValue]="tag"></nz-option>
     </nz-select>
   </nz-modal>
 

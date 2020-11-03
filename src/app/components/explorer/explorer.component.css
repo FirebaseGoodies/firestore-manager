@@ -69,6 +69,10 @@ textarea.tab-size {
   display: inline-block;
   width: calc(100% - 24px);
 }
+.custom-node-container.delete-mode {
+  width: calc(100% - 48px);
+  padding: 0;
+}
 .custom-node-container > div {
   display: flex;
   align-items: center;
@@ -165,4 +169,7 @@ textarea.tab-size {
 ::ng-deep .sticky-alert.centered .ant-alert-message > .ant-row {
   display: flex;
   align-items: center;
+}
+::ng-deep .ant-tree-checkbox {
+  vertical-align: top;
 }

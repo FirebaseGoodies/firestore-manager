@@ -30,6 +30,7 @@ import { NgxDiff2htmlModule } from 'ngx-diff2html';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { SafePipe } from './pipes/safe.pipe';
 import { DateTimePipe } from './pipes/datetime.pipe';
+import { DeduplicatePipe } from './pipes/deduplicate.pipe';
 import { LogoComponent } from './components/partials/logo/logo.component';
 import { BackgroundComponent } from './components/background/background.component';
 import { BackupComponent } from './components/backup/backup.component';
@@ -57,6 +58,7 @@ function getNZLang(translateService: TranslateService) {
     ClickOutsideDirective,
     SafePipe,
     DateTimePipe,
+    DeduplicatePipe,
     LogoComponent,
     BackgroundComponent,
     BackupComponent,

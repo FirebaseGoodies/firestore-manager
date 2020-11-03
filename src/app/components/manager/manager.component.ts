@@ -13,6 +13,7 @@ import { Authentication, AuthenticationType, AuthenticationData } from 'src/app/
 import { AutoBackup, AutoBackupDays, AutoBackupDay } from 'src/app/models/auto-backup.model';
 import { concatUrl } from 'src/app/helpers/url.helper';
 import { time } from 'src/app/helpers/date.helper';
+import { stringify } from 'src/app/helpers/parser.helper';
 
 @Component({
   selector: 'fm-manager',
@@ -234,7 +235,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
 
   onEditAction(database: Database, index: number) {
     this.databaseModalOkButtonText = this.saveButtonTranslation;
-    this.databaseConfig = this.stringify(database.config);
+    this.databaseConfig = stringify(database.config);
     this.selectedDatabaseIndex = index;
     this.isDatabaseModalVisible = true;
   }
@@ -259,11 +260,6 @@ export class ManagerComponent implements OnInit, OnDestroy {
   private saveDatabases() {
     this.databases = [...this.databases];
     this.storage.save('databases', this.databases);
-  }
-
-  private stringify(obj: any) {
-    const str = Object.keys(obj).map(key => `\t${key}: "${obj[key]}"`).join(",\n");
-    return `{\n${str}\n}`;
   }
 
   onImportClick() {
@@ -334,10 +330,6 @@ export class ManagerComponent implements OnInit, OnDestroy {
     this.storage.save('lang', lang).then(() => {
       window.location.reload();
     });
-  }
-
-  deduplicateTags(tags: string[]) {
-    return tags.filter((tag: string, index: number) => tags.indexOf(tag) === index);
   }
 
   getTagColor(tag: string): string {
