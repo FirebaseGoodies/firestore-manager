@@ -205,7 +205,7 @@
             <i *ngIf="node.origin.isLeaf" nz-icon nzType="file" class="ant-tree-switcher-line-icon"></i>
           </ng-template>
           <ng-template #treeTpl let-node>
-            <span class="custom-node-container">
+            <span class="custom-node-container" [class.delete-mode]="isCollectionDeleteModeEnabled">
               <div>
                 <ng-container *ngIf="!node.isLeaf else leafTpl">
                   <span
