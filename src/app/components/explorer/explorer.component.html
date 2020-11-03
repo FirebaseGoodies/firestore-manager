@@ -431,8 +431,12 @@
       <div nz-col nzSpan="24">
         <nz-form-item>
           <nz-form-label nzRequired><span translate>Name</span></nz-form-label>
-          <nz-form-control nzErrorTip="{{ (addCollectionForm.controls.name.errors?.alreadyExists ? 'CollectionAlreadyExists' : 'EnterCollectionName') | translate }}">
+          <nz-form-control [nzErrorTip]="collectionNameErrorTpl">
             <input nz-input formControlName="name" placeholder="{{ 'CollectionName' | translate }}" />
+            <ng-template #collectionNameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">{{ 'EnterCollectionName' | translate }}</ng-container>
+              <ng-container *ngIf="control.hasError('alreadyExists')">{{ 'CollectionAlreadyExists' | translate }}</ng-container>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -477,8 +481,13 @@
               <span translate>Name</span>&nbsp;<i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="{{ 'DocumentNameTip' | translate }}" nzType="question-circle" nzTheme="outline"></i>
             </span>
           </nz-form-label>
-          <nz-form-control nzErrorTip="{{ (addDocumentForm.controls.name.errors?.alreadyExists ? 'DocumentAlreadyExists' : (addDocumentForm.controls.name.errors?.required ? 'EnterDocumentName' : 'OnlyAlphanumericCharsAllowed')) | translate }}">
+          <nz-form-control [nzErrorTip]="documentNameErrorTpl">
             <input nz-input formControlName="name" placeholder="{{ 'DocumentName' | translate }}" />
+            <ng-template #documentNameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">{{ 'EnterDocumentName' | translate }}</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">{{ 'OnlyAlphanumericCharsAllowed' | translate }}</ng-container>
+              <ng-container *ngIf="control.hasError('alreadyExists')">{{ 'DocumentAlreadyExists' | translate }}</ng-container>
+            </ng-template>
           </nz-form-control>
           <label nz-checkbox formControlName="useRandomName" (ngModelChange)="onUseRandomNameChange($event)">Random</label>
         </nz-form-item>
