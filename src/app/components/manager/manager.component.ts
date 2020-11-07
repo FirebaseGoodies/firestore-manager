@@ -81,9 +81,9 @@ export class ManagerComponent implements OnInit, OnDestroy {
     this.addButtonTranslation = this.translation.get('Add');
     this.saveButtonTranslation = this.translation.get('Save');
     this.subscriptions.push(this.databaseConfigKeyUp.pipe(
-        map((event: any) => event.target.value),
+        map((event: any) => event.target ? event.target.value : event),
         debounceTime(300),
-        //distinctUntilChanged() // block adding in some cases
+        distinctUntilChanged()
       ).subscribe((config) => {
         //console.log(config);
         this.databaseConfig = config;
@@ -98,6 +98,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   onAddDatabaseButtonClick() {
     this.databaseModalOkButtonText = this.addButtonTranslation;
     this.databaseConfig = '';
+    this.databaseConfigKeyUp.next(this.databaseConfig);
     this.isDatabaseModalVisible = true;
   }
 
