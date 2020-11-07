@@ -83,7 +83,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.databaseConfigKeyUp.pipe(
         map((event: any) => event.target.value),
         debounceTime(300),
-        distinctUntilChanged()
+        //distinctUntilChanged() // block adding in some cases
       ).subscribe((config) => {
         //console.log(config);
         this.databaseConfig = config;
@@ -121,7 +121,11 @@ export class ManagerComponent implements OnInit, OnDestroy {
           if (this.isDatabaseConfigValid(config)) {
             // Add
             if (this.databaseModalOkButtonText === this.addButtonTranslation) {
-              this.databases.unshift({ config: config } as any);
+              if (this.databases.find((database: Database) => database.config.projectId === config.projectId)) {
+                throw new Error('ConfigurationAlreadyExists');
+              } else {
+                this.databases.unshift({ config: config } as any);
+              }
             }
             // Edit
             else {
@@ -130,12 +134,12 @@ export class ManagerComponent implements OnInit, OnDestroy {
             this.saveDatabases();
             this.isDatabaseModalVisible = false;
           } else {
-            throw new Error('Invalid configuration!');
+            throw new Error('PleaseEnterValidConfiguration');
           }
         }
         catch(error) {
-          console.log(error.message);
-          this.message.create('error', this.translation.get('PleaseEnterValidConfiguration'));
+          //console.log(error.message);
+          this.message.create('error', this.translation.get(error.message));
         }
         this.isDatabaseModalOkButtonLoading = false;
         resolve();
