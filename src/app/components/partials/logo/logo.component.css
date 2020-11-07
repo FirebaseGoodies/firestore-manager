@@ -1,3 +1,6 @@
+:host {
+  line-height: 60px;
+}
 img {
   margin: 0 16px;
 }
