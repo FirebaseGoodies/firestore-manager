@@ -47,16 +47,16 @@
 <div class="content" role="main">
 
   <!-- Databases List -->
-  <nz-list [nzDataSource]="databases" [nzBordered]="true" [nzHeader]="headerTpl" [nzRenderItem]="itemTpl" [ngStyle]="{ width: '100%' }">
+  <nz-list [nzDataSource]="databases" [nzBordered]="true" [nzHeader]="headerTpl" [nzRenderItem]="itemTpl" class="full-width">
     <ng-template #headerTpl>
       <div nz-row>
         <div nz-col nzSpan="8">
           <h4 translate>Databases</h4>
         </div>
         <div nz-col nzSpan="8" nzOffset="8">
-          <nz-button-group [ngStyle]="{ float: 'right' }">
-            <button nz-button nzType="primary" [ngStyle]="{ 'vertical-align': 'middle' }" (click)="onAddDatabaseButtonClick()"><span translate>AddDatabase</span></button>
-            <button nz-button nzType="primary" [ngStyle]="{ 'vertical-align': 'middle' }" nz-dropdown [nzDropdownMenu]="databasesMenu"><i nz-icon nzType="down" nzTheme="outline"></i></button>
+          <nz-button-group class="pull-right">
+            <button nz-button nzType="primary" class="valign-middle" (click)="onAddDatabaseButtonClick()"><span translate>AddDatabase</span></button>
+            <button nz-button nzType="primary" class="valign-middle" nz-dropdown [nzDropdownMenu]="databasesMenu"><i nz-icon nzType="down" nzTheme="outline"></i></button>
             <nz-dropdown-menu #databasesMenu="nzDropdownMenu">
               <ul nz-menu>
                 <li nz-menu-item (click)="onImportClick()" translate>Import</li>
@@ -180,7 +180,7 @@
       <label nz-radio class="radio" [nzValue]="authenticationTypes.Anonymous">{{ 'Anonymous' | translate }}</label>
       <label nz-radio class="radio" [nzValue]="authenticationTypes.EmailAndPassword">
         {{ 'WithEmailAndPassword' | translate }}
-        <div *ngIf="authentication.type === authenticationTypes.EmailAndPassword" [ngStyle]="{ margin: '10px' }">
+        <div *ngIf="authentication.type === authenticationTypes.EmailAndPassword" class="m-10">
           <input
             nz-input
             type="text"
@@ -188,7 +188,7 @@
             [(ngModel)]="authentication.data.email"
           />
           <br>
-          <nz-input-group [nzSuffix]="passwordSuffixTpl" [ngStyle]="{ 'margin-top': '12px' }">
+          <nz-input-group [nzSuffix]="passwordSuffixTpl" class="mt-12">
             <input
               [type]="isAuthenticationPasswordVisible ? 'text' : 'password'"
               nz-input
@@ -203,7 +203,7 @@
       </label>
       <label nz-radio class="radio" [nzValue]="authenticationTypes.Token">
         {{ 'WithToken' | translate }}
-        <div *ngIf="authentication.type === authenticationTypes.Token" [ngStyle]="{ margin: '10px' }">
+        <div *ngIf="authentication.type === authenticationTypes.Token" class="m-10">
           <input nz-input type="text" placeholder="{{ 'Token' | translate }}" [(ngModel)]="authentication.data.token" />
         </div>
       </label>
@@ -220,7 +220,7 @@
     (nzOnOk)="onTagModalSave()"
     nzOkText="{{ 'Save' | translate }}"
   >
-    <nz-select [(ngModel)]="tags" [ngStyle]="{ width: '100%' }" nzMode="tags" nzPlaceHolder="{{ 'Tags' | translate }}">
+    <nz-select [(ngModel)]="tags" class="full-width" nzMode="tags" nzPlaceHolder="{{ 'Tags' | translate }}">
       <nz-option *ngFor="let tag of tags.concat(defaultTags) | deduplicate" [nzLabel]="tag" [nzValue]="tag"></nz-option>
     </nz-select>
   </nz-modal>

@@ -121,9 +121,6 @@ svg#clouds {
 .radio ::ng-deep span.ant-radio + * {
   padding-right: 0 !important;
 }
-.mr-5 {
-  margin-right: 5px;
-}
 .auto-backup-schedule {
   margin: 10px;
   display: flex;
@@ -138,4 +135,25 @@ svg#clouds {
 }
 .green-dot ::ng-deep .ant-badge-dot {
   background-color: #52c41a;
+}
+.valign-middle {
+  vertical-align: middle;
+}
+.pull-left {
+  float: left;
+}
+.pull-right {
+  float: right;
+}
+.full-width {
+  width: 100%;
+}
+.mt-12 {
+  margin-top: 12px;
+}
+.mr-5 {
+  margin-right: 5px;
+}
+.m-10 {
+  margin: 10px;
 }
