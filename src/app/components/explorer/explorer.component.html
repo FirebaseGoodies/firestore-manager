@@ -123,6 +123,11 @@
                       <li nz-menu-item (click)="onExportJsonClick()">JSON</li>
                     </ul>
                   </li>
+                  <li nz-menu-divider></li>
+                  <li nz-menu-item (click)="isHelpTipsModalVisible = true">
+                    <i nz-icon nzType="question-circle" nzTheme="outline"></i>
+                    <span>{{ 'HelpTips' | translate }}</span>
+                  </li>
                 </ul>
               </nz-dropdown-menu>
             </div>
@@ -598,3 +603,13 @@
 <ng-template #reloadModalTpl>
   <label nz-checkbox [(ngModel)]="discardUnsavedChanges"><span translate>DiscardUnsavedChanges</span></label>
 </ng-template>
+
+<nz-modal
+  [(nzVisible)]="isHelpTipsModalVisible"
+  nzWrapClassName="vertical-center-modal"
+  [nzFooter]="null"
+  (nzOnCancel)="isHelpTipsModalVisible = false"
+  [nzBodyStyle]="{ 'min-height': '500px' }"
+>
+  <fm-help></fm-help>
+</nz-modal>

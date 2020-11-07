@@ -1,0 +1,7 @@
+
+<nz-carousel nzAutoPlay [nzAutoPlaySpeed]="10000" #carousel>
+  <div nz-carousel-content *ngFor="let tip of tips">
+    <img [src]="tip.image" alt="tip" />
+    <p>{{ tip.description | translate }}</p>
+  </div>
+</nz-carousel>

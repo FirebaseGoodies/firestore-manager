@@ -1,0 +1,17 @@
+
+:host {
+  display: block;
+}
+
+[nz-carousel-content] {
+  text-align: center;
+  height: 300px;
+  line-height: 300px;
+  background: #364d79;
+  color: #fff;
+  overflow: hidden;
+}
+
+[nz-carousel-content] img {
+  /*width: 100%;*/
+}

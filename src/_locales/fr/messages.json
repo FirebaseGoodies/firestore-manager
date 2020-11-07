@@ -478,5 +478,17 @@
     },
     "PendingChangesAlert": {
         "message": "Vous avez des modifications non sauvegardées! Si vous quittez, vos modifications seront perdues."
+    },
+    "HelpTips": {
+        "message": "Astuces d'aide"
+    },
+    "RightClickHelpTip": {
+        "message": "Faites un clic droit sur n'importe quel nom de collection ou de document pour obtenir plus d'options"
+    },
+    "JsonEditorHelpTip": {
+        "message": "Utilisez les options du menu de l'éditeur json pour effectuer des actions telles que la correction automatique des erreurs json, annuler / rétablir les modifications, ainsi que changer le mode de l'éditeur"
+    },
+    "SettingsHelpTip": {
+        "message": "Vous pouvez définir des paramètres globaux pour toutes vos bases de données"
     }
 }

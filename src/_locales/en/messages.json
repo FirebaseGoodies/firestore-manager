@@ -478,5 +478,17 @@
     },
     "PendingChangesAlert": {
         "message": "You have unsaved changes! If you leave, your changes will be lost."
+    },
+    "HelpTips": {
+        "message": "Help"
+    },
+    "RightClickHelpTip": {
+        "message": "Right click on any collection or document name to get more options"
+    },
+    "JsonEditorHelpTip": {
+        "message": "Use the json editor menu options to perform actions like auto-fix json errors, undo/redo changes & also switch the editor mode"
+    },
+    "SettingsHelpTip": {
+        "message": "You can set global settings for all your databases"
     }
 }

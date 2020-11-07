@@ -68,6 +68,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   isAddCollectionDrawerVisible: boolean = false;
   isAddDocumentDrawerVisible: boolean = false;
   isAddDocumentButtonLoading: boolean = false;
+  isHelpTipsModalVisible: boolean = false;
   searchValue: string = null;
   collectionList: string[] = [];
   documentContentExample: string = `{\n\t"field": "value",\n\t...\n}`;
