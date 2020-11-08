@@ -5,6 +5,7 @@
 [![Mozilla Add-on users](https://img.shields.io/amo/users/firestore-manager.svg)](https://addons.mozilla.org/firefox/addon/firestore-manager/statistics/)
 [![Mozilla Add-on stars](https://img.shields.io/amo/stars/firestore-manager.svg)](https://addons.mozilla.org/firefox/addon/firestore-manager/reviews/)
 [![Donate](https://img.shields.io/badge/PayPal-Donate-gray.svg?style=flat&logo=paypal&colorA=0071bb&logoColor=fff)](https://www.paypal.me/axeldev)
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FFirebaseGoodies%2Ffirestore-manager&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 
 A simple, fast and intuitive web-extension to manage firestore databases, made with [Angular](https://github.com/angular).
 
@@ -55,7 +56,7 @@ Or [try it as a web application](https://firebasegoodies.github.io/firestore-man
   </tr>
   <tr align="center">
     <td colspan="2">
-    Use the json editor menu options to perform actions like auto-fix json errors, undo/redo changes & also switch the editor mode
+      Use the json editor menu options to perform actions like auto-fix json errors, undo/redo changes & also switch the editor mode
     </td>
   </tr>
 </table>
@@ -64,7 +65,7 @@ Or [try it as a web application](https://firebasegoodies.github.io/firestore-man
 
 - [x] Translations
 - [x] Add collections filter (field - operator - value)
-- [ ] Refactor long components code (by decomposition)
+- [ ] Refactor long components code (create a module for each main component)
 - [ ] Handle sub-collections
 - [ ] Add unit tests
 
