@@ -34,14 +34,6 @@ Or [try it as a web application](https://firebasegoodies.github.io/firestore-man
 <table>
   <tr align="center">
     <td>
-      Right click on any collection or document name to get more options
-    </td>
-    <td>
-      You can set global settings for all your databases
-    </td>
-  </tr>
-  <tr align="center">
-    <td>
       <img src="screenshots/tips/right_click_context_menu.png" alt="right click to open context menu"/>
     </td>
     <td>
@@ -49,13 +41,21 @@ Or [try it as a web application](https://firebasegoodies.github.io/firestore-man
     </td>
   </tr>
   <tr align="center">
-    <td colspan="2">
-    Use the json editor menu options to perform actions like auto-fix json errors, undo/redo changes & also switch the editor mode
+    <td>
+      Right click on any collection or document name to get more options
+    </td>
+    <td>
+      You can set global settings for all your databases
     </td>
   </tr>
   <tr align="center">
     <td colspan="2">
       <img src="screenshots/tips/json_editor_menu.png" alt="json editor menu"/>
+    </td>
+  </tr>
+  <tr align="center">
+    <td colspan="2">
+    Use the json editor menu options to perform actions like auto-fix json errors, undo/redo changes & also switch the editor mode
     </td>
   </tr>
 </table>
