@@ -173,7 +173,7 @@
     (nzOnCancel)="isAuthenticationModalVisible = false"
     (nzOnOk)="onAuthenticationModalSave()"
     nzOkText="{{ 'Save' | translate }}"
-    [nzOkDisabled]="(authentication.type === authenticationTypes.EmailAndPassword && (!authentication.data?.email?.length || !authentication.data?.password?.length)) || (authentication.type === authenticationTypes.Token && !authentication.data?.token?.length)"
+    [nzOkDisabled]="(authentication.type === authenticationTypes.EmailAndPassword && (!authentication.data?.email?.length || !authentication.data?.password?.length)) || (authentication.type === authenticationTypes.JWT && !authentication.data?.token?.length)"
   >
     <nz-radio-group [(ngModel)]="authentication.type">
       <label nz-radio class="radio" [nzValue]="authenticationTypes.None">{{ 'NoAuthentication' | translate }}</label>
@@ -201,9 +201,9 @@
           </ng-template>
         </div>
       </label>
-      <label nz-radio class="radio" [nzValue]="authenticationTypes.Token">
+      <label nz-radio class="radio" [nzValue]="authenticationTypes.JWT">
         {{ 'WithToken' | translate }}
-        <div *ngIf="authentication.type === authenticationTypes.Token" class="m-10">
+        <div *ngIf="authentication.type === authenticationTypes.JWT" class="m-10">
           <input nz-input type="text" placeholder="{{ 'Token' | translate }}" [(ngModel)]="authentication.data.token" />
         </div>
       </label>

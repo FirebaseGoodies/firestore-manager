@@ -9,7 +9,7 @@ export enum AuthenticationType {
   None = 'none',
   Anonymous = 'anonymous',
   EmailAndPassword = 'emailAndPassword',
-  Token = 'token'
+  JWT = 'jwt'
 }
 
 export interface AuthenticationCredentials {

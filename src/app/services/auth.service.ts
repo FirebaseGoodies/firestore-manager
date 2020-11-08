@@ -39,7 +39,7 @@ export class AuthService {
               signInFunction = () => this.auth.signInWithEmailAndPassword(authentication.data.email, authentication.data.password);
             }
             break;
-          case AuthenticationType.Token:
+          case AuthenticationType.JWT:
             if (authentication.data.token?.length) {
               signInFunction = () => this.auth.signInWithCustomToken(authentication.data.token);
             }

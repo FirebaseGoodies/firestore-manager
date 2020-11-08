@@ -186,7 +186,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
     switch(this.authentication.type) {
       case AuthenticationType.Anonymous:
       case AuthenticationType.EmailAndPassword:
-      case AuthenticationType.Token:
+      case AuthenticationType.JWT:
         auth.enabled = true;
         auth.type = this.authentication.type;
         auth.data = this.authentication.data;
