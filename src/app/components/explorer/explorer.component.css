@@ -192,6 +192,9 @@ textarea.tab-size {
 .border-radius-0 {
   border-radius: 0;
 }
+.mt-10 {
+  margin-top: 10px;
+}
 .mt-20 {
   margin-top: 20px;
 }
