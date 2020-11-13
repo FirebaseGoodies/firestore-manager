@@ -77,6 +77,9 @@
     "PleaseEnterValidConfiguration": {
         "message": "Veuillez entrer une configuration valide."
     },
+    "ConfigurationAlreadyExists": {
+        "message": "La configuration que vous venez d'entrer existe déjà."
+    },
     "ConfirmDelete": {
         "message": "Êtes-vous sûr de vouloir supprimer $name$ ?",
         "placeholders": {
