@@ -5,6 +5,7 @@
 [![Mozilla Add-on users](https://img.shields.io/amo/users/firestore-manager.svg)](https://addons.mozilla.org/firefox/addon/firestore-manager/statistics/)
 [![Mozilla Add-on stars](https://img.shields.io/amo/stars/firestore-manager.svg)](https://addons.mozilla.org/firefox/addon/firestore-manager/reviews/)
 [![Donate](https://img.shields.io/badge/PayPal-Donate-gray.svg?style=flat&logo=paypal&colorA=0071bb&logoColor=fff)](https://www.paypal.me/axeldev)
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FFirebaseGoodies%2Ffirestore-manager&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 
 A simple, fast and intuitive web-extension to manage firestore databases, made with [Angular](https://github.com/angular).
 
@@ -29,6 +30,45 @@ A simple, fast and intuitive web-extension to manage firestore databases, made w
 
 Or [try it as a web application](https://firebasegoodies.github.io/firestore-manager/manager).
 
+## Tips
+
+<table>
+  <tr align="center">
+    <td>
+      <img src="screenshots/tips/right_click_context_menu.png" alt="right click to open context menu"/>
+    </td>
+    <td>
+      <img src="screenshots/tips/settings.png" alt="settings"/>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>
+      Right click on any collection or document name to get more options
+    </td>
+    <td>
+      You can set global settings for all your databases
+    </td>
+  </tr>
+  <tr align="center">
+    <td colspan="2">
+      <img src="screenshots/tips/json_editor_menu.png" alt="json editor menu"/>
+    </td>
+  </tr>
+  <tr align="center">
+    <td colspan="2">
+      Use the json editor menu options to perform actions like auto-fix json errors, undo/redo changes & also switch the editor mode
+    </td>
+  </tr>
+</table>
+
+## Todo
+
+- [x] Translations
+- [x] Add collections filter (field - operator - value)
+- [ ] Refactor long components code (create a module for each main component)
+- [ ] Handle sub-collections
+- [ ] Add unit tests
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
@@ -52,14 +92,6 @@ Make sure you have the following package installed `npm install -g angular-cli-g
 ```
 npm run build:github && npm run deploy:github
 ```
-
-## Todo
-
-- [x] Translations
-- [x] Add collections filter (field - operator - value)
-- [ ] Refactor long components code (by decomposition)
-- [ ] Handle sub-collections
-- [ ] Add unit tests
 
 ## License
 

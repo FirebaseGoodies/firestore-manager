@@ -81,7 +81,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
     this.addButtonTranslation = this.translation.get('Add');
     this.saveButtonTranslation = this.translation.get('Save');
     this.subscriptions.push(this.databaseConfigKeyUp.pipe(
-        map((event: any) => event.target.value),
+        map((event: any) => event.target ? event.target.value : event),
         debounceTime(300),
         distinctUntilChanged()
       ).subscribe((config) => {
@@ -98,6 +98,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
   onAddDatabaseButtonClick() {
     this.databaseModalOkButtonText = this.addButtonTranslation;
     this.databaseConfig = '';
+    this.databaseConfigKeyUp.next(this.databaseConfig);
     this.isDatabaseModalVisible = true;
   }
 
@@ -121,7 +122,11 @@ export class ManagerComponent implements OnInit, OnDestroy {
           if (this.isDatabaseConfigValid(config)) {
             // Add
             if (this.databaseModalOkButtonText === this.addButtonTranslation) {
-              this.databases.unshift({ config: config } as any);
+              if (this.databases.find((database: Database) => database.config.projectId === config.projectId)) {
+                throw new Error('ConfigurationAlreadyExists');
+              } else {
+                this.databases.unshift({ config: config } as any);
+              }
             }
             // Edit
             else {
@@ -130,12 +135,12 @@ export class ManagerComponent implements OnInit, OnDestroy {
             this.saveDatabases();
             this.isDatabaseModalVisible = false;
           } else {
-            throw new Error('Invalid configuration!');
+            throw new Error('PleaseEnterValidConfiguration');
           }
         }
         catch(error) {
-          console.log(error.message);
-          this.message.create('error', this.translation.get('PleaseEnterValidConfiguration'));
+          //console.log(error.message);
+          this.message.create('error', this.translation.get(error.message));
         }
         this.isDatabaseModalOkButtonLoading = false;
         resolve();
@@ -181,7 +186,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
     switch(this.authentication.type) {
       case AuthenticationType.Anonymous:
       case AuthenticationType.EmailAndPassword:
-      case AuthenticationType.Token:
+      case AuthenticationType.JWT:
         auth.enabled = true;
         auth.type = this.authentication.type;
         auth.data = this.authentication.data;

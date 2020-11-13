@@ -60,16 +60,16 @@
                   </nz-dropdown-menu>
                 </nz-button-group>
                 <ng-template #viewUnsavedChangesTooltip>
-                  <i nz-icon nzType="warning" style="margin-right: 8px"></i> <span>{{ 'FixJsonErrorsToViewUnsavedChanges' | translate }}</span>
+                  <i nz-icon nzType="warning" class="mr-8"></i> <span>{{ 'FixJsonErrorsToViewUnsavedChanges' | translate }}</span>
                 </ng-template>
               </div>
             </div>
           </ng-template>
         </nz-alert>
-        <div *ngIf="!isCollectionDeleteModeEnabled" [ngStyle]="{ 'margin-bottom': '10px' }">
+        <div *ngIf="!isCollectionDeleteModeEnabled" class="mb-10">
           <div nz-row nzGutter="8">
             <div nz-col nzSpan="21">
-                <nz-badge [nzCount]="options.displayCollectionsCount ? collectionNodes.length : 0" [ngStyle]="{ width: '100%' }">
+                <nz-badge [nzCount]="options.displayCollectionsCount ? collectionNodes.length : 0" class="full-width">
                   <nz-select
                     #collectionSearch
                     nzShowSearch
@@ -80,7 +80,7 @@
                     nzNotFoundContent="{{ 'NoCollectionFound' | translate }}"
                     [(ngModel)]="searchValue"
                     (nzOnSearch)="searchCollection($event)"
-                    [ngStyle]="{ width: '100%' }"
+                    class="full-width"
                   >
                     <nz-option *ngFor="let c of collectionList" [nzLabel]="c" [nzValue]="c"> </nz-option>
                   </nz-select>
@@ -91,12 +91,12 @@
             </div>
             <div nz-col nzSpan="3">
               <nz-badge [nzDot]="!collectionNodes.length">
-                <button nz-button nzType="default" [ngStyle]="{ padding: '4px' }" nz-dropdown nzTrigger="click" [nzDropdownMenu]="collectionMenu">
+                <button nz-button nzType="default" class="p-4" nz-dropdown nzTrigger="click" [nzDropdownMenu]="collectionMenu">
                   <i nz-icon nzType="more" nzTheme="outline"></i>
                 </button>
               </nz-badge>
               <nz-dropdown-menu #collectionMenu="nzDropdownMenu">
-                <ul nz-menu [ngStyle]="{ 'min-width': '140px' }">
+                <ul nz-menu class="min-width-140">
                   <li nz-submenu nzTitle="{{ 'Add' | translate }}">
                     <ul>
                       <li nz-menu-item (click)="isAddCollectionDrawerVisible = true" translate>Collection</li>
@@ -133,12 +133,12 @@
             nzType="info"
             nzMessage="{{ 'Welcome' | translate }}"
             nzDescription="{{ 'StartByTypingCollectionName' | translate }}"
-            [ngStyle]="{ 'margin-top': '10px' }"
+            class="mt-10"
             nzCloseable
           ></nz-alert>
         </div>
-        <div *ngIf="isCollectionDeleteModeEnabled" [ngStyle]="{ 'margin-bottom': '10px' }">
-          <div nz-row nzGutter="8" [ngStyle]="{ 'margin-bottom': '10px' }">
+        <div *ngIf="isCollectionDeleteModeEnabled" class="mb-10">
+          <div nz-row nzGutter="8" class="mb-10">
             <div nz-col nzSpan="4">
               <button
                 nz-button
@@ -154,7 +154,7 @@
               <button nz-button nzType="default" nzBlock (click)="isCollectionDeleteModeEnabled = false"><span translate>Cancel</span></button>
             </div>
             <div nz-col nzSpan="10">
-              <nz-badge [nzCount]="collectionTree.getCheckedNodeList().length" [nzOverflowCount]="999" [ngStyle]="{ width: '100%' }">
+              <nz-badge [nzCount]="collectionTree.getCheckedNodeList().length" [nzOverflowCount]="999" class="full-width">
                 <button nz-button
                   nzType="danger"
                   nzBlock
@@ -168,7 +168,7 @@
               </nz-badge>
               <ng-template #confirmDeleteTpl>
                 <span><i nz-icon nzType="exclamation-circle" nzTheme="fill" class="warning-icon"></i><strong translate>DeleteQuestion</strong></span>
-                <div [ngStyle]="{ 'margin-top': '10px' }">
+                <div class="mt-10">
                   <label nz-checkbox [(ngModel)]="permanentlyDeleteDocuments"><span translate>PermanentlyDeleteDocuments</span></label>
                 </div>
               </ng-template>
@@ -219,10 +219,10 @@
                     (click)="closeContextMenu()"
                   >
                     <ng-container *ngIf="node.isRenameModeEnabled; else collectionNameTpl">
-                      <nz-input-group nzCompact nzSize="small" (click)="$event.stopPropagation()" (clickOutside)="disableRenameMode($event, node)" [ngStyle]="{ display: 'inline-block', width: 'auto' }">
-                        <input nz-input placeholder="{{ 'Name' | translate }}" [value]="node.title" style="width: 100px" #collectionName />
+                      <nz-input-group nzCompact nzSize="small" (click)="$event.stopPropagation()" (clickOutside)="disableRenameMode($event, node)" class="d-inline-block width-auto">
+                        <input nz-input placeholder="{{ 'Name' | translate }}" [value]="node.title" class="width-100" #collectionName />
                         <button nz-button nzType="default" nzSize="small" title="{{ 'Cancel' | translate }}" (click)="disableRenameMode($event, node)">
-                          <i nz-icon nzType="close" style="font-size: 10px; vertical-align: middle;"></i>
+                          <i nz-icon nzType="close" class="font-size-10 valign-middle"></i>
                         </button>
                         <button nz-button nzType="default" nzSize="small" title="{{ 'Rename' | translate }}" [disabled]="!collectionName.value || node.isRenameButtonLoading" (click)="renameCollection(node, collectionName.value)">
                           <i nz-icon [nzType]="node.isRenameButtonLoading ? 'loading' : 'edit'"></i>
@@ -261,10 +261,10 @@
                     (click)="closeContextMenu()"
                   >
                     <ng-container *ngIf="node.isRenameModeEnabled; else documentNameTpl">
-                      <nz-input-group nzCompact nzSize="small" (click)="$event.stopPropagation()" (clickOutside)="disableRenameMode($event, node)" [ngStyle]="{ display: 'inline-block', width: 'auto' }">
-                        <input nz-input placeholder="{{ 'Name' | translate }}" [value]="node.title" style="width: 150px" #documentName />
+                      <nz-input-group nzCompact nzSize="small" (click)="$event.stopPropagation()" (clickOutside)="disableRenameMode($event, node)" class="d-inline-block width-auto">
+                        <input nz-input placeholder="{{ 'Name' | translate }}" [value]="node.title" class="width-150" #documentName />
                         <button nz-button nzType="default" nzSize="small" title="{{ 'Cancel' | translate }}" (click)="disableRenameMode($event, node)">
-                          <i nz-icon nzType="close" style="font-size: 10px; vertical-align: middle;"></i>
+                          <i nz-icon nzType="close" class="font-size-10 valign-middle"></i>
                         </button>
                         <button nz-button nzType="default" nzSize="small" title="{{ 'Rename' | translate }}" [disabled]="!documentName.value || node.isRenameButtonLoading" (click)="renameDocument(node, documentName.value)">
                           <i nz-icon [nzType]="node.isRenameButtonLoading ? 'loading' : 'edit'"></i>
@@ -316,8 +316,8 @@
                   ><i nz-icon nzType="filter"></i></button>
                   <ng-template #filterTpl>
                     <nz-input-group nzCompact>
-                      <input type="text" nz-input placeholder="{{ 'Field' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].field" (keyup.enter)="applyFilter(node)" />
-                      <nz-select nzPlaceHolder="{{ 'Operator' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].operator">
+                      <input type="text" nz-input placeholder="{{ 'Field' | translate }}" class="width-200" [(ngModel)]="filters[node.title].field" (keyup.enter)="applyFilter(node)" />
+                      <nz-select nzPlaceHolder="{{ 'Operator' | translate }}" class="width-200" [(ngModel)]="filters[node.title].operator">
                         <nz-option nzLabel="==" nzValue="=="></nz-option>
                         <nz-option nzLabel="!=" nzValue="!="></nz-option>
                         <nz-option nzLabel=">" nzValue=">"></nz-option>
@@ -329,19 +329,19 @@
                         <nz-option nzLabel="array-contains" nzValue="array-contains"></nz-option>
                         <nz-option nzLabel="array-contains-any" nzValue="array-contains-any"></nz-option>
                       </nz-select>
-                      <input type="text" nz-input placeholder="{{ 'Value' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].value" (keyup.enter)="applyFilter(node)" />
-                      <nz-select nzPlaceHolder="{{ 'ValueType' | translate }}" style="width: 200px" [(ngModel)]="filters[node.title].valueType">
+                      <input type="text" nz-input placeholder="{{ 'Value' | translate }}" class="width-200" [(ngModel)]="filters[node.title].value" (keyup.enter)="applyFilter(node)" />
+                      <nz-select nzPlaceHolder="{{ 'ValueType' | translate }}" class="width-200" [(ngModel)]="filters[node.title].valueType">
                         <nz-option *ngFor="let type of filterValueTypes" [nzLabel]="type.label | translate" [nzValue]="type.value"></nz-option>
                       </nz-select>
                       <nz-button-group>
                         <button nz-button nzType="default" 
                           [disabled]="!filters[node.title].field || !filters[node.title].operator || !filters[node.title].value || !filters[node.title].valueType"
-                          [ngStyle]="{ 'vertical-align': 'middle', 'border-radius': 0 }"
+                          class="valign-middle border-radius-0"
                           (click)="applyFilter(node)"
                         >
                           <span translate>Apply</span>
                         </button>
-                        <button nz-button nzType="default" [ngStyle]="{ 'vertical-align': 'middle' }" nz-tooltip nzTooltipPlacement="right" nzTitle="{{ 'Remove' | translate }}" [disabled]="!filters[node.title].isApplied" (click)="removeFilter(node)">
+                        <button nz-button nzType="default" class="valign-middle" nz-tooltip nzTooltipPlacement="right" nzTitle="{{ 'Remove' | translate }}" [disabled]="!filters[node.title].isApplied" (click)="removeFilter(node)">
                           <i nz-icon nzType="delete" nzTheme="outline"></i>
                         </button>
                       </nz-button-group>
@@ -391,7 +391,7 @@
             </ng-template>
           </nz-alert>
           <div>
-            <div [ngStyle]="{ display: 'flex', margin: '0 5px 10px' }">
+            <div class="breadcrumb-container">
               <nz-breadcrumb>
                 <nz-breadcrumb-item>
                   <i nz-icon nzType="home"></i>
@@ -449,7 +449,7 @@
               <span translate>Content</span>&nbsp;<i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="{{ 'ContentOfTheFirstDocument' | translate }}" nzType="question-circle" nzTheme="outline"></i>
             </span>
           </nz-form-label>
-          <button nz-button nzType="default" nzShape="circle" nzSize="small" (click)="onRandomContentClick($event, addCollectionForm)" nz-tooltip nzTooltipTitle="{{ 'Random' | translate }}" nzTooltipPlacement="left" [ngStyle]="{ float: 'right', bottom: '-5px' }">
+          <button nz-button nzType="default" nzShape="circle" nzSize="small" (click)="onRandomContentClick($event, addCollectionForm)" nz-tooltip nzTooltipTitle="{{ 'Random' | translate }}" nzTooltipPlacement="left" class="random-button pull-right">
             <i nz-icon nzType="sync" nzTheme="outline"></i>
           </button>
           <nz-form-control nzErrorTip="{{ 'EnterValidJsonContent' | translate }}">
@@ -459,7 +459,7 @@
       </div>
     </div>
     <div class="drawer-footer">
-      <button nz-button nzType="default" (click)="isAddCollectionDrawerVisible = false" [ngStyle]="{ 'margin-right': '8px' }"><span translate>Cancel</span></button>
+      <button nz-button nzType="default" (click)="isAddCollectionDrawerVisible = false" class="mr-8"><span translate>Cancel</span></button>
       <button nz-button nzType="primary" [nzLoading]="isAddCollectionButtonLoading" (click)="onAddCollectionClick()"><span translate>Add</span></button>
     </div>
   </form>
@@ -520,7 +520,7 @@
               <span translate>Content</span>&nbsp;<i nz-icon nz-tooltip nzTooltipPlacement="bottom" nzTitle="{{ 'DocumentContentInJson' | translate }}" nzType="question-circle" nzTheme="outline"></i>
             </span>
           </nz-form-label>
-          <button nz-button nzType="default" nzShape="circle" nzSize="small" (click)="onRandomContentClick($event, addDocumentForm)" nz-tooltip nzTooltipTitle="{{ 'Random' | translate }}" nzTooltipPlacement="left" [ngStyle]="{ float: 'right', bottom: '-5px' }">
+          <button nz-button nzType="default" nzShape="circle" nzSize="small" (click)="onRandomContentClick($event, addDocumentForm)" nz-tooltip nzTooltipTitle="{{ 'Random' | translate }}" nzTooltipPlacement="left" class="random-button pull-right">
             <i nz-icon nzType="sync" nzTheme="outline"></i>
           </button>
           <nz-form-control nzErrorTip="{{ 'EnterValidJsonContent' | translate }}">
@@ -550,7 +550,7 @@
       </div>
     </div>
     <div class="drawer-footer">
-      <button nz-button nzType="default" (click)="isAddDocumentDrawerVisible = false" [ngStyle]="{ 'margin-right': '8px' }"><span translate>Cancel</span></button>
+      <button nz-button nzType="default" (click)="isAddDocumentDrawerVisible = false" class="mr-8"><span translate>Cancel</span></button>
       <button nz-button nzType="primary" [nzLoading]="isAddDocumentButtonLoading" (click)="onAddDocumentClick()"><span translate>Add</span></button>
     </div>
   </form>
@@ -579,7 +579,7 @@
     nzBanner
     nzMessage="{{ 'SaveWarning' | translate }}"
     nzCloseable
-    [ngStyle]="{ 'margin-top': '20px' }"
+    class="mt-20"
   ></nz-alert>
 </nz-modal>
 <nz-drawer

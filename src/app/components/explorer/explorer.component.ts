@@ -569,6 +569,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     if (isEmpty) {
       this.isSaveButtonDisabled = true;
       this.hasUnsavedChanges = false;
+      if (this.firestore.cacheStatus.hasChanged) {
+        this.firestore.cacheStatus.hasChanged = false;
+      }
     } else if (this.isCacheDiffModalFooterVisible) {
       this.isSaveButtonDisabled = false;
     }
