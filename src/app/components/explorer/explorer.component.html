@@ -196,6 +196,8 @@
           (nzClick)="onCollectionNodeClick($event)"
           (nzCheckBoxChange)="onCollectionNodeCheck($event)"
           (nzExpandChange)="onCollectionNodeExpand($event)"
+          (nzOnDragStart)="onCollectionNodeDragStart($event)"
+          (nzOnDragEnter)="onCollectionNodeDragEnter($event)"
           (nzOnDrop)="onCollectionNodeDrop($event)"
           [nzBeforeDrop]="beforeCollectionNodeDrop"
           #collectionTree
