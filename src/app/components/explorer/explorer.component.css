@@ -98,6 +98,17 @@ textarea.tab-size {
 .custom-node.active:not(.rename-mode) {
   background-color: #bae7ff;
 }
+::ng-deep .ant-tree li.drag-over span.custom-node[draggable] {
+  color: #fff;
+  background-color: #1890ff;
+  opacity: .8;
+}
+::ng-deep .ant-tree li.drag-over-gap-top span.custom-node[draggable] {
+  border-top-color: #1890ff;
+}
+::ng-deep .ant-tree li.drag-over-gap-bottom span.custom-node[draggable] {
+  border-bottom-color: #1890ff;
+}
 :host ::ng-deep json-editor,
 :host ::ng-deep json-editor .jsoneditor,
 :host ::ng-deep json-editor > div,
