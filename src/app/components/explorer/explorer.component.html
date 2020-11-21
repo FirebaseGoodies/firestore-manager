@@ -6,7 +6,7 @@
         class="toolbar-icon"
         nz-tooltip
         nzTooltipTitle="{{ 'ReportBug' | translate }}"
-        nzTooltipPlacement="left"
+        nzTooltipPlacement="bottom"
         [href]="app.links.issueTracker"
         target="_blank"
       >
@@ -16,7 +16,7 @@
         class="toolbar-icon"
         nz-tooltip
         nzTooltipTitle="{{ 'Settings' | translate }}"
-        nzTooltipPlacement="left"
+        nzTooltipPlacement="bottom"
         (click)="isSettingsDrawerVisible = true"
       >
         <i nz-icon nzType="setting" nzTheme="outline"></i>
@@ -25,7 +25,7 @@
         class="toolbar-icon"
         nz-tooltip
         nzTooltipTitle="{{ 'GoBackToMainPage' | translate }}"
-        nzTooltipPlacement="left"
+        nzTooltipPlacement="bottomRight"
         (click)="onGoBackIconClick()"
       >
         <i nz-icon nzType="logout" nzTheme="outline"></i>
