@@ -281,7 +281,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
           // Check if databases config is valid
           let isValid = true;
           databases.forEach((database: Database) => {
-            if (!database.config || !isDatabaseConfigValid(database.config)) {
+            if (!isDatabaseConfigValid(database.config)) {
               isValid = false;
             }
           });
