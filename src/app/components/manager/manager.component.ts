@@ -14,6 +14,7 @@ import { AutoBackup, AutoBackupDays, AutoBackupDay } from 'src/app/models/auto-
 import { concatUrl } from 'src/app/helpers/url.helper';
 import { time } from 'src/app/helpers/date.helper';
 import { stringify } from 'src/app/helpers/parser.helper';
+import { parseDatabaseConfig, isDatabaseConfigValid } from 'src/app/validators/database-config.validator';
 
 @Component({
   selector: 'fm-manager',
@@ -107,19 +108,9 @@ export class ManagerComponent implements OnInit, OnDestroy {
     return new Promise(resolve => {
       setTimeout(() => {
         try {
-          const validJson = this.databaseConfig.replace(/(["':\w]+)(:)/g, (match, $1, $2) => {
-            //console.log($1);
-            if ($1.match(/^["']/g)) {
-              return $1 + $2;
-            } else {
-              const colonIndex = $1.indexOf(':');
-              return colonIndex === -1 ? `"${$1}":` : `"${$1.slice(0, colonIndex)}":${$1.slice(colonIndex+1)}`;
-            }
-          }).replace(/'/g, '"');
-          //console.log(validJson);
-          const config: DatabaseConfig = JSON.parse(validJson);
+          const config: DatabaseConfig = parseDatabaseConfig(this.databaseConfig);
           //console.log(config);
-          if (this.isDatabaseConfigValid(config)) {
+          if (isDatabaseConfigValid(config)) {
             // Add
             if (this.databaseModalOkButtonText === this.addButtonTranslation) {
               if (this.databases.find((database: Database) => database.config.projectId === config.projectId)) {
@@ -146,10 +137,6 @@ export class ManagerComponent implements OnInit, OnDestroy {
         resolve();
       }, 300);
     });
-  }
-
-  private isDatabaseConfigValid(config: DatabaseConfig): boolean {
-    return !!(config.apiKey && config.authDomain && config.databaseURL && config.projectId && config.storageBucket && config.messagingSenderId && config.appId);
   }
 
   onOpenAction(event, index) {
@@ -294,7 +281,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
           // Check if databases config is valid
           let isValid = true;
           databases.forEach((database: Database) => {
-            if (! database.config || ! this.isDatabaseConfigValid(database.config)) {
+            if (!database.config || !isDatabaseConfigValid(database.config)) {
               isValid = false;
             }
           });
