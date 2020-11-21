@@ -210,8 +210,8 @@
                 <ng-container *ngIf="!node.isLeaf else leafTpl">
                   <span
                     class="custom-node draggable"
-                    draggable="true"
-                    aria-grabbed="true"
+                    [attr.draggable]="!isCollectionDeleteModeEnabled"
+                    [attr.aria-grabbed]="!isCollectionDeleteModeEnabled"
                     [class.active]="node.isSelected"
                     [class.rename-mode]="node.isRenameModeEnabled"
                     [title]="node.title"
