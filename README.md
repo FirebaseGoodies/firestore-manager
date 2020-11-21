@@ -38,7 +38,7 @@ Or [try it as a web application](https://firebasegoodies.github.io/firestore-man
       <img src="screenshots/tips/right_click_context_menu.png" alt="right click to open context menu"/>
     </td>
     <td>
-      <img src="screenshots/tips/settings.png" alt="settings"/>
+      <img src="screenshots/tips/move_collections.png" alt="move collections"/>
     </td>
   </tr>
   <tr align="center">
@@ -46,7 +46,7 @@ Or [try it as a web application](https://firebasegoodies.github.io/firestore-man
       Right click on any collection or document name to get more options
     </td>
     <td>
-      You can set global settings for all your databases
+      Move collections using drag-n-drop
     </td>
   </tr>
   <tr align="center">
@@ -56,7 +56,7 @@ Or [try it as a web application](https://firebasegoodies.github.io/firestore-man
   </tr>
   <tr align="center">
     <td colspan="2">
-      Use the json editor menu options to perform actions like auto-fix json errors, undo/redo changes & also switch the editor mode
+      Use the json editor menu options to perform actions like auto-fix json errors, fix alignment, undo/redo changes, ...
     </td>
   </tr>
 </table>
