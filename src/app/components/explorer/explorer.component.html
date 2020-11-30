@@ -6,7 +6,7 @@
         class="toolbar-icon"
         nz-tooltip
         nzTooltipTitle="{{ 'ReportBug' | translate }}"
-        nzTooltipPlacement="left"
+        nzTooltipPlacement="bottom"
         [href]="app.links.issueTracker"
         target="_blank"
       >
@@ -16,7 +16,7 @@
         class="toolbar-icon"
         nz-tooltip
         nzTooltipTitle="{{ 'Settings' | translate }}"
-        nzTooltipPlacement="left"
+        nzTooltipPlacement="bottom"
         (click)="isSettingsDrawerVisible = true"
       >
         <i nz-icon nzType="setting" nzTheme="outline"></i>
@@ -25,7 +25,7 @@
         class="toolbar-icon"
         nz-tooltip
         nzTooltipTitle="{{ 'GoBackToMainPage' | translate }}"
-        nzTooltipPlacement="left"
+        nzTooltipPlacement="bottomRight"
         (click)="onGoBackIconClick()"
       >
         <i nz-icon nzType="logout" nzTheme="outline"></i>
@@ -196,6 +196,8 @@
           (nzClick)="onCollectionNodeClick($event)"
           (nzCheckBoxChange)="onCollectionNodeCheck($event)"
           (nzExpandChange)="onCollectionNodeExpand($event)"
+          (nzOnDragStart)="onCollectionNodeDragStart($event)"
+          (nzOnDragEnter)="onCollectionNodeDragEnter($event)"
           (nzOnDrop)="onCollectionNodeDrop($event)"
           [nzBeforeDrop]="beforeCollectionNodeDrop"
           #collectionTree
@@ -210,8 +212,8 @@
                 <ng-container *ngIf="!node.isLeaf else leafTpl">
                   <span
                     class="custom-node draggable"
-                    draggable="true"
-                    aria-grabbed="true"
+                    [attr.draggable]="!isCollectionDeleteModeEnabled"
+                    [attr.aria-grabbed]="!isCollectionDeleteModeEnabled"
                     [class.active]="node.isSelected"
                     [class.rename-mode]="node.isRenameModeEnabled"
                     [title]="node.title"

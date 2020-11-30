@@ -23,6 +23,17 @@ export function stringify(obj: any) {
   return `{\n${str}\n}`;
 }
 
+export function sanitizeJson(json: string) {
+  return json.replace(/(["':\w]+)(:)/g, (match, $1, $2) => {
+    if ($1.match(/^["']/g)) {
+      return $1 + $2;
+    } else {
+      const colonIndex = $1.indexOf(':');
+      return colonIndex === -1 ? `"${$1}":` : `"${$1.slice(0, colonIndex)}":${$1.slice(colonIndex+1)}`;
+    }
+  }).replace(/'/g, '"');
+}
+
 export function isNumber(value: string) {
   return !isNaN(+value) && /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/.test(value);
 }

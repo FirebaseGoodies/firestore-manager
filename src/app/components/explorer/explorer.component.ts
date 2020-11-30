@@ -465,6 +465,9 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   onCollectionNodeClick(event: Required<NzFormatEmitEvent>) {
     // console.log(event);
     const node = event.node;
+    if (node.isLoading) {
+      return;
+    }
     if (node.isSelected) {
       this.expandNode(node).then(() => this.selectNode(node));
     } else {
@@ -1017,8 +1020,18 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     });
   }
 
+  onCollectionNodeDragStart(event: NzFormatEmitEvent) {
+    //console.log('drag start', event);
+    event.node.isExpanded = false;
+  }
+
+  onCollectionNodeDragEnter(event: NzFormatEmitEvent) {
+    //console.log('drag enter', event);
+    event.node.isExpanded = false;
+  }
+
   beforeCollectionNodeDrop(arg: NzFormatBeforeDropEvent): Observable<boolean> {
-    //console.log(arg);
+    //console.log('before drop', arg);
     if (!arg.dragNode.isLeaf && !arg.node.isLeaf && arg.pos != 0) {
       return of(true);
     } else {
@@ -1027,7 +1040,7 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
   }
 
   onCollectionNodeDrop(event: NzFormatEmitEvent) {
-    //console.log(event);
+    //console.log('drop', event);
     // Update storage
     this.storage.get('databases').then((databases: Database[]) => {
       if (databases) {
