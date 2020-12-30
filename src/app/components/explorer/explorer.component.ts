@@ -26,12 +26,7 @@ import { Filter, FilterValueType } from 'src/app/models/filter.model';
 import { booleanify, isNumber, jsonify } from 'src/app/helpers/parser.helper';
 import { CollectionReference, QueryFn } from '@angular/fire/firestore';
 import { slideInOut } from 'src/app/animations/slide-in-out.animation';
-
-const Chars = {
-  Numeric: [...'0123456789'],
-  Alpha: [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'],
-  AlphaNumeric: [...'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ']
-};
+import { randomString, Chars } from 'src/app/helpers/string.helper';
 
 @Component({
   selector: 'fm-explorer',
@@ -444,22 +439,18 @@ export class ExplorerComponent implements OnInit, OnDestroy, ComponentCanDeactiv
     event.preventDefault();
     // Generate random content
     form.controls.content.setValue(`{
-      "id": "${this.randomString(3, Chars.Numeric)}",
-      "firstname": "${this.randomString(6, Chars.Alpha)}",
-      "lastname": "${this.randomString(8, Chars.Alpha)}",
-      "email": "${this.randomString(8) + '@test.com'}",
+      "id": "${randomString(3, Chars.Numeric)}",
+      "firstname": "${randomString(6, Chars.Alpha)}",
+      "lastname": "${randomString(8, Chars.Alpha)}",
+      "email": "${randomString(8) + '@test.com'}",
       "location": {
         "street": {
-          "number": "${this.randomString(4, Chars.Numeric)}",
-          "name": "${this.randomString(10)}"
+          "number": "${randomString(4, Chars.Numeric)}",
+          "name": "${randomString(10)}"
         },
-        "city": "${this.randomString(6, Chars.Alpha)}",
-        "postcode": "${this.randomString(5, Chars.Numeric)}"
+        "city": "${randomString(6, Chars.Alpha)}",
+        "postcode": "${randomString(5, Chars.Numeric)}"
       }\n}`);
-  }
-
-  private randomString(length: number, chars: string[] = Chars.AlphaNumeric) {
-    return [...Array(length)].map(i => chars[Math.random()*chars.length|0]).join('');
   }
 
   onCollectionNodeClick(event: Required<NzFormatEmitEvent>) {
