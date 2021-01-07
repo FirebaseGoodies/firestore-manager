@@ -5,6 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng run firestore-manager:build-webextension --configuration=production",
+    "build:firefox": "npm run build && cd dist/firestore-manager/webextension && mv -f manifest.firefox.json manifest.json",
+    "build:chrome": "npm run build && cd dist/firestore-manager/webextension && rm -f manifest.firefox.json",
     "package": "web-ext build --source-dir=dist/firestore-manager/webextension --artifacts-dir=. --overwrite-dest",
     "build:github": "ng build --prod --base-href \"/firestore-manager/\"",
     "deploy:github": "ngh --dir=dist/firestore-manager/webapp",

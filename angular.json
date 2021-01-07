@@ -83,6 +83,7 @@
               "src/assets",
               "src/_locales",
               "src/manifest.json",
+              "src/manifest.firefox.json",
               {
                 "glob": "**/*",
                 "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
