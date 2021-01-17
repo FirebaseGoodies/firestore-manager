@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AppService } from './app.service';
 
+declare const browser: any;
+
 @Injectable({
   providedIn: 'root'
 })

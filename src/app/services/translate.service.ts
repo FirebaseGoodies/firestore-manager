@@ -3,6 +3,8 @@ import { AppService } from './app.service';
 import { HttpClient } from '@angular/common/http';
 import { StorageService } from './storage.service';
 
+declare const browser: any;
+
 @Injectable({
   providedIn: 'root'
 })

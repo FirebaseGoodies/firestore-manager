@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { sanitizePath } from 'src/app/helpers/url.helper';
 
+declare const browser: any;
+
 @Injectable({
   providedIn: 'root'
 })

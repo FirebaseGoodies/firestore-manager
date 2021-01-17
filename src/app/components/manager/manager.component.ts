@@ -16,6 +16,8 @@ import { time } from 'src/app/helpers/date.helper';
 import { stringify } from 'src/app/helpers/parser.helper';
 import { parseDatabaseConfig, isDatabaseConfigValid } from 'src/app/validators/database-config.validator';
 
+declare const browser: any;
+
 @Component({
   selector: 'fm-manager',
   templateUrl: './manager.component.html',

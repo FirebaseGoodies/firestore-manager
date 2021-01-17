@@ -10,6 +10,8 @@ import { AppService } from 'src/app/services/app.service';
 import { download } from 'src/app/helpers/download.helper';
 import { Router } from '@angular/router';
 
+declare const browser: any;
+
 @Component({
   selector: 'fm-backup',
   templateUrl: './backup.component.html',
