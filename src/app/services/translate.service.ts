@@ -20,7 +20,7 @@ export class TranslateService {
   constructor(private app: AppService, private http: HttpClient, private storage: StorageService) { }
 
   static init(self: TranslateService): Function {
-    return () => new Promise(resolve => {
+    return () => new Promise<void>(resolve => {
       if (! self.app.isWebExtension) {
         self.storage.get('lang').then((lang) => {
           if (lang && Object.values(self.languages).indexOf(lang) !== -1) {

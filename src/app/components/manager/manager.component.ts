@@ -107,7 +107,7 @@ export class ManagerComponent implements OnInit, OnDestroy {
 
   onDatabaseModalConfirm() {
     this.isDatabaseModalOkButtonLoading = true;
-    return new Promise(resolve => {
+    return new Promise<void>(resolve => {
       setTimeout(() => {
         try {
           const config: DatabaseConfig = parseDatabaseConfig(this.databaseConfig);
