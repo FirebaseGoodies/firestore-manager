@@ -16,6 +16,7 @@ A simple, fast and intuitive web-extension to manage firestore databases, made w
 ## Features
 
 <!-- - Clean UI (based on [ng-zorro-antd](https://github.com/NG-ZORRO/ng-zorro-antd)). -->
+
 - Easily Add/Clone/Rename/Delete/Filter collections & documents.
 - 3 editing modes (thanks to [jsoneditor](https://github.com/josdejong/jsoneditor) project).
 - Powerful diff viewer (using [diff-match-patch](https://github.com/google/diff-match-patch) & [diff2html](https://github.com/rtfpessoa/diff2html)).
@@ -25,7 +26,7 @@ A simple, fast and intuitive web-extension to manage firestore databases, made w
 
 ## Installation
 
-[![Get it for Firefox!](https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_1.png)](https://addons.mozilla.org/firefox/addon/firestore-manager/?src=external-github-download)
+[![Get it for Firefox!](https://i.imgur.com/TMOLdK6.png)](https://addons.mozilla.org/firefox/addon/firestore-manager/?src=external-github-download)
 [![Get it for Chrome!](https://i.imgur.com/B0i5sn3.png)](https://github.com/FirebaseGoodies/firestore-manager/releases)
 
 Or [try it as a web application](https://firebasegoodies.github.io/firestore-manager/manager).
